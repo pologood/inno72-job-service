@@ -78,13 +78,7 @@
 			<artifactId>inno72-job-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>com.inno72</groupId>
-			<artifactId>inno72-job-sdk</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		
+	
 		<!-- commons-email -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
