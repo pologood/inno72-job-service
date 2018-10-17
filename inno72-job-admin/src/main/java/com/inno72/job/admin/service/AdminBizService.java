@@ -10,7 +10,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.inno72.job.sdk.handle.HandleReturn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -67,7 +66,7 @@ public class AdminBizService implements AdminBiz {
 
         // trigger success, to trigger child job
         String callbackMsg = null;
-        if (HandleReturn.SUCCESS_CODE == handleCallbackParam.getExecuteResult().getCode()) {
+        if (ReturnT.SUCCESS_CODE == handleCallbackParam.getExecuteResult().getCode()) {
             JobInfo jobInfo = jobInfoDao.loadById(log.getJobId());
             if (jobInfo!=null && StringUtils.isNotBlank(jobInfo.getChildJobId())) {
                 callbackMsg = "<br><br><span style=\"color:#00c0ef;\" > >>>>>>>>>>> Trigger child job <<<<<<<<<<< </span><br>";
