@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<parent>
+		<artifactId>inno72-parent</artifactId>
+		<groupId>com.inno72</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>inno72-job-service</artifactId>
+	<packaging>pom</packaging>
+
+	<properties>
+		<mapper.version>4.0.3</mapper.version>
+		<frame.version>0.0.1-SNAPSHOT</frame.version>
+		<plugin.version>0.0.1-SNAPSHOT</plugin.version>
+		<java.version>1.8</java.version>
+		<freemarker.version>2.3.23</freemarker.version>
+		<generator.version>1.3.6</generator.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.mybatis.generator</groupId>
+			<artifactId>mybatis-generator-core</artifactId>
+			<version>${generator.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>tk.mybatis</groupId>
+			<artifactId>mapper</artifactId>
+			<version>${mapper.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.persistence</groupId>
+					<artifactId>persistence-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>tk.mybatis</groupId>
+			<artifactId>mapper-spring-boot-starter</artifactId>
+			<version>2.0.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.persistence</groupId>
+					<artifactId>persistence-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>sqltool</artifactId>
+			<version>2.3.3</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-hystrix</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcpkix-jdk15on</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- web模块 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- 需打为war包时，tomcat由外部提供 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-feign</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper</artifactId>
+			<version>4.0.0</version>
+		</dependency>
+
+	</dependencies>
+
+	
+
+	<modules>
+		<module>inno72-job-admin</module>
+		<module>inno72-job-executor</module>
+    	<module>inno72-job-core</module>
+    	<module>inno72-job-sdk</module>
+    <module>inno72-job-example</module>
+  </modules>
+</project>

@@ -1,0 +1,52 @@
+package com.inno72.job.admin.utils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * 邮件发送.Util
+ *
+ * @author xuxueli 2016-3-12 15:06:20
+ */
+public class MailUtil {
+	private static Logger logger = LoggerFactory.getLogger(MailUtil.class);
+	
+	/**
+	 *
+	 * @param toAddress		收件人邮箱
+	 * @param mailSubject	邮件主题
+	 * @param mailBody		邮件正文
+	 * @return
+	 */
+	public static boolean sendMail(String toAddress, String mailSubject, String mailBody){
+
+//		try {
+//			// Create the email message
+//			HtmlEmail email = new HtmlEmail();
+//
+//			
+//
+//			email.setHostName(JobAdminConfig.getAdminConfig().getMailHost());
+//			email.setSmtpPort(Integer.valueOf(XxlJobAdminConfig.getAdminConfig().getMailPort()));
+//			//email.setSslSmtpPort(port);
+//			email.setAuthenticator(new DefaultAuthenticator(XxlJobAdminConfig.getAdminConfig().getMailUsername(), XxlJobAdminConfig.getAdminConfig().getMailPassword()));
+//			email.setCharset(Charset.defaultCharset().name());
+//
+//			email.setFrom(XxlJobAdminConfig.getAdminConfig().getMailUsername(), XxlJobAdminConfig.getAdminConfig().getMailSendNick());
+//			email.addTo(toAddress);
+//			email.setSubject(mailSubject);
+//			email.setMsg(mailBody);
+//
+//			//email.attach(attachment);	// add the attachment
+//
+//			email.send();				// send the email
+//			return true;
+//		} catch (EmailException e) {
+//			logger.error(e.getMessage(), e);
+//
+//		}
+//		return false;
+		return true;
+	}
+
+}
