@@ -119,7 +119,6 @@
 		<module>inno72-job-admin</module>
 		<module>inno72-job-executor</module>
     	<module>inno72-job-core</module>
-    	<module>inno72-job-sdk</module>
     <module>inno72-job-example</module>
   </modules>
 </project>
