@@ -114,6 +114,19 @@
 	</dependencies>
 
 	
+	<build>
+        <plugins>
+            <!-- war包插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+	
 
 	<modules>
 		<module>inno72-job-admin</module>
