@@ -12,6 +12,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>inno72-job-example</name>
   <url>http://maven.apache.org</url>
+  <packaging>jar</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>

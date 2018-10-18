@@ -1,6 +1,7 @@
 package com.inno72.job.core.thread;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
@@ -101,7 +102,7 @@ public class JobThread extends Thread{
 					running = true;
 					idleTimes = 0;
 					triggerLogIdSet.remove(triggerParam.getLogId());
-
+					logger.info(">>>>>>>>>>> job:{} start ",triggerParam.getJobId());
 					// log filename, like "logPath/yyyy-MM-dd/9999.log"
 					String logFileName = JobFileAppender.makeLogFileName(new Date(triggerParam.getLogDateTim()), triggerParam.getLogId());
 					JobFileAppender.contextHolder.set(logFileName);
@@ -117,9 +118,13 @@ public class JobThread extends Thread{
 						
 						JobLogger.log("<br>-----------job execute start -----------<br>----------- Param:" + triggerParam.getExecutorParams());
 						try {
-							triggerParam.getHandler().init();
+							if(handle == null) {
+								this.stopReason = "未找到可执行的 JAVA_JAR_INTERNAL handler:" +  triggerParam.getExecutorHandler();
+								throw new IOException(this.stopReason);
+							}
+							handle.init();
 							handleResult = handle.execute(triggerParam.getExecutorParams());
-							triggerParam.getHandler().destroy();
+							handle.destroy();
 						}catch(Exception e) {
 							JobLogger.log(e);
 						}
@@ -146,6 +151,7 @@ public class JobThread extends Thread{
 						executeResult.setData(handleResult.getData());
 					}
 					JobLogger.log("<br>-----------job execute end(finish) -----------<br>----------- ReturnT:" + executeResult);
+					logger.info(">>>>>>>>>>> job:{} end ",triggerParam.getJobId());
 
 				} else {
 					if (idleTimes > 30) {
@@ -163,6 +169,7 @@ public class JobThread extends Thread{
 				executeResult = new ReturnT<String>(ReturnT.FAIL_CODE, errorMsg);
 
 				JobLogger.log("<br>----------- JobThread Exception:" + errorMsg + "<br>----------- job job execute end(error) -----------");
+				logger.error(">>>>>>>>>>> job:" + triggerParam.getJobId() + " Exception ", e);
 			} finally {
                 if(triggerParam != null) {
                     // callback handler info
@@ -188,6 +195,6 @@ public class JobThread extends Thread{
 			}
 		}
 
-		logger.info(">>>>>>>>>>> xxl-job JobThread stoped, hashCode:{}", Thread.currentThread());
+		logger.info(">>>>>>>>>>> job JobThread stoped, hashCode:{}", Thread.currentThread());
 	}
 }

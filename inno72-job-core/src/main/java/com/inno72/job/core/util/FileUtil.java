@@ -111,6 +111,7 @@ public class FileUtil {
 			randomAccessFile = new RandomAccessFile(file, "rw");
 			channel = randomAccessFile.getChannel();
 			lock = channel.lock();
+			randomAccessFile.write(String.valueOf(System.currentTimeMillis()).getBytes());
 			if(runable != null) {
 				return runable.submit();
 			}

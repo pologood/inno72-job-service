@@ -3,7 +3,6 @@ package com.inno72.job.core.biz;
 import java.util.List;
 
 import com.inno72.job.core.biz.model.HandleCallbackParam;
-import com.inno72.job.core.biz.model.JarResponse;
 import com.inno72.job.core.biz.model.RegistryParam;
 import com.inno72.job.core.biz.model.ReturnT;
 
@@ -47,6 +46,6 @@ public interface AdminBiz {
     
     
     
-    public ReturnT<JarResponse>  downloadJar(int jobId);
+    public ReturnT<String>  getJarChecksum(int jobId);
 
 }

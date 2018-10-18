@@ -21,7 +21,6 @@ import com.inno72.job.admin.model.JobInfo;
 import com.inno72.job.admin.model.JobLog;
 import com.inno72.job.core.biz.AdminBiz;
 import com.inno72.job.core.biz.model.HandleCallbackParam;
-import com.inno72.job.core.biz.model.JarResponse;
 import com.inno72.job.core.biz.model.RegistryParam;
 import com.inno72.job.core.biz.model.ReturnT;
 import com.inno72.job.core.glue.GlueTypeEnum;
@@ -143,16 +142,16 @@ public class AdminBizService implements AdminBiz {
     
     
     
-    public ReturnT<JarResponse> downloadJar(int jobId) {
+    public ReturnT<String> getJarChecksum(int jobId) {
 		
     	JobInfo jobInfo = jobInfoDao.loadById(jobId);
     	if(jobInfo == null) {
-    		return new ReturnT<JarResponse>(ReturnT.FAIL_CODE, "jobId not found.");
+    		return new ReturnT<String>(ReturnT.FAIL_CODE, "jobId not found.");
     	}
     	
     	if(!GlueTypeEnum.JAVA_JAR_INTERNAL.name().equals(jobInfo.getGlueType()) &&
     			!GlueTypeEnum.JAVA_JAR_EXTERNAL.name().equals(jobInfo.getGlueType())) {
-    		return new ReturnT<JarResponse>(ReturnT.FAIL_CODE, "GlueType is error.");
+    		return new ReturnT<String>(ReturnT.FAIL_CODE, "GlueType is error.");
     	}
     	
     	String prefix = jobInfo.getGlueSource();
@@ -177,13 +176,10 @@ public class AdminBizService implements AdminBiz {
 			});
     		
     		String checksum = FileUtil.GetMD5Code(jarFile);
-    		JarResponse jarResponse = new JarResponse();
-    		jarResponse.setChecksum(checksum);
-    		jarResponse.setJarFile(jarFile);
-    		return new ReturnT<JarResponse>(jarResponse);
+    		return new ReturnT<String>(checksum);
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
-			return new ReturnT<JarResponse>(ReturnT.FAIL_CODE, e.getMessage());
+			return new ReturnT<String>(ReturnT.FAIL_CODE, e.getMessage());
 		}
     }
     

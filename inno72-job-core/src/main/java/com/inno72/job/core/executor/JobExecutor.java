@@ -26,7 +26,7 @@ public class JobExecutor implements ApplicationContextAware {
     private static final Logger logger = LoggerFactory.getLogger(JobExecutor.class);
 
     // ---------------------- param ----------------------
-    private String adminAddresses;
+    static private String adminAddresses;
     private String appName;
     private String ip;
     private int port;
@@ -34,8 +34,12 @@ public class JobExecutor implements ApplicationContextAware {
     private String logPath;
     private int logRetentionDays;
 
+    public static String getAdminAddresses() {
+    	return adminAddresses;
+    }
+    
     public void setAdminAddresses(String adminAddresses) {
-        this.adminAddresses = adminAddresses;
+    	JobExecutor.adminAddresses = adminAddresses;
     }
     public void setAppName(String appName) {
         this.appName = appName;
@@ -71,9 +75,6 @@ public class JobExecutor implements ApplicationContextAware {
     public void start() throws Exception {
         // init admin-client
         initAdminBizList(adminAddresses, accessToken);
-
-//        // init executor-jobHandlerRepository
-//        initJobHandlerRepository(applicationContext);
 
         // init logpath
         JobFileAppender.initLogPath(logPath);

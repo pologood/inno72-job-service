@@ -20,7 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.core.util.CronExpression;
-import org.eclipse.jetty.util.StringUtil;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -165,7 +164,6 @@ public class JobService {
 		// package result
 		Map<String, Object> maps = new HashMap<String, Object>();
 		maps.put("recordsTotal", list_count); // 总记录数
-		maps.put("recordsFiltered", list_count); // 过滤后的总记录数
 		maps.put("data", list); // 分页列表
 		return maps;
 	}
@@ -306,12 +304,6 @@ public class JobService {
 		}else {
 			if(jobInfo.getGlueSource() == null || StringUtils.isBlank(jobInfo.getGlueSource() )) {
 				return new ReturnT<Void>(ReturnT.FAIL_CODE, "未上传script文件");
-			}
-		}
-		
-		if(GlueTypeEnum.JAVA_JAR_INTERNAL == GlueTypeEnum.match(jobInfo.getGlueType())){
-			if(StringUtil.isBlank(jobInfo.getExecutorHandler())) {
-				return new ReturnT<Void>(ReturnT.FAIL_CODE, "JAVA_JAR_INTERNAL 请上传 handle");
 			}
 		}
 		
@@ -474,8 +466,9 @@ public class JobService {
 			throw new IOException("调度失败");
 		}
 	}
-
-	public ReturnT<Void> remove(int id) {
+	
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public ReturnT<Void> remove(int id) throws IOException {
 		JobInfo jobInfo = jobInfoDao.loadById(id);
 		String group = String.valueOf(jobInfo.getJobGroup());
 		String name = String.valueOf(jobInfo.getId());
@@ -484,6 +477,18 @@ public class JobService {
 			JobDynamicScheduler.removeJob(name, group);
 			jobInfoDao.delete(id);
 			jobLogDao.delete(id);
+			
+			String prefix = jobInfo.getGlueSource();
+			final String jarFileName = String.format("./jar_repositories/%s.jar", prefix);
+			final String jarLockFileName = String.format("./jar_repositories_lock/%s.lock", prefix);
+			
+			FileUtil.processByFileLock(new File(jarLockFileName), new Submittable() {
+				@Override
+				public Object submit() throws IOException {
+					return FileUtil.deleteFile(jarFileName);
+				}
+			});
+			
 			return ReturnT.SUCCESS;
 		} catch (SchedulerException e) {
 			logger.error(e.getMessage(), e);

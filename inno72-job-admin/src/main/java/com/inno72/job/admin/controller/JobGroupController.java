@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -13,7 +14,7 @@ import com.inno72.job.admin.model.JobGroup;
 import com.inno72.job.admin.service.JobService;
 import com.inno72.job.core.biz.model.ReturnT;
 
-
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping("/jobgroup")
 public class JobGroupController {

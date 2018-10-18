@@ -13,6 +13,7 @@
 	<artifactId>inno72-job-admin</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>inno72-job-admin</name>
+	<packaging>war</packaging>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -85,7 +86,17 @@
 			<artifactId>commons-email</artifactId>
 			<version>1.5</version>
 		</dependency>
-
+		<!-- plugin -->
+		<dependency>
+            <groupId>com.inno72</groupId>
+            <artifactId>inno72-redis</artifactId>
+            <version>${plugin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.inno72</groupId>
+            <artifactId>inno72-mongo</artifactId>
+            <version>${plugin.version}</version>
+        </dependency>
 	</dependencies>
 	
 	<build>

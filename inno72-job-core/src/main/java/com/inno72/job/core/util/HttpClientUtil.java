@@ -2,9 +2,14 @@ package com.inno72.job.core.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
@@ -25,7 +30,7 @@ public class HttpClientUtil {
 	/**
 	 * post request
 	 */
-	public static byte[] postRequest(String reqURL, byte[] date) throws Exception {
+	public static byte[] postRequest(String reqURL, byte[] data) throws Exception {
 		byte[] responseBytes = null;
 		
 		HttpPost httpPost = new HttpPost(reqURL);
@@ -43,8 +48,8 @@ public class HttpClientUtil {
 			httpPost.setConfig(requestConfig);
 
 			// data
-			if (date != null) {
-				httpPost.setEntity(new ByteArrayEntity(date, ContentType.DEFAULT_BINARY));
+			if (data != null) {
+				httpPost.setEntity(new ByteArrayEntity(data, ContentType.DEFAULT_BINARY));
 			}
 			// do post
 			HttpResponse response = httpClient.execute(httpPost);
@@ -96,6 +101,35 @@ public class HttpClientUtil {
 			}
 		}
 		return new byte[] {};
+	}
+	
+	public static String makeHttpForm(Map<String, String> form) throws IOException{
+		
+		if(form == null){
+			return "";
+		}
+		
+		List<String> keys = new ArrayList<String>(form.keySet());
+
+        String prestr = "";
+
+        for (int i = 0; i < keys.size(); i++) {
+            String key = keys.get(i);
+            String value = form.get(key);
+            if(StringUtils.isEmpty(key)){
+            	continue;
+            }
+            if(value == null){
+            	continue;
+            }
+            if (i == keys.size() - 1) {
+                prestr +=  URLEncoder.encode(key, "UTF-8")  + "=" + URLEncoder.encode(value, "UTF-8");
+            } else {
+                prestr +=  URLEncoder.encode(key, "UTF-8")  + "=" + URLEncoder.encode(value, "UTF-8") + "&";
+            }
+        }
+
+        return prestr; 
 	}
 
 }

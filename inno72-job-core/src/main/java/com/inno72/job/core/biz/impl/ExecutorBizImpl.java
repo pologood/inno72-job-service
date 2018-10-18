@@ -1,15 +1,19 @@
 package com.inno72.job.core.biz.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jetty.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.inno72.job.core.biz.AdminBiz;
 import com.inno72.job.core.biz.ExecutorBiz;
-import com.inno72.job.core.biz.model.JarResponse;
 import com.inno72.job.core.biz.model.LogResult;
 import com.inno72.job.core.biz.model.ReturnT;
 import com.inno72.job.core.biz.model.TriggerParam;
@@ -23,7 +27,9 @@ import com.inno72.job.core.handle.RunnableJarHandler;
 import com.inno72.job.core.handle.ScriptJobHandler;
 import com.inno72.job.core.log.JobFileAppender;
 import com.inno72.job.core.thread.JobThread;
+import com.inno72.job.core.util.ExeJarManager;
 import com.inno72.job.core.util.FileUtil;
+import com.inno72.job.core.util.HttpFormConnector;
 
 
 public class ExecutorBizImpl implements ExecutorBiz {
@@ -70,6 +76,49 @@ public class ExecutorBizImpl implements ExecutorBiz {
 		LogResult logResult = JobFileAppender.readLog(logFileName, fromLineNum);
 		return new ReturnT<LogResult>(logResult);
 	}
+	
+	
+	protected byte[] downloadJar(int jobId) throws IOException {
+		
+		List<AdminBiz> adminBizs = JobExecutor.getAdminBizList();
+		if (adminBizs.size() == 0) {
+			throw new IOException("adminBiz not found.");
+		}
+
+		AdminBiz adminBiz = adminBizs.get(0);
+		ReturnT<String> checksum = adminBiz.getJarChecksum(jobId);
+		if (checksum.getCode() != ReturnT.SUCCESS_CODE) {
+			throw new IOException(checksum.getMsg());
+		}
+		
+		if (StringUtil.isBlank(checksum.getData())) {
+			throw new IOException("retJarResponse Checksum is null");
+		}
+
+		
+		Map<String, String> form = new HashMap<String, String>();
+		form.put("jodId", String.valueOf(jobId));
+		String[] address = StringUtils.split(JobExecutor.getAdminAddresses(), ",");
+		byte[] jarFile = null;
+		try {
+			jarFile = HttpFormConnector.doPost(address[0]+"/api/download/jar", form, 10000);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		
+		if(jarFile == null) {
+			throw new IOException("jar download fail");
+		}
+		
+		
+		if (!checksum.getData()
+				.equalsIgnoreCase(FileUtil.GetMD5Code(jarFile))) {
+			throw new IOException("retJarResponse Checksum is wrong");
+		}
+		
+		return jarFile;
+		
+	}
 
 	@Override
 	public ReturnT<Void> run(TriggerParam triggerParam) {
@@ -81,38 +130,28 @@ public class ExecutorBizImpl implements ExecutorBiz {
 		GlueTypeEnum glueTypeEnum = GlueTypeEnum.match(triggerParam.getGlueType());
 		if (GlueTypeEnum.JAVA_JAR_INTERNAL == glueTypeEnum) {
 
-			List<AdminBiz> adminBizs = JobExecutor.getAdminBizList();
-			if (adminBizs.size() == 0) {
-				return new ReturnT<Void>(ReturnT.FAIL_CODE, "adminBiz not found.");
+			try {
+				byte[] jarFile = downloadJar(triggerParam.getJobId());
+				triggerParam.setJarFile(jarFile);
+			} catch (IOException e) {
+				logger.error(e.getMessage(), e);
+				return new ReturnT<Void>(ReturnT.FAIL_CODE, e.getMessage());
 			}
-
-			AdminBiz adminBiz = adminBizs.get(0);
-			ReturnT<JarResponse> retJarResponse = adminBiz.downloadJar(triggerParam.getJobId());
-
-			if (retJarResponse.getCode() != ReturnT.SUCCESS_CODE) {
-				return new ReturnT<Void>(retJarResponse.getCode(), retJarResponse.getMsg());
-			}
-
-			if (retJarResponse.getData() == null) {
-				return new ReturnT<Void>(ReturnT.FAIL_CODE, "retJarResponse data is null");
-			}
-
-			if (StringUtil.isBlank(retJarResponse.getData().getChecksum())) {
-				return new ReturnT<Void>(ReturnT.FAIL_CODE, "retJarResponse Checksum is null");
-			}
-
-			if (!retJarResponse.getData().getChecksum()
-					.equalsIgnoreCase(FileUtil.GetMD5Code(retJarResponse.getData().getJarFile()))) {
-				return new ReturnT<Void>(ReturnT.FAIL_CODE, "retJarResponse Checksum is wrong");
-			}
-
-			triggerParam.setJarFile(retJarResponse.getData().getJarFile());
 
 		} else if (GlueTypeEnum.JAVA_JAR_EXTERNAL == glueTypeEnum) {
-
-			IJobHandler jobHandler = new RunnableJarHandler(triggerParam.getJobId(), triggerParam.getGlueUpdatetime(),
-					triggerParam.getGlueSource(), GlueTypeEnum.match(triggerParam.getGlueType()));
-			triggerParam.setHandler(jobHandler);
+			
+			try {
+				byte[] jar = downloadJar(triggerParam.getJobId());
+				ExeJarManager exeJarManager = JobExecutor.getApplicationContext().getBean(ExeJarManager.class);
+				File jarFile = new File(exeJarManager.getJarFileName(triggerParam.getJobId(), triggerParam.getGlueUpdatetime()));
+				exeJarManager.saveJarFile(jarFile, jar);
+				IJobHandler jobHandler = new RunnableJarHandler(triggerParam.getJobId(), triggerParam.getGlueUpdatetime(),
+						triggerParam.getGlueSource(), GlueTypeEnum.match(triggerParam.getGlueType()));
+				triggerParam.setHandler(jobHandler);
+			} catch (IOException e) {
+				logger.error(e.getMessage(), e);
+				return new ReturnT<Void>(ReturnT.FAIL_CODE, e.getMessage());
+			}
 
 		} else if (GlueTypeEnum.GLUE_GROOVY == glueTypeEnum) {
 
@@ -149,6 +188,8 @@ public class ExecutorBizImpl implements ExecutorBiz {
 					removeOldReason = "阻塞处理策略-生效：" + ExecutorBlockStrategyEnum.COVER_EARLY.getTitle();
 
 					jobThread = null;
+				}else {
+					logger.warn("由于 JAVA_JAR_INTERNAL 无法使用COVER_EARLY 改为SERIAL_EXECUTION handler:" + triggerParam.getExecutorHandler());
 				}
 			} else {
 				// just queue trigger

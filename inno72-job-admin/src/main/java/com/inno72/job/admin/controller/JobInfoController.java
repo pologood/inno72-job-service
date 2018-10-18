@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 
 import org.quartz.SchedulerException;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,7 @@ import com.inno72.job.core.biz.model.ReturnT;
 import com.inno72.job.core.enums.ExecutorBlockStrategyEnum;
 import com.inno72.job.core.glue.GlueTypeEnum;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping("/jobinfo")
 public class JobInfoController {
@@ -46,12 +48,16 @@ public class JobInfoController {
 	
 	@RequestMapping("/pageList")
 	@ResponseBody
-	public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int pageNo,  
+	public ReturnT<Map<String, Object>> pageList(@RequestParam(required = false, defaultValue = "1") int pageNo,  
 			@RequestParam(required = false, defaultValue = "10") int pageSize,
 			@RequestParam(required = false, defaultValue = "0") int jobGroup, 
 			String jobDesc, String executorHandler, String filterTime) {
 		
-		return jobService.pageList(pageNo, pageSize, jobGroup, jobDesc, executorHandler, filterTime);
+		Map<String, Object> data = jobService.pageList(pageNo - 1, pageSize, jobGroup, jobDesc, executorHandler, filterTime);
+		
+		ReturnT<Map<String, Object>>  ret =  new ReturnT<Map<String, Object>>();
+		ret.setData(data);
+		return ret;
 	}
 	
 	@RequestMapping(value="/addscript", method = RequestMethod.POST)
@@ -63,6 +69,7 @@ public class JobInfoController {
 			return new ReturnT<Void>(ReturnT.FAIL_CODE, e.getMessage());
 		}
 	}
+	
 	
 	@RequestMapping(value="/addjar", method = RequestMethod.POST)
 	@ResponseBody
@@ -122,7 +129,11 @@ public class JobInfoController {
 	@RequestMapping("/remove")
 	@ResponseBody
 	public ReturnT<Void> remove(int id) {
-		return jobService.remove(id);
+		try {
+			return jobService.remove(id);
+		} catch (IOException e) {
+			return new ReturnT<Void>(ReturnT.FAIL_CODE, e.getMessage());
+		}
 	}
 	
 	@RequestMapping("/pause")

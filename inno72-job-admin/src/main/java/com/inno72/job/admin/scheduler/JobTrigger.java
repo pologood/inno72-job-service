@@ -52,7 +52,7 @@ public class JobTrigger {
                 jobLog.setJobGroup(jobInfo.getJobGroup());
                 jobLog.setJobId(jobInfo.getId());
                 JobDynamicScheduler.jobLogDao.save(jobLog);
-                logger.debug(">>>>>>>>>>> xxl-job trigger start, jobId:{}", jobLog.getId());
+                logger.debug(">>>>>>>>>>> job trigger start, jobId:{}", jobLog.getId());
 
                 // 2、prepare trigger-info
                 //jobLog.setExecutorAddress(executorAddress);
@@ -111,7 +111,7 @@ public class JobTrigger {
 
                 // 6、monitor trigger
                 JobFailMonitorHelper.monitor(jobLog.getId());
-                logger.debug(">>>>>>>>>>> xxl-job trigger end, jobId:{}", jobLog.getId());
+                logger.debug(">>>>>>>>>>> job trigger end, jobId:{}", jobLog.getId());
 
             }
         } else {
@@ -120,7 +120,7 @@ public class JobTrigger {
             jobLog.setJobGroup(jobInfo.getJobGroup());
             jobLog.setJobId(jobInfo.getId());
             JobDynamicScheduler.jobLogDao.save(jobLog);
-            logger.debug(">>>>>>>>>>> xxl-job trigger start, jobId:{}", jobLog.getId());
+            logger.debug(">>>>>>>>>>> job trigger start, jobId:{}", jobLog.getId());
 
             // 2、prepare trigger-info
             //jobLog.setExecutorAddress(executorAddress);
@@ -179,7 +179,7 @@ public class JobTrigger {
 
             // 6、monitor trigger
             JobFailMonitorHelper.monitor(jobLog.getId());
-            logger.debug(">>>>>>>>>>> xxl-job trigger end, jobId:{}", jobLog.getId());
+            logger.debug(">>>>>>>>>>> job trigger end, jobId:{}", jobLog.getId());
         }
 
     }
@@ -196,7 +196,7 @@ public class JobTrigger {
             ExecutorBiz executorBiz = JobDynamicScheduler.getExecutorBiz(address);
             runResult = executorBiz.run(triggerParam);
         } catch (Exception e) {
-            logger.error(">>>>>>>>>>> xxl-job trigger error, please check if the executor[{}] is running.", address, e);
+            logger.error(">>>>>>>>>>> job trigger error, please check if the executor[{}] is running.", address, e);
             runResult = new ReturnT<Void>(ReturnT.FAIL_CODE, ""+e );
         }
 

@@ -1,9 +1,11 @@
 package com.inno72.job.core.handle;
 
 import com.inno72.job.core.biz.model.ReturnT;
+import com.inno72.job.core.executor.JobExecutor;
 import com.inno72.job.core.glue.GlueTypeEnum;
 import com.inno72.job.core.log.JobFileAppender;
 import com.inno72.job.core.log.JobLogger;
+import com.inno72.job.core.util.ExeJarManager;
 import com.inno72.job.core.util.FileUtil;
 import com.inno72.job.core.util.ScriptUtil;
 import com.inno72.job.core.util.ShardingUtil;
@@ -25,13 +27,12 @@ public class RunnableJarHandler extends IJobHandler {
 	@Override
 	public ReturnT<String> execute(String param) throws Exception {
 
-		long currentTime = System.currentTimeMillis();
-
 		// make script file
-		String scriptFileName = JobFileAppender.getGlueSrcPath().concat("/").concat(String.valueOf(jobId)).concat("_")
-				.concat(String.valueOf(glueUpdatetime)).concat(String.valueOf(currentTime)).concat(".jar");
+		ExeJarManager exeJarManager = JobExecutor.getApplicationContext().getBean(ExeJarManager.class);
+		String jarFileName = exeJarManager.getJarFileName(jobId, glueUpdatetime);
+		
 
-		ScriptUtil.markScriptFile(scriptFileName, gluesource);
+		ScriptUtil.markScriptFile(jarFileName, gluesource);
 
 		// log file
 		String logFileName = JobFileAppender.contextHolder.get();
@@ -44,10 +45,10 @@ public class RunnableJarHandler extends IJobHandler {
 		scriptParams[2] = String.valueOf(shardingVO.getTotal());
 
 		// invoke
-		JobLogger.log("----------- script file:" + scriptFileName + " -----------");
-		int exitValue = ScriptUtil.execToFile("java -jar", scriptFileName, logFileName, scriptParams);
+		JobLogger.log("----------- jar:" + jarFileName + " -----------");
+		int exitValue = ScriptUtil.execToFile("java -jar", jarFileName, logFileName, scriptParams);
 
-		FileUtil.deleteFile("scriptFileName");
+		FileUtil.deleteFile(jarFileName);
 
 
 		ReturnT<String> result = (exitValue == 0) ? new ReturnT<String>(ReturnT.SUCCESS_CODE, "ok")

@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,7 +27,7 @@ import com.inno72.job.core.biz.ExecutorBiz;
 import com.inno72.job.core.biz.model.LogResult;
 import com.inno72.job.core.biz.model.ReturnT;
 
-
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping("/joblog")
 public class JobLogController {
@@ -47,8 +48,8 @@ public class JobLogController {
 	
 	@RequestMapping("/pageList")
 	@ResponseBody
-	public ReturnT<Map<String, Object>> pageList(@RequestParam(required = false, defaultValue = "0") int start,  
-			@RequestParam(required = false, defaultValue = "10") int length,
+	public ReturnT<Map<String, Object>> pageList(@RequestParam(required = false, defaultValue = "1") int pageNo,  
+			@RequestParam(required = false, defaultValue = "10") int pageSize,
 			int jobGroup, int jobId, int logStatus, String filterTime) {
 		
 		// parse param
@@ -65,13 +66,12 @@ public class JobLogController {
 		}
 		
 		// page query
-		List<JobLog> list = jobService.jobLogPageList(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
-		int list_count = jobService.jobLogPageCount(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
+		List<JobLog> list = jobService.jobLogPageList(pageNo-1, pageSize, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
+		int list_count = jobService.jobLogPageCount(pageNo-1, pageSize, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
 		
 		// package result
 		Map<String, Object> maps = new HashMap<String, Object>();
 	    maps.put("recordsTotal", list_count);		// 总记录数
-	    maps.put("recordsFiltered", list_count);	// 过滤后的总记录数
 	    maps.put("data", list);  					// 分页列表
 		return new ReturnT<Map<String, Object>>(maps);
 	}

@@ -132,7 +132,7 @@ public class ExeJarManager {
 		List<String> candidataClasses = new LinkedList<String>();
 		for(String clazzPath : classPaths) {
 			if(classPattern.matcher(clazzPath).matches()) {
-				clazzPath = clazzPath.replace("\\.class", "");
+				clazzPath = clazzPath.replace(".class", "");
 				clazzPath = clazzPath.replace("/", ".");
 				candidataClasses.add(clazzPath);
 			}
