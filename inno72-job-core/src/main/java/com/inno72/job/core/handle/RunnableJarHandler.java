@@ -31,28 +31,26 @@ public class RunnableJarHandler extends IJobHandler {
 		ExeJarManager exeJarManager = JobExecutor.getApplicationContext().getBean(ExeJarManager.class);
 		String jarFileName = exeJarManager.getJarFileName(jobId, glueUpdatetime);
 		
-
-		ScriptUtil.markScriptFile(jarFileName, gluesource);
-
 		// log file
 		String logFileName = JobFileAppender.contextHolder.get();
 
 		// script params：0=param、1=分片序号、2=分片总数
+		
+		
 		ShardingUtil.ShardingVO shardingVO = ShardingUtil.getShardingVo();
-		String[] scriptParams = new String[3];
-		scriptParams[0] = param;
-		scriptParams[1] = String.valueOf(shardingVO.getIndex());
-		scriptParams[2] = String.valueOf(shardingVO.getTotal());
+		String[] jarParams = new String[3];
+		jarParams[0] = param;
+		jarParams[1] = String.valueOf(shardingVO.getIndex());
+		jarParams[2] = String.valueOf(shardingVO.getTotal());
 
 		// invoke
 		JobLogger.log("----------- jar:" + jarFileName + " -----------");
-		int exitValue = ScriptUtil.execToFile("java -jar", jarFileName, logFileName, scriptParams);
+		int exitValue = ScriptUtil.execToJar(jarFileName, logFileName, jarParams);
 
 		FileUtil.deleteFile(jarFileName);
 
-
 		ReturnT<String> result = (exitValue == 0) ? new ReturnT<String>(ReturnT.SUCCESS_CODE, "ok")
-				: new ReturnT<String>(ReturnT.FAIL_CODE, "script exit value(" + exitValue + ") is failed");
+				: new ReturnT<String>(ReturnT.FAIL_CODE, "jar exit value(" + exitValue + ") is failed");
 		return result;
 	}
 

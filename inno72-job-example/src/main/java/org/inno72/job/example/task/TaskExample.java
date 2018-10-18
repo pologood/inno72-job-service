@@ -33,7 +33,7 @@ public class TaskExample extends IJobHandler
 		
 		ResultSet rs = stm.executeQuery();
 		while(rs.next()) {
-			String name = rs.getString(3);
+			String name = rs.getString(1);
 			System.out.println(name);
 		}
 		

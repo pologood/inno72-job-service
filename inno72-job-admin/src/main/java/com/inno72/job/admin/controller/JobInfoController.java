@@ -70,7 +70,7 @@ public class JobInfoController {
 		}
 	}
 	
-	
+
 	@RequestMapping(value="/addjar", method = RequestMethod.POST)
 	@ResponseBody
 	public ReturnT<Void> addJar(MultipartFile file, JobInfo jobInfo) {

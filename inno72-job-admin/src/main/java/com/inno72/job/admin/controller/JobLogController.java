@@ -13,7 +13,6 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,7 +49,9 @@ public class JobLogController {
 	@ResponseBody
 	public ReturnT<Map<String, Object>> pageList(@RequestParam(required = false, defaultValue = "1") int pageNo,  
 			@RequestParam(required = false, defaultValue = "10") int pageSize,
-			int jobGroup, int jobId, int logStatus, String filterTime) {
+			@RequestParam(required = false, defaultValue = "0") int jobGroup, 
+			@RequestParam(required = false, defaultValue = "0") int jobId, 
+			@RequestParam(required = false, defaultValue = "0") int logStatus, String filterTime) {
 		
 		// parse param
 		Date triggerTimeStart = null;
@@ -79,7 +80,7 @@ public class JobLogController {
 	
 	@RequestMapping("/logDetailPage")
 	@ResponseBody
-	public ReturnT<JobLog> logDetailPage(int id, Model model){
+	public ReturnT<JobLog> logDetailPage(int id){
 
 		// base check
 		
@@ -95,6 +96,9 @@ public class JobLogController {
 	@ResponseBody
 	public ReturnT<LogResult> logDetailCat(String executorAddress, long triggerTime, int logId, int fromLineNum){
 		try {
+			
+			//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			
 			ExecutorBiz executorBiz = JobDynamicScheduler.getExecutorBiz(executorAddress);
 			ReturnT<LogResult> logResult = executorBiz.log(triggerTime, logId, fromLineNum);
 

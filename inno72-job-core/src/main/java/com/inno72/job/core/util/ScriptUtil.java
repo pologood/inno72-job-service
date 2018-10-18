@@ -76,5 +76,30 @@ public class ScriptUtil {
             return exitValue;
         }
     }
+    
+    public static int execToJar(String jarPath, String logFile, String... params) throws IOException {
+    	
+    	try (FileOutputStream fileOutputStream = new FileOutputStream(logFile, true)) {
+            PumpStreamHandler streamHandler = new PumpStreamHandler(fileOutputStream, fileOutputStream, null);
+
+            // command
+            CommandLine commandline = new CommandLine("java");
+            
+            commandline.addArgument("-jar");
+            
+            commandline.addArgument(jarPath);
+            
+            if (params!=null && params.length>0) {
+                commandline.addArguments(params);
+            }
+
+            // exec
+            DefaultExecutor exec = new DefaultExecutor();
+            exec.setExitValues(null);
+            exec.setStreamHandler(streamHandler);
+            int exitValue = exec.execute(commandline);  // exit code: 0=success, 1=error
+            return exitValue;
+        }
+    }
 
 }

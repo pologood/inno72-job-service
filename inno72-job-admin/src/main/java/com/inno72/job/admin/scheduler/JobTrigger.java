@@ -75,6 +75,7 @@ public class JobTrigger {
                 if (triggerResult.getCode()==ReturnT.SUCCESS_CODE && CollectionUtils.isEmpty(addressList)) {
                     triggerResult.setCode(ReturnT.FAIL_CODE);
                     triggerMsgSb.append("<br>----------------------<br>").append("调度失败：执行器地址为空");
+                    logger.warn("调度失败：jobId:{} 执行器地址为空", jobId);
                 }
 
                 if (triggerResult.getCode() == ReturnT.SUCCESS_CODE) {
