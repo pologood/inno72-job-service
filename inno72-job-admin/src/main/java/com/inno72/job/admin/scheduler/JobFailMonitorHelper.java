@@ -55,10 +55,10 @@ public class JobFailMonitorHelper {
 								if (log == null) {
 									continue;
 								}
-								if (ReturnT.SUCCESS.getCode() == log.getTriggerCode() && log.getHandleCode() == 0) {
+								if (ReturnT.SUCCESS.getCode() == log.getTriggerCode() && log.getHandleCode() == 1000) {
 									JobFailMonitorHelper.monitor(jobLogId);
 									logger.info(">>>>>>>>>>> job monitor, job running, JobLogId:{}", jobLogId);
-								} else if (ReturnT.SUCCESS.getCode() == log.getHandleCode()) {
+								} else if (ReturnT.SUCCESS.getCode() == log.getTriggerCode() && ReturnT.SUCCESS.getCode() == log.getHandleCode()) {
 									// job success, pass
 									logger.info(">>>>>>>>>>> job monitor, job success, JobLogId:{}", jobLogId);
 								} else if (ReturnT.FAIL.getCode() == log.getTriggerCode()

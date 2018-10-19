@@ -59,7 +59,7 @@ public class AdminBizService implements AdminBiz {
         if (log == null) {
             return new ReturnT<Void>(ReturnT.FAIL_CODE, "log item not found.");
         }
-        if (log.getHandleCode() > 0) {
+        if (log.getHandleCode() != 1000) {
             return new ReturnT<Void>(ReturnT.FAIL_CODE, "log repeate callback.");     // avoid repeat callback, trigger child job etc
         }
 

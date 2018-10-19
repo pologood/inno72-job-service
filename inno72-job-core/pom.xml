@@ -122,6 +122,8 @@
             <artifactId>inno72-mongo</artifactId>
             <version>${plugin.version}</version>
         </dependency>
+        
+        
 		
 	</dependencies>
 	

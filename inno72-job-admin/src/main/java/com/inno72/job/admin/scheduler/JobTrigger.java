@@ -207,8 +207,10 @@ public class JobTrigger {
         runResultSB.append("<br>msg：").append(runResult.getMsg());
 
         ReturnT<String> result = new ReturnT<String>();
+        result.setCode(runResult.getCode());
         result.setMsg(runResultSB.toString());
         result.setData(address);
+        
         return result;
     }
 

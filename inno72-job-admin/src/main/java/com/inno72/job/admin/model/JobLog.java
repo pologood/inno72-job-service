@@ -26,7 +26,7 @@ public class JobLog {
 	
 	// handle info
 	private Date handleTime;
-	private int handleCode;
+	private int handleCode=1000;
 	private String handleMsg;
 
 	public int getId() {
