@@ -53,7 +53,7 @@ public class JobInfoController {
 			@RequestParam(required = false, defaultValue = "0") int jobGroup, 
 			String jobDesc, String executorHandler, String filterTime) {
 		
-		Map<String, Object> data = jobService.pageList(pageNo - 1, pageSize, jobGroup, jobDesc, executorHandler, filterTime);
+		Map<String, Object> data = jobService.pageList((pageNo - 1)*pageSize, pageSize, jobGroup, jobDesc, executorHandler, filterTime);
 		
 		ReturnT<Map<String, Object>>  ret =  new ReturnT<Map<String, Object>>();
 		ret.setData(data);

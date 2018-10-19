@@ -67,8 +67,8 @@ public class JobLogController {
 		}
 		
 		// page query
-		List<JobLog> list = jobService.jobLogPageList(pageNo-1, pageSize, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
-		int list_count = jobService.jobLogPageCount(pageNo-1, pageSize, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
+		List<JobLog> list = jobService.jobLogPageList((pageNo-1)*pageSize, pageSize, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
+		int list_count = jobService.jobLogPageCount((pageNo-1)*pageSize, pageSize, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
 		
 		// package result
 		Map<String, Object> maps = new HashMap<String, Object>();
