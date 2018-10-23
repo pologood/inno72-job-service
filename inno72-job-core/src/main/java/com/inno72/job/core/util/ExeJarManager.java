@@ -66,7 +66,7 @@ public class ExeJarManager {
 				logger.info("loading class:" + candidataClass);
 				Class<?> clazz = exeJarInfo.loader.loadClass(candidataClass, true);
 				JobHandler annoJobHandle = clazz.getAnnotation(JobHandler.class);
-				if(annoJobHandle != null && isExtendHandle(clazz)) {
+				if(annoJobHandle != null && isImplementsHandle(clazz)) {
 					if(annoJobHandle.value() != null && annoJobHandle.value().equals(handle)){
 						
 						ret = (IJobHandler) clazz.newInstance();
@@ -111,17 +111,13 @@ public class ExeJarManager {
 	
 	}
 	
-	protected boolean isExtendHandle(Class<?> clazz) {
-		Class<?> tempClass = clazz;
-    	while (tempClass != null) {
-    		if(IJobHandler.class.equals(tempClass.getSuperclass())) {
-    			return true;
-    		}
-
-    		tempClass = tempClass.getSuperclass();
-    		
-    	}
-    	return false;
+	protected boolean isImplementsHandle(Class<?> clazz) {
+		if (IJobHandler.class.isAssignableFrom(clazz)) {
+			return true;
+		}else {
+			return false;
+		}
+    	
 	}
 	
 	protected List<String> isCandidateClass(File jarFile) throws IOException {

@@ -120,6 +120,7 @@ public class JobThread extends Thread{
 						try {
 							if(handle == null) {
 								this.stopReason = "未找到可执行的 JAVA_JAR_INTERNAL handler:" +  triggerParam.getExecutorHandler();
+								logger.warn(this.stopReason);
 								throw new IOException(this.stopReason);
 							}
 							handle.init();
@@ -127,6 +128,7 @@ public class JobThread extends Thread{
 							handle.destroy();
 						}catch(Exception e) {
 							JobLogger.log(e);
+							logger.error(e.getMessage(),e);
 						}
 						triggerParam.setHandler(null);
 						exeJarManager.unloadJar(jobId);
@@ -139,6 +141,7 @@ public class JobThread extends Thread{
 							triggerParam.setHandler(null);
 						}catch(Exception e) {
 							JobLogger.log(e);
+							logger.error(e.getMessage(),e);
 						}
 					}
 				
