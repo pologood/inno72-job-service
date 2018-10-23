@@ -8,7 +8,7 @@ import com.inno72.job.core.util.FileUtil;
 import com.inno72.job.core.util.ScriptUtil;
 import com.inno72.job.core.util.ShardingUtil;
 
-public class ScriptJobHandler extends IJobHandler {
+public class ScriptJobHandler implements IJobHandler {
 
     private int jobId;
     private long glueUpdatetime;
@@ -68,5 +68,17 @@ public class ScriptJobHandler extends IJobHandler {
         ReturnT<String> result = (exitValue==0)?new ReturnT<String>(ReturnT.SUCCESS_CODE, "ok"):new ReturnT<String>(ReturnT.FAIL_CODE, "script exit value("+exitValue+") is failed");
         return result;
     }
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

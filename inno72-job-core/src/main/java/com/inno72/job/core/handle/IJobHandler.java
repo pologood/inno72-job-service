@@ -2,7 +2,7 @@ package com.inno72.job.core.handle;
 
 import com.inno72.job.core.biz.model.ReturnT;
 
-public abstract class IJobHandler {
+public interface IJobHandler {
 
 
 	/**
@@ -18,17 +18,12 @@ public abstract class IJobHandler {
 	/**
 	 * init handler, invoked when JobThread init
 	 */
-	public void init() {
-		// TODO
-	}
-
+	public void init();
 
 	/**
 	 * destroy handler, invoked when JobThread destroy
 	 */
-	public void destroy() {
-		// TODO
-	}
+	public void destroy();
 
 
 }
