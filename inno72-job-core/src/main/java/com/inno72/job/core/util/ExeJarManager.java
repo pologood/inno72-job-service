@@ -60,6 +60,7 @@ public class ExeJarManager {
 		
 		List<String> candidataClasses = isCandidateClass(jarFile);
 		
+		logger.info("loadzhouyu:");
 		for(String candidataClass : candidataClasses) {
 			logger.info("candidataClass:" + candidataClass);
 		}
