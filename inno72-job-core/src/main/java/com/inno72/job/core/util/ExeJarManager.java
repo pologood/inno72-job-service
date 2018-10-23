@@ -47,7 +47,7 @@ public class ExeJarManager {
 		IJobHandler handler;
 		
 		public ExeJarInfoBean(int jobId, long version, URL jarUrl) {
-			this.loader = new DynamicJarClassLoader(new URL[]{jarUrl});
+			this.loader = new DynamicJarClassLoader(new URL[]{jarUrl}, ExeJarManager.class.getClassLoader());
 			this.jobId = jobId;
 			this.version = version;
 		}
@@ -63,7 +63,7 @@ public class ExeJarManager {
 		IJobHandler ret = null;
 		try {
 			for(String candidataClass : candidataClasses ) {
-				logger.info("myzloadClass:" + candidataClass);
+				logger.info("loading class:" + candidataClass);
 				Class<?> clazz = exeJarInfo.loader.loadClass(candidataClass, true);
 				JobHandler annoJobHandle = clazz.getAnnotation(JobHandler.class);
 				if(annoJobHandle != null && isExtendHandle(clazz)) {

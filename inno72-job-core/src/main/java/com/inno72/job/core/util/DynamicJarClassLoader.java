@@ -8,9 +8,13 @@ import java.net.URLStreamHandlerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DynamicJarClassLoader extends URLClassLoader {
    private static boolean canCloseJar = false;
    private List<JarURLConnection> cachedJarFiles;
+   private static final Logger logger = LoggerFactory.getLogger(DynamicJarClassLoader.class);
 
    static {
       try {
@@ -69,10 +73,11 @@ public class DynamicJarClassLoader extends URLClassLoader {
 
    public void close() throws IOException {
       if (canCloseJar) {
-         try {
-            super.close();
-         } catch (IOException ioe) {
-         }
+    	  try {
+    		  super.close();
+    	  }catch(IOException e) {
+    		  logger.error(e.getMessage(), e);
+    	  }
       } else {
          for (JarURLConnection conn : cachedJarFiles) {
             conn.getJarFile().close();
