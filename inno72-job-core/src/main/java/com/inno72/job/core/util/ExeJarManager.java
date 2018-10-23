@@ -63,8 +63,8 @@ public class ExeJarManager {
 		IJobHandler ret = null;
 		try {
 			for(String candidataClass : candidataClasses ) {
-				logger.info("myloadClass:" + candidataClass);
-				Class<?> clazz = exeJarInfo.loader.loadClass(candidataClass, false);
+				logger.info("myzloadClass:" + candidataClass);
+				Class<?> clazz = exeJarInfo.loader.loadClass(candidataClass, true);
 				JobHandler annoJobHandle = clazz.getAnnotation(JobHandler.class);
 				if(annoJobHandle != null && isExtendHandle(clazz)) {
 					if(annoJobHandle.value() != null && annoJobHandle.value().equals(handle)){
