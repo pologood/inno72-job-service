@@ -16,6 +16,8 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -32,6 +34,8 @@ public class ExeJarManager {
 	private Map<Integer, ExeJarInfoBean> exeJarInfoMap = new ConcurrentHashMap<Integer, ExeJarInfoBean>();
 	
 	private Pattern classPattern = Pattern.compile("([^\\$]*)\\.class$");
+	
+	private static final Logger logger = LoggerFactory.getLogger(ExeJarManager.class);
 	
 	@Autowired
     private ApplicationContext applicationContext;
@@ -55,6 +59,10 @@ public class ExeJarManager {
 		ExeJarInfoBean exeJarInfo = new ExeJarInfoBean(jobId, version, jarFile.toURI().toURL());
 		
 		List<String> candidataClasses = isCandidateClass(jarFile);
+		
+		for(String candidataClass : candidataClasses) {
+			logger.info("candidataClass:" + candidataClass);
+		}
 		
 		IJobHandler ret = null;
 		try {
