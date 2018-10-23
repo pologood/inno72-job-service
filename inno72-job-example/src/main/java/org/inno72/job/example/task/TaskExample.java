@@ -12,12 +12,9 @@ import com.inno72.job.core.handle.IJobHandler;
 import com.inno72.job.core.handle.annotation.JobHandler;
 import com.inno72.job.core.log.JobLogger;
 
-/**
- * Hello world!
- *
- */
+
 @JobHandler("inno72.task.example")
-public class TaskExample extends IJobHandler
+public class TaskExample implements IJobHandler
 {
 	
 	@Resource
@@ -45,6 +42,18 @@ public class TaskExample extends IJobHandler
 		JobLogger.log("example job, param:"+param);
 		JobLogger.log("example job, end");
 		return new ReturnT<String>(ReturnT.SUCCESS_CODE, "ok");
+	}
+
+	@Override
+	public void init() {
+		
+		
+	}
+
+	@Override
+	public void destroy() {
+		
+		
 	}
    
 }
