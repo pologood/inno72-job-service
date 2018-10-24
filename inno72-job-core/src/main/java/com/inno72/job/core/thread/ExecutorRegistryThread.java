@@ -27,11 +27,11 @@ public class ExecutorRegistryThread extends Thread {
 
         // valid
         if (appName==null || appName.trim().length()==0) {
-            logger.warn(">>>>>>>>>>> xxl-job, executor registry config fail, appName is null.");
+            logger.warn(">>>>>>>>>>> job, executor registry config fail, appName is null.");
             return;
         }
         if (JobExecutor.getAdminBizList() == null) {
-            logger.warn(">>>>>>>>>>> xxl-job, executor registry config fail, adminAddresses is null.");
+            logger.warn(">>>>>>>>>>> job, executor registry config fail, adminAddresses is null.");
             return;
         }
 
@@ -85,20 +85,20 @@ public class ExecutorRegistryThread extends Thread {
                             ReturnT<Void> registryResult = adminBiz.registryRemove(registryParam);
                             if (registryResult!=null && ReturnT.SUCCESS_CODE == registryResult.getCode()) {
                                 registryResult = ReturnT.SUCCESS;
-                                logger.info(">>>>>>>>>>> xxl-job registry-remove success, registryParam:{}, registryResult:{}", new Object[]{registryParam, registryResult});
+                                logger.info(">>>>>>>>>>> job registry-remove success, registryParam:{}, registryResult:{}", new Object[]{registryParam, registryResult});
                                 break;
                             } else {
-                                logger.info(">>>>>>>>>>> xxl-job registry-remove fail, registryParam:{}, registryResult:{}", new Object[]{registryParam, registryResult});
+                                logger.info(">>>>>>>>>>> job registry-remove fail, registryParam:{}, registryResult:{}", new Object[]{registryParam, registryResult});
                             }
                         } catch (Exception e) {
-                            logger.info(">>>>>>>>>>> xxl-job registry-remove error, registryParam:{}", registryParam, e);
+                            logger.info(">>>>>>>>>>> job registry-remove error, registryParam:{}", registryParam, e);
                         }
 
                     }
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
-                logger.info(">>>>>>>>>>> xxl-job, executor registry thread destory.");
+                logger.info(">>>>>>>>>>> job executor registry thread destory.");
 
             }
         });
