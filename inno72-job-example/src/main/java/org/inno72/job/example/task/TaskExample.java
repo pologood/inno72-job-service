@@ -12,7 +12,6 @@ import com.inno72.job.core.handle.IJobHandler;
 import com.inno72.job.core.handle.annotation.JobHandler;
 import com.inno72.job.core.log.JobLogger;
 
-
 @JobHandler("inno72.task.example")
 public class TaskExample implements IJobHandler
 {

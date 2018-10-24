@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.inno72</groupId>
+    <artifactId>inno72-job-service</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>com.inno72</groupId>
+  <artifactId>inno72-job-local-worker</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>inno72-job-local-worker</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <dependencies>
+    	<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>4.3.7.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.inno72</groupId>
+			<artifactId>inno72-core</artifactId>
+			<version>${frame.version}</version>
+		</dependency>
+		<!-- job-core -->
+		<dependency>
+			<groupId>com.inno72</groupId>
+			<artifactId>inno72-job-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.inno72</groupId>
+  			<artifactId>inno72-job-example</artifactId>
+  			<version>0.0.1-SNAPSHOT</version>
+  		</dependency>
+        <!-- plugin -->
+		<dependency>
+            <groupId>com.inno72</groupId>
+            <artifactId>inno72-redis</artifactId>
+            <version>${plugin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.inno72</groupId>
+            <artifactId>inno72-mongo</artifactId>
+            <version>${plugin.version}</version>
+        </dependency>
+  </dependencies>
+</project>
