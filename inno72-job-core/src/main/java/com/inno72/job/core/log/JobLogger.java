@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 public class JobLogger {
     private static Logger logger = LoggerFactory.getLogger("inno72-job-logger");
-    private static SimpleDateFormat xxlJobLoggerFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");   // TODO，concurrent issue
+    private static SimpleDateFormat JobLoggerFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");   // TODO，concurrent issue
 
     /**
      * append log
@@ -28,7 +28,7 @@ public class JobLogger {
         StackTraceElement callInfo = stackTraceElements[1];*/
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append(xxlJobLoggerFormat.format(new Date())).append(" ")
+        stringBuffer.append(JobLoggerFormat.format(new Date())).append(" ")
             .append("["+ callInfo.getClassName() + "#" + callInfo.getMethodName() +"]").append("-")
             .append("["+ callInfo.getLineNumber() +"]").append("-")
             .append("["+ Thread.currentThread().getName() +"]").append(" ")

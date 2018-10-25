@@ -88,7 +88,7 @@ public class JobLogFileCleanThread extends Thread {
                         logger.error(e.getMessage(), e);
                     }
                 }
-                logger.info(">>>>>>>>>>> xxl-job, executor JobLogFileCleanThread thread destory.");
+                logger.info(">>>>>>>>>>> job, executor JobLogFileCleanThread thread destory.");
 
             }
         });

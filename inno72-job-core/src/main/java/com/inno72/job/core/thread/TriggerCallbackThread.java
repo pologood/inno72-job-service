@@ -27,7 +27,7 @@ public class TriggerCallbackThread {
     private LinkedBlockingQueue<HandleCallbackParam> callBackQueue = new LinkedBlockingQueue<HandleCallbackParam>();
     public static void pushCallBack(HandleCallbackParam callback){
         getInstance().callBackQueue.add(callback);
-        logger.debug(">>>>>>>>>>> xxl-job, push callback request, logId:{}", callback.getLogId());
+        logger.debug(">>>>>>>>>>> job, push callback request, logId:{}", callback.getLogId());
     }
 
     /**
@@ -79,7 +79,7 @@ public class TriggerCallbackThread {
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
-                logger.info(">>>>>>>>>>> xxl-job, executor callback thread destory.");
+                logger.info(">>>>>>>>>>> job, executor callback thread destory.");
 
             }
         });
