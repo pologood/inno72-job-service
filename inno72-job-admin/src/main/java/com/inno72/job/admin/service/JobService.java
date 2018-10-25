@@ -282,22 +282,14 @@ public class JobService {
 			return new ReturnT<Void>(ReturnT.FAIL_CODE, "运行模式非法");
 		}
 		
-		if (GlueTypeEnum.JAVA_JAR_INTERNAL == GlueTypeEnum.match(jobInfo.getGlueType())
-				|| GlueTypeEnum.JAVA_BEAN == GlueTypeEnum.match(jobInfo.getGlueType())) {
-			
-			if(StringUtils.isBlank(jobInfo.getExecutorHandler())) {
-				return new ReturnT<Void>(ReturnT.FAIL_CODE, "请输入JobHandler");
-			}
-		}
-		
-		if(GlueTypeEnum.HTTP ==  GlueTypeEnum.match(jobInfo.getGlueType())){
-			if(StringUtils.isBlank(jobInfo.getExecutorParam())) {
-				return new ReturnT<Void>(ReturnT.FAIL_CODE, "请输入ExecutorParam");
-			}
-		}
-		
 		if(GlueTypeEnum.JAVA_JAR_INTERNAL == GlueTypeEnum.match(jobInfo.getGlueType())
 			|| GlueTypeEnum.JAVA_JAR_EXTERNAL == GlueTypeEnum.match(jobInfo.getGlueType())){
+			
+			if(GlueTypeEnum.JAVA_JAR_INTERNAL == GlueTypeEnum.match(jobInfo.getGlueType())){
+				if(StringUtils.isBlank(jobInfo.getExecutorHandler())) {
+					return new ReturnT<Void>(ReturnT.FAIL_CODE, "请输入JobHandler");
+				}
+			}
 			
 			if(jarFile == null || jarFile.length == 0) {
 				return new ReturnT<Void>(ReturnT.FAIL_CODE, "未上传jar文件");
@@ -311,7 +303,15 @@ public class JobService {
 				return new ReturnT<Void>(ReturnT.FAIL_CODE, "校验不成功");
 			}
 			
-		}else {
+		}else if(GlueTypeEnum.HTTP ==  GlueTypeEnum.match(jobInfo.getGlueType())) {
+			if(StringUtils.isBlank(jobInfo.getExecutorParam())) {
+				return new ReturnT<Void>(ReturnT.FAIL_CODE, "请输入ExecutorParam");
+			}
+		}else if(GlueTypeEnum.JAVA_BEAN ==  GlueTypeEnum.match(jobInfo.getGlueType())){
+			if(StringUtils.isBlank(jobInfo.getExecutorHandler())) {
+				return new ReturnT<Void>(ReturnT.FAIL_CODE, "请输入JobHandler");
+			}
+		}else{
 			if(jobInfo.getGlueSource() == null || StringUtils.isBlank(jobInfo.getGlueSource() )) {
 				return new ReturnT<Void>(ReturnT.FAIL_CODE, "未上传script文件");
 			}
