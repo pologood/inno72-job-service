@@ -134,5 +134,6 @@
     	<module>inno72-job-core</module>
     <module>inno72-job-example</module>
     <module>inno72-job-local-worker</module>
+    <module>inno72-job-executer-example</module>
   </modules>
 </project>
