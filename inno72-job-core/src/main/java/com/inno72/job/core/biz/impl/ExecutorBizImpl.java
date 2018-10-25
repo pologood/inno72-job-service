@@ -22,6 +22,7 @@ import com.inno72.job.core.executor.JobExecutor;
 import com.inno72.job.core.glue.GlueFactory;
 import com.inno72.job.core.glue.GlueTypeEnum;
 import com.inno72.job.core.handle.GlueJobHandler;
+import com.inno72.job.core.handle.HttpJobHandler;
 import com.inno72.job.core.handle.IJobHandler;
 import com.inno72.job.core.handle.RunnableJarHandler;
 import com.inno72.job.core.handle.ScriptJobHandler;
@@ -76,10 +77,10 @@ public class ExecutorBizImpl implements ExecutorBiz {
 		LogResult logResult = JobFileAppender.readLog(logFileName, fromLineNum);
 		return new ReturnT<LogResult>(logResult);
 	}
-	
-	
+
+
 	protected byte[] downloadJar(int jobId) throws IOException {
-		
+
 		List<AdminBiz> adminBizs = JobExecutor.getAdminBizList();
 		if (adminBizs.size() == 0) {
 			throw new IOException("adminBiz not found.");
@@ -90,34 +91,33 @@ public class ExecutorBizImpl implements ExecutorBiz {
 		if (checksum.getCode() != ReturnT.SUCCESS_CODE) {
 			throw new IOException(checksum.getMsg());
 		}
-		
+
 		if (StringUtil.isBlank(checksum.getData())) {
 			throw new IOException("retJarResponse Checksum is null");
 		}
 
-		
+
 		Map<String, String> form = new HashMap<String, String>();
 		form.put("jodId", String.valueOf(jobId));
 		String[] address = StringUtils.split(JobExecutor.getAdminAddresses(), ",");
 		byte[] jarFile = null;
 		try {
-			jarFile = HttpFormConnector.doPost(address[0]+"/api/download/jar", form, 10000);
+			jarFile = HttpFormConnector.doPost(address[0] + "/api/download/jar", form, 10000);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		
-		if(jarFile == null) {
+
+		if (jarFile == null) {
 			throw new IOException("jar download fail");
 		}
-		
-		
-		if (!checksum.getData()
-				.equalsIgnoreCase(FileUtil.GetMD5Code(jarFile))) {
+
+
+		if (!checksum.getData().equalsIgnoreCase(FileUtil.GetMD5Code(jarFile))) {
 			throw new IOException("retJarResponse Checksum is wrong");
 		}
-		
+
 		return jarFile;
-		
+
 	}
 
 	@Override
@@ -128,7 +128,18 @@ public class ExecutorBizImpl implements ExecutorBiz {
 
 		// valid：jobHandler + jobThread
 		GlueTypeEnum glueTypeEnum = GlueTypeEnum.match(triggerParam.getGlueType());
-		if (GlueTypeEnum.JAVA_JAR_INTERNAL == glueTypeEnum) {
+
+		if (GlueTypeEnum.JAVA_BEAN == glueTypeEnum) {
+
+			IJobHandler jobHandler = JobExecutor.loadJobHandler(triggerParam.getExecutorHandler());
+			if (jobHandler == null) {
+				return new ReturnT<Void>(ReturnT.FAIL_CODE,
+						"job handler [" + triggerParam.getExecutorHandler() + "] not found.");
+			}
+
+			triggerParam.setHandler(jobHandler);
+
+		} else if (GlueTypeEnum.JAVA_JAR_INTERNAL == glueTypeEnum) {
 
 			try {
 				byte[] jarFile = downloadJar(triggerParam.getJobId());
@@ -139,19 +150,30 @@ public class ExecutorBizImpl implements ExecutorBiz {
 			}
 
 		} else if (GlueTypeEnum.JAVA_JAR_EXTERNAL == glueTypeEnum) {
-			
+
 			try {
 				byte[] jar = downloadJar(triggerParam.getJobId());
 				ExeJarManager exeJarManager = JobExecutor.getApplicationContext().getBean(ExeJarManager.class);
-				File jarFile = new File(exeJarManager.getJarFileName(triggerParam.getJobId(), triggerParam.getGlueUpdatetime()));
+				File jarFile = new File(
+						exeJarManager.getJarFileName(triggerParam.getJobId(), triggerParam.getGlueUpdatetime()));
 				exeJarManager.saveJarFile(jarFile, jar);
-				IJobHandler jobHandler = new RunnableJarHandler(triggerParam.getJobId(), triggerParam.getGlueUpdatetime(),
-						triggerParam.getGlueSource(), GlueTypeEnum.match(triggerParam.getGlueType()));
+				IJobHandler jobHandler = new RunnableJarHandler(triggerParam.getJobId(),
+						triggerParam.getGlueUpdatetime(), triggerParam.getGlueSource(),
+						GlueTypeEnum.match(triggerParam.getGlueType()));
 				triggerParam.setHandler(jobHandler);
 			} catch (IOException e) {
 				logger.error(e.getMessage(), e);
 				return new ReturnT<Void>(ReturnT.FAIL_CODE, e.getMessage());
 			}
+
+		} else if (GlueTypeEnum.HTTP == glueTypeEnum) {
+
+			IJobHandler jobHandler = JobExecutor.getApplicationContext().getBean(HttpJobHandler.class);
+			if (jobHandler == null) {
+				return new ReturnT<Void>(ReturnT.FAIL_CODE,
+						"job httphandler not found.");
+			}
+			triggerParam.setHandler(jobHandler);
 
 		} else if (GlueTypeEnum.GLUE_GROOVY == glueTypeEnum) {
 
@@ -188,8 +210,9 @@ public class ExecutorBizImpl implements ExecutorBiz {
 					removeOldReason = "阻塞处理策略-生效：" + ExecutorBlockStrategyEnum.COVER_EARLY.getTitle();
 
 					jobThread = null;
-				}else {
-					logger.warn("由于 JAVA_JAR_INTERNAL 无法使用COVER_EARLY 改为SERIAL_EXECUTION handler:" + triggerParam.getExecutorHandler());
+				} else {
+					logger.warn("由于 JAVA_JAR_INTERNAL 无法使用COVER_EARLY 改为SERIAL_EXECUTION handler:"
+							+ triggerParam.getExecutorHandler());
 				}
 			} else {
 				// just queue trigger

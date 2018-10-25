@@ -14,6 +14,8 @@ import org.springframework.context.ApplicationContextAware;
 import com.inno72.job.core.biz.AdminBiz;
 import com.inno72.job.core.biz.ExecutorBiz;
 import com.inno72.job.core.biz.impl.ExecutorBizImpl;
+import com.inno72.job.core.handle.IJobHandler;
+import com.inno72.job.core.handle.annotation.JobHandler;
 import com.inno72.job.core.log.JobFileAppender;
 import com.inno72.job.core.rpc.netcom.NetComClientProxy;
 import com.inno72.job.core.rpc.netcom.NetComServerFactory;
@@ -75,13 +77,16 @@ public class JobExecutor implements ApplicationContextAware {
     public void start() throws Exception {
         // init admin-client
         initAdminBizList(adminAddresses, accessToken);
-
+        
         // init logpath
         JobFileAppender.initLogPath(logPath);
+        
+        // init spring job bean
+        initJobHandlerRepository(applicationContext);
 
         // init executor-server
         initExecutorServer(port, ip, appName, accessToken);
-
+        
         // init JobLogFileCleanThread
         JobLogFileCleanThread.getInstance().start(logRetentionDays);
     }
@@ -122,6 +127,37 @@ public class JobExecutor implements ApplicationContextAware {
         return adminBizList;
     }
 
+    
+    private static ConcurrentHashMap<String, IJobHandler> jobHandlerRepository = new ConcurrentHashMap<String, IJobHandler>();
+    public static IJobHandler registJobHandler(String name, IJobHandler jobHandler){
+        logger.info(">>>>>>>>>>> job register jobhandler success, name:{}, jobHandler:{}", name, jobHandler);
+        return jobHandlerRepository.put(name, jobHandler);
+    }
+    public static IJobHandler loadJobHandler(String name){
+        return jobHandlerRepository.get(name);
+    }
+    
+    private static void initJobHandlerRepository(ApplicationContext applicationContext){
+        if (applicationContext == null) {
+            return;
+        }
+
+        // init job handler action
+        Map<String, Object> serviceBeanMap = applicationContext.getBeansWithAnnotation(JobHandler.class);
+
+        if (serviceBeanMap!=null && serviceBeanMap.size()>0) {
+            for (Object serviceBean : serviceBeanMap.values()) {
+                if (serviceBean instanceof IJobHandler){
+                    String name = serviceBean.getClass().getAnnotation(JobHandler.class).value();
+                    IJobHandler handler = (IJobHandler) serviceBean;
+                    if (loadJobHandler(name) != null) {
+                        throw new RuntimeException("job jobhandler naming conflicts.");
+                    }
+                    registJobHandler(name, handler);
+                }
+            }
+        }
+    }
 
     // ---------------------- executor-server(jetty) ----------------------
     private NetComServerFactory serverFactory = new NetComServerFactory();

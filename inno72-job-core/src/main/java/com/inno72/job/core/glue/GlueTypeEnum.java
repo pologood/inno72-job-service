@@ -2,7 +2,9 @@ package com.inno72.job.core.glue;
 
 
 public enum GlueTypeEnum {
-
+	
+	JAVA_BEAN("BEAN模式", false, null, null),
+	HTTP("http模式", false, null, null),
 	JAVA_JAR_INTERNAL("JAR模式(内部资源)", false, null, null),
 	JAVA_JAR_EXTERNAL("JAR模式(外部资源)", false, null, null),
     GLUE_GROOVY("GLUE模式(Java)", false, null, null),

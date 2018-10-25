@@ -255,7 +255,7 @@ public class JobService {
 	
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public ReturnT<Void> add(JobInfo jobInfo, byte[] jarFile) throws IOException {
-		// valid
+
 		JobGroup group = jobGroupDao.load(jobInfo.getJobGroup());
 		if (group == null) {
 			return new ReturnT<Void>(ReturnT.FAIL_CODE, "请选择执行器");
@@ -281,9 +281,19 @@ public class JobService {
 		if (GlueTypeEnum.match(jobInfo.getGlueType()) == null) {
 			return new ReturnT<Void>(ReturnT.FAIL_CODE, "运行模式非法");
 		}
+		
 		if (GlueTypeEnum.JAVA_JAR_INTERNAL == GlueTypeEnum.match(jobInfo.getGlueType())
-				&& StringUtils.isBlank(jobInfo.getExecutorHandler())) {
-			return new ReturnT<Void>(ReturnT.FAIL_CODE, "请输入JobHandler");
+				|| GlueTypeEnum.JAVA_BEAN == GlueTypeEnum.match(jobInfo.getGlueType())) {
+			
+			if(StringUtils.isBlank(jobInfo.getExecutorHandler())) {
+				return new ReturnT<Void>(ReturnT.FAIL_CODE, "请输入JobHandler");
+			}
+		}
+		
+		if(GlueTypeEnum.HTTP ==  GlueTypeEnum.match(jobInfo.getGlueType())){
+			if(StringUtils.isBlank(jobInfo.getExecutorParam())) {
+				return new ReturnT<Void>(ReturnT.FAIL_CODE, "请输入ExecutorParam");
+			}
 		}
 		
 		if(GlueTypeEnum.JAVA_JAR_INTERNAL == GlueTypeEnum.match(jobInfo.getGlueType())
