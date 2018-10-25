@@ -56,6 +56,8 @@ public class JobGroupController {
 					return new ReturnT<Void>(-1, "机器地址格式非法" );
 				}
 			}
+		}else {
+			jobGroup.setAddressList(null);
 		}
 
 		int ret = jobService.saveJobGroup(jobGroup);
