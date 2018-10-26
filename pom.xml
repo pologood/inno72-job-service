@@ -126,6 +126,48 @@
             </plugin>
         </plugins>
     </build>
+    
+    <!-- 依赖仓库地址 -->
+	<repositories>
+		<repository>
+			<id>nexus</id>
+			<url>http://47.95.217.215:8094/repository/maven-public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<!-- 插件仓库地址 -->
+	<pluginRepositories>
+		<pluginRepository>
+			<id>nexus</id>
+			<url>http://47.95.217.215:8094/repository/maven-public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<!-- 发布管理 -->
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<name>Nexus Release Repository</name>
+			<url>http://47.95.217.215:8094/repository/maven-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<name>Nexus Snapshot Repository</name>
+			<url>http://47.95.217.215:8094/repository/maven-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 	
 
 	<modules>
