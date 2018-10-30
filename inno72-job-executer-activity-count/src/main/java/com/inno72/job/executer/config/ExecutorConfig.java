@@ -15,9 +15,9 @@ public class ExecutorConfig {
 	
 	private Logger logger = LoggerFactory.getLogger(ExecutorConfig.class);
 	//"http://admin.schedule.36solo.com"
-	@Value("${admin_address}")
+	@Value("${inno72.admin-addresses}")
 	private String adminAddress;
-	
+
 	@Bean(initMethod = "start", destroyMethod = "destroy")
     public JobExecutor jobExecutor() {
         logger.info(">>>>>>>>>>> executor-job config init.");
