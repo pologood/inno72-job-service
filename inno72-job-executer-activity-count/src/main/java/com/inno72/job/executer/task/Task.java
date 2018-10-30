@@ -92,9 +92,6 @@ public class Task implements IJobHandler {
 			JobLogger.log("TaskDumpToMysql job, insert sex "+ i);
 		}
 
-
-		System.out.println(JSON.toJSONString(machineDataCountS));
-
 		JobLogger.log("TaskDumpToMysql job, param:"+param);
 		JobLogger.log("TaskDumpToMysql job, end");
 		return new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
