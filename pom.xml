@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<parent>
 		<artifactId>inno72-parent</artifactId>
@@ -113,21 +115,21 @@
 
 	</dependencies>
 
-	
+
 	<build>
-        <plugins>
-            <!-- war包插件 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    
-    <!-- 依赖仓库地址 -->
+		<plugins>
+			<!-- war包插件 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- 依赖仓库地址 -->
 	<repositories>
 		<repository>
 			<id>nexus</id>
@@ -168,14 +170,15 @@
 			<url>http://47.95.217.215:8094/repository/maven-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
-	
+
 
 	<modules>
 		<module>inno72-job-admin</module>
 		<module>inno72-job-executor</module>
-    	<module>inno72-job-core</module>
-    <module>inno72-job-example</module>
-    <module>inno72-job-local-worker</module>
-    <module>inno72-job-executer-example</module>
-  </modules>
+		<module>inno72-job-core</module>
+		<module>inno72-job-example</module>
+		<module>inno72-job-local-worker</module>
+		<module>inno72-job-executer-example</module>
+		<module>inno72-job-executer-activity-count</module>
+	</modules>
 </project>

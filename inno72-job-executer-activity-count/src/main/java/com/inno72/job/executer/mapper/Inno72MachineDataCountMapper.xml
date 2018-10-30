@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.executer.mapper.Inno72MachineDataCountMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.job.executer.model.Inno72MachineDataCount">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="date" jdbcType="VARCHAR" property="date" />
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    <result column="point" jdbcType="VARCHAR" property="point" />
+    <result column="uv" jdbcType="INTEGER" property="uv" />
+    <result column="pv" jdbcType="INTEGER" property="pv" />
+    <result column="order" jdbcType="INTEGER" property="order" />
+    <result column="shipment" jdbcType="INTEGER" property="shipment" />
+    <result column="fans" jdbcType="INTEGER" property="fans" />
+    <result column="concern" jdbcType="INTEGER" property="concern" />
+    <result column="visitor" jdbcType="INTEGER" property="visitor" />
+  </resultMap>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select  * from inno72_machine_data_count
+    </select>
+    <select id="findLastDate" resultType="java.lang.String">
+        select date from inno72_machine_data_count order by date desc limit 1
+    </select>
+    <select id="findAllMachine" resultType="java.util.Map">
+        select machine_code as machineCode,CONCAT(i3.province, i3.city, i3.district, " [", i2.mall, "]") as point from inno72_machine i1
+        left join inno72_locale i2 on i1.locale_id = i2.id
+        left join inno72_admin_area i3 on i3.`code` = i2.area_code
+    </select>
+    <insert id="insertS" parameterType="java.util.List">
+        insert into `inno72`.`inno72_machine_data_count`
+        (
+        `id`, `activity_name`, `activity_id`,
+        `date`, `machine_code`, `point`,
+        `uv`, `pv`, `order`,
+        `shipment`, `fans`, `concern`,
+        visitor
+        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.id}, #{item.activityName}, #{item.activityId},
+            #{item.date}, #{item.machineCode}, #{item.point},
+            #{item.uv}, #{item.pv}, #{item.order},
+            #{item.shipment},#{item.fans},#{item.concern},
+            #{item.visitor}
+            )
+        </foreach>
+
+    </insert>
+</mapper>
