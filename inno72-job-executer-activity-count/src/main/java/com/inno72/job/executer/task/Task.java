@@ -42,7 +42,7 @@ public class Task implements IJobHandler {
 
 	private ExecutorService exec = Executors.newCachedThreadPool();
 
-	private Semaphore semaphore = new Semaphore(2);
+	private Semaphore semaphore;
 
 	private int batchSubmitRowNum = 100;
 
@@ -85,6 +85,7 @@ public class Task implements IJobHandler {
 
 			Map<String, Map<String,String>> allMachine = machineDataCountMapper.findAllMachine();
 
+			new Semaphore(byDateAndMachine.size());
 
 			for (Map.Entry<String, List<MachineDataCount>> entry : byDateAndMachine.entrySet()){
 				String key = entry.getKey();
@@ -92,22 +93,23 @@ public class Task implements IJobHandler {
 					continue;
 				}
 				List<MachineDataCount> value = entry.getValue();
+				System.out.println("当前合并的日志 " + JSON.toJSONString(value));
 				if ( value.size() > 0 ){
 
 					Inno72MachineDataCount count = Util.count(value);
+					System.out.println("合并后的日志 " + JSON.toJSONString(count));
+
 					count.setPoint(Optional.ofNullable(allMachine.get(count.getMachineCode())).map( v -> Optional.ofNullable(v.get("point")).map(Object::toString).orElse("")).orElse(""));
 					inno72MachineDataCounts.add(count);
 
 					if (inno72MachineDataCounts.size() >= batchSubmitRowNum){
 						counts.add(inno72MachineDataCounts);
-						System.out.println(JSON.toJSONString(inno72MachineDataCounts));
 						inno72MachineDataCounts = new ArrayList<>();
 					}
 				}
 			}
 			if (inno72MachineDataCounts.size() > 0){
 				counts.add(inno72MachineDataCounts);
-				System.out.println(JSON.toJSONString(inno72MachineDataCounts));
 				inno72MachineDataCounts = new ArrayList<>();
 			}
 
