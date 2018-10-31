@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 
 import javax.annotation.Resource;
 
@@ -37,6 +40,12 @@ public class Task implements IJobHandler {
 	@Resource
 	private Inno72MachineDataCountMapper machineDataCountMapper;
 
+	private ExecutorService exec = Executors.newCachedThreadPool();
+
+	private Semaphore semaphore = new Semaphore(2);
+
+	private int batchSubmitRowNum = 100;
+
 	@Override
 	public ReturnT<String> execute(String param) {
 		JobLogger.log("TaskDumpToMysql job, start");
@@ -55,6 +64,8 @@ public class Task implements IJobHandler {
 
 			Map<String,List<MachineDataCount>> byDateAndMachine = new HashMap<>();
 
+			List<List<Inno72MachineDataCount>> counts = new ArrayList<>();
+
 			for (MachineDataCount machineDataCount : machineDataCountS){
 				String date = machineDataCount.getDate();
 				String machineCode = machineDataCount.getMachineCode();
@@ -69,6 +80,7 @@ public class Task implements IJobHandler {
 					machineDataCounts.add(machineDataCount);
 				}
 				byDateAndMachine.put(dateAndMachineCode, machineDataCounts);
+
 			}
 
 			Map<String, Map<String,String>> allMachine = machineDataCountMapper.findAllMachine();
@@ -85,11 +97,38 @@ public class Task implements IJobHandler {
 					Inno72MachineDataCount count = Util.count(value);
 					count.setPoint(Optional.ofNullable(allMachine.get(count.getMachineCode())).map( v -> Optional.ofNullable(v.get("point")).map(Object::toString).orElse("")).orElse(""));
 					inno72MachineDataCounts.add(count);
+
+					if (inno72MachineDataCounts.size() >= batchSubmitRowNum){
+						counts.add(inno72MachineDataCounts);
+						inno72MachineDataCounts.clear();
+					}
 				}
 			}
+			if (inno72MachineDataCounts.size() > 0){
+				counts.add(inno72MachineDataCounts);
+			}
 
-			int i = machineDataCountMapper.insertS(inno72MachineDataCounts);
-			JobLogger.log("TaskDumpToMysql job, insert sex "+ i);
+			for (List<Inno72MachineDataCount> count: counts){
+
+				exec.execute(() -> {
+
+					try {
+
+						System.out.println("开始进入插入线程");
+						// 获取许可
+						semaphore.acquire();
+						int i = machineDataCountMapper.insertS(count);
+						JobLogger.log("TaskDumpToMysql job, insert sex "+ i);
+
+						System.out.println("完成插入线程");
+
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}finally {
+						semaphore.release();
+					}
+				});
+			}
 		}
 
 		JobLogger.log("TaskDumpToMysql job, param:"+param);
