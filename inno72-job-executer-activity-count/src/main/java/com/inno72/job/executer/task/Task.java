@@ -42,7 +42,7 @@ public class Task implements IJobHandler {
 
 	private ExecutorService exec = Executors.newCachedThreadPool();
 
-	private Semaphore semaphore;
+	private Semaphore semaphore = new Semaphore(3);
 
 	private int batchSubmitRowNum = 100;
 
@@ -84,8 +84,6 @@ public class Task implements IJobHandler {
 			}
 
 			Map<String, Map<String,String>> allMachine = machineDataCountMapper.findAllMachine();
-
-			new Semaphore(byDateAndMachine.size());
 
 			for (Map.Entry<String, List<MachineDataCount>> entry : byDateAndMachine.entrySet()){
 				String key = entry.getKey();
