@@ -130,7 +130,12 @@ public class Task implements IJobHandler {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}finally {
-						semaphore.release();
+						try {
+							semaphore.release();
+
+						}catch (Exception e){
+							e.printStackTrace();
+						}
 					}
 				});
 			}
