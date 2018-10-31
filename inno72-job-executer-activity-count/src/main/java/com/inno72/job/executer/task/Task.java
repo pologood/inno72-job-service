@@ -100,12 +100,15 @@ public class Task implements IJobHandler {
 
 					if (inno72MachineDataCounts.size() >= batchSubmitRowNum){
 						counts.add(inno72MachineDataCounts);
-						inno72MachineDataCounts.clear();
+						System.out.println(JSON.toJSONString(inno72MachineDataCounts));
+						inno72MachineDataCounts = new ArrayList<>();
 					}
 				}
 			}
 			if (inno72MachineDataCounts.size() > 0){
 				counts.add(inno72MachineDataCounts);
+				System.out.println(JSON.toJSONString(inno72MachineDataCounts));
+				inno72MachineDataCounts = new ArrayList<>();
 			}
 
 			for (List<Inno72MachineDataCount> count: counts){
