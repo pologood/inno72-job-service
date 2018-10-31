@@ -77,8 +77,8 @@ public class Task implements IJobHandler {
 				List<MachineDataCount> machineDataCounts = byDateAndMachine.get(dateAndMachineCode);
 				if (null == machineDataCounts){
 					machineDataCounts = new ArrayList<>();
-					machineDataCounts.add(machineDataCount);
 				}
+				machineDataCounts.add(machineDataCount);
 				byDateAndMachine.put(dateAndMachineCode, machineDataCounts);
 
 			}
