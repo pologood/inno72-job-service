@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.executer.mapper.ActivityMapper">
+    <select id="findAllInteractMachineIdAndSellerId" resultType="com.inno72.job.executer.model.Inno72NeedExportStore">
+        select DISTINCT 1 as activityType,im.interact_id as activityId, im.machine_code as machineCode,m.merchant_code as sellerId,
+area.province,area.city,locale.`name` as locale
+ from inno72_interact_machine im
+    join inno72_interact_machine_goods img on im.id=img.interact_machine_id
+    left join inno72_goods g on g.id=img.goods_id
+    left join inno72_merchant m on g.seller_id = m.id
+    left join inno72_machine machine on im.machine_id = machine.id
+    left join inno72_locale locale on machine.locale_id = locale.id
+    left join inno72_admin_area area on area.`code` = locale.area_code
+    where img.type = 0
+    limit #{currIndex} , #{pageSize}
+    </select>
+
+    <select id="findAllActivityMachineIdAndSellerId" resultType="com.inno72.job.executer.model.Inno72NeedExportStore">
+    SELECT
+  distinct 0 as activityType, ap.activity_id as activityId, m.machine_code AS machineCode,ms.merchant_code AS sellerId,area.province,area.city,l.`name` AS locale
+ FROM
+  inno72_activity_plan_game_result apg
+  LEFT JOIN inno72_activity_plan ap ON ap.id = apg.activity_plan_id
+  LEFT JOIN inno72_activity_plan_machine apm ON apm.activity_plan_id = apg.activity_plan_id
+  LEFT JOIN inno72_machine m ON m.id = apm.machine_id
+  LEFT JOIN inno72_goods g ON g.id = apg.prize_id
+  LEFT JOIN inno72_merchant ms ON ms.id = g.seller_id
+  LEFT JOIN inno72_locale l ON l.id = m.locale_id
+  LEFT JOIN inno72_admin_area area ON area.`code`=l.area_code
+ WHERE
+  m.machine_status = 4 AND ap.is_delete = 0
+  AND apg.prize_type = 1
+    limit #{currIndex} , #{pageSize}
+    </select>
+</mapper>
