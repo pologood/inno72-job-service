@@ -122,9 +122,14 @@
             <artifactId>inno72-mongo</artifactId>
             <version>${plugin.version}</version>
         </dependency>
-        
-        
-		
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>RELEASE</version>
+			<scope>compile</scope>
+		</dependency>
+
+
 	</dependencies>
 	
 </project>
