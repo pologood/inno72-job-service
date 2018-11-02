@@ -36,10 +36,5 @@
     	UPDATE inno72_order SET pay_status=#{payStatus}, pay_time=#{payTime}
     	WHERE id=#{id}
     </update>
-    
-    <update id="updateOrderGoodsStatus">
-    	UPDATE inno72_order_goods SET status=#{status}
-    	WHERE order_id=#{id}
-    </update>
   
 </mapper>
