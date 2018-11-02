@@ -18,4 +18,8 @@ public interface OrderMapper {
 			@Param("payStatus")int payStatus, 
 			@Param("payTime")Date payTime);
 	
+	
+	public int updateOrderGoodsStatus(@Param("id")String id, 
+			@Param("status")int status);
+	
 }

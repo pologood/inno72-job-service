@@ -95,7 +95,8 @@ public class FixOrderStatusTask implements IJobHandler{
 				boolean model = Boolean.valueOf(FastJsonUtils.getString(retStr, "model"));
 				
 				if(model) {
-					orderMapper.updateUnpayOrderStatus(this.orderId, 1, new Date());				
+					orderMapper.updateUnpayOrderStatus(this.orderId, 1, new Date());
+					orderMapper.updateOrderGoodsStatus(this.orderId, 1);
 				}
 				
 			} catch (IOException e) {
