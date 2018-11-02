@@ -96,7 +96,6 @@ public class FixOrderStatusTask implements IJobHandler{
 				
 				if(model) {
 					orderMapper.updateUnpayOrderStatus(this.orderId, 1, new Date());
-					orderMapper.updateOrderGoodsStatus(this.orderId, 1);
 				}
 				
 			} catch (IOException e) {
