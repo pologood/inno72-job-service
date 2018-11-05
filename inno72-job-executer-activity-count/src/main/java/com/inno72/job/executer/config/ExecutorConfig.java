@@ -25,7 +25,7 @@ public class ExecutorConfig {
         int executorPort = NetUtil.findAvailablePort(5010);
         JobExecutor jobExecutor = new JobExecutor();
         jobExecutor.setAdminAddresses(adminAddress);
-        jobExecutor.setAppName("inno72MachineDataCount22");
+        jobExecutor.setAppName("inno72MachineDataCount");
         jobExecutor.setIp("");
         jobExecutor.setPort(executorPort);
         jobExecutor.setAccessToken("inno72_job_token");
