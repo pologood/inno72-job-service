@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.executer.mapper.Inno72MachineDeviceMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.job.executer.model.Inno72MachineDevice">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    <result column="device_code" jdbcType="VARCHAR" property="deviceCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
+
+  </resultMap>
+</mapper>
