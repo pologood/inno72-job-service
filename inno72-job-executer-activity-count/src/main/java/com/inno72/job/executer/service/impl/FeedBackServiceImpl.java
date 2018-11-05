@@ -69,8 +69,8 @@ public class FeedBackServiceImpl implements FeedBackService {
                             //调用淘宝回流
                             stime = System.currentTimeMillis();
                             inno72GameService.deviceVendorFeedback(orderOrderGoodsVo.getTaobaoOrderNum(), deviceCode, orderOrderGoodsVo.getTaobaoGoodsId(), orderTime, orderOrderGoodsVo.getTaobaoUserId(), orderOrderGoodsVo.getMerchantName(), orderOrderGoodsVo.getMerchantCode());
-                            //成功删除错误日志
-                            orderMapper.deleteFeedBackErrorLogByOrderId(orderOrderGoodsVo.getTaobaoOrderNum());
+//                            //成功删除错误日志
+//                            orderMapper.deleteFeedBackErrorLogByOrderId(orderOrderGoodsVo.getTaobaoOrderNum());
                         }catch (Exception e){
                             System.out.println(System.currentTimeMillis()-stime);
                             LOGGER.error("淘宝回流失败",e);
