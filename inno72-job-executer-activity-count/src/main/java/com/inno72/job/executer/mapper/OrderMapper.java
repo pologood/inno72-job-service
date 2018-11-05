@@ -15,7 +15,7 @@ import com.inno72.job.executer.model.OrderModel;
 public interface OrderMapper {
     List<OrderOrderGoodsVo> findSuccessOrder(@Param("currIndex") Integer currentPage,@Param("pageSize") Integer pageSize);
 
-    List<OrderOrderGoodsVo> findByFeedBackErrorLog(@Param("currIndex") Integer currentPage, Integer pageSize);
+    List<OrderOrderGoodsVo> findByFeedBackErrorLog(@Param("currIndex") Integer currentPage,@Param("pageSize")  Integer pageSize);
 
     void deleteFeedBackErrorLogByOrderId(@Param("orderId") String orderId);
     public List<OrderModel> queryUnpayOrder(@Param("startTime")Date startTime);
