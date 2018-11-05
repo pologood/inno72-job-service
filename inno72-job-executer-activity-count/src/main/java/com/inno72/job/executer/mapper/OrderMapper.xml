@@ -1,40 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.inno72.job.executer.mapper.OrderMapper">
-	
-	<resultMap id="OrderResultMap" type="com.inno72.job.executer.model.OrderModel">
-	    <id column="id" jdbcType="VARCHAR" property="id" />
-	    <result column="order_num" jdbcType="VARCHAR" property="orderNum" />
-	    <result column="user_id" jdbcType="VARCHAR" property="userId" />
-	    <result column="channel_id" jdbcType="VARCHAR" property="channelId" />
-	    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
-	    <result column="shops_id" jdbcType="VARCHAR" property="shopsId" />
-	    <result column="merchant_id" jdbcType="VARCHAR" property="merchantId" />
-	    <result column="inno72_activity_id" jdbcType="VARCHAR" property="inno72ActivityId" />
-	    <result column="inno72_activity_plan_id" jdbcType="VARCHAR" property="inno72ActivityPlanId" />
-	    <result column="order_time" jdbcType="TIMESTAMP" property="orderTime" />
-	    <result column="order_price" jdbcType="DECIMAL" property="orderPrice" />
-	    <result column="pay_price" jdbcType="DECIMAL" property="payPrice" />
-	    <result column="order_type" jdbcType="INTEGER" property="orderType" />
-	    <result column="pay_status" jdbcType="INTEGER" property="payStatus" />
-	    <result column="goods_type" jdbcType="INTEGER" property="goodsType" />
-	    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
-	    <result column="ref_order_status" jdbcType="VARCHAR" property="refOrderStatus" />
-	    <result column="ref_order_id" jdbcType="VARCHAR" property="refOrderId" />
-	    <result column="repetition" jdbcType="INTEGER" property="repetition" />
-	    <result column="access_token" jdbcType="VARCHAR" property="accessToken" />
-	</resultMap>
-  
-	<select id="queryUnpayOrder" resultMap="OrderResultMap">
-        select * from inno72_order o 
-        left join inno72_game_user_channel c 
+
+    <resultMap id="OrderResultMap" type="com.inno72.job.executer.model.OrderModel">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="order_num" jdbcType="VARCHAR" property="orderNum" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="channel_id" jdbcType="VARCHAR" property="channelId" />
+        <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
+        <result column="shops_id" jdbcType="VARCHAR" property="shopsId" />
+        <result column="merchant_id" jdbcType="VARCHAR" property="merchantId" />
+        <result column="inno72_activity_id" jdbcType="VARCHAR" property="inno72ActivityId" />
+        <result column="inno72_activity_plan_id" jdbcType="VARCHAR" property="inno72ActivityPlanId" />
+        <result column="order_time" jdbcType="TIMESTAMP" property="orderTime" />
+        <result column="order_price" jdbcType="DECIMAL" property="orderPrice" />
+        <result column="pay_price" jdbcType="DECIMAL" property="payPrice" />
+        <result column="order_type" jdbcType="INTEGER" property="orderType" />
+        <result column="pay_status" jdbcType="INTEGER" property="payStatus" />
+        <result column="goods_type" jdbcType="INTEGER" property="goodsType" />
+        <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+        <result column="ref_order_status" jdbcType="VARCHAR" property="refOrderStatus" />
+        <result column="ref_order_id" jdbcType="VARCHAR" property="refOrderId" />
+        <result column="repetition" jdbcType="INTEGER" property="repetition" />
+        <result column="access_token" jdbcType="VARCHAR" property="accessToken" />
+    </resultMap>
+    <select id="queryUnpayOrder" resultMap="OrderResultMap">
+        select * from inno72_order o
+        left join inno72_game_user_channel c
         on o.user_id = c.game_user_id
         where order_time > #{startTime} and pay_status = 0
    	</select>
-   
+
     <update id="updateUnpayOrderStatus">
     	UPDATE inno72_order SET pay_status=#{payStatus}, pay_time=#{payTime}
     	WHERE id=#{id}
     </update>
-  
+
+
+
+    <select id="findSuccessOrder" resultType="com.inno72.job.executer.vo.OrderOrderGoodsVo">
+   select o.order_time as orderTime,
+    guc.channel_user_key as taobaoUserId,
+    machine.machine_code machineCode,
+    o.ref_order_id as taobaoOrderNum,
+     orderGoods.goods_code as taobaoGoodsId ,
+    mht.merchant_code as merchantCode,
+    mht.merchant_name as merchantName
+    from inno72_order_goods orderGoods
+     join inno72_order o on orderGoods.order_id = o.id
+     join inno72_goods g on orderGoods.goods_id = g.id
+     left join inno72_game_user_channel guc on guc.game_user_id = o.user_id
+     left join inno72_machine machine on o.machine_id = machine.id
+     left join inno72_merchant mht on mht.id=g.seller_id
+     where o.goods_status=1 and o.goods_type = 1
+    limit #{currIndex} , #{pageSize}
+    </select>
+
+ <select id="findByFeedBackErrorLog" resultType="com.inno72.job.executer.vo.OrderOrderGoodsVo">
+   select o.order_time as orderTime,
+    guc.channel_user_key as taobaoUserId,
+    machine.machine_code machineCode,
+    o.ref_order_id as taobaoOrderNum,
+     orderGoods.goods_code as taobaoGoodsId ,
+    mht.merchant_code as merchantCode,
+    mht.merchant_name as merchantName
+    from inno72_feedback_errorlog elog
+	join inno72_order o on elog.order_id = o.ref_order_id
+     left join inno72_order_goods orderGoods on orderGoods.order_id = o.id
+     left join inno72_goods g on orderGoods.goods_id = g.id
+     left join inno72_game_user_channel guc on guc.game_user_id = o.user_id
+     left join inno72_machine machine on o.machine_id = machine.id
+     left join inno72_merchant mht on mht.id=g.seller_id
+     where o.goods_status=1 and o.goods_type = 1
+    limit #{currIndex} , #{pageSize}
+    </select>
+ <delete id="deleteFeedBackErrorLogByOrderId">
+      delete from inno72_feedback_errorlog where order_id=#{orderId}
+ </delete>
 </mapper>

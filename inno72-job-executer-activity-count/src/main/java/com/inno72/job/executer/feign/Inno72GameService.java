@@ -11,4 +11,13 @@ public interface Inno72GameService {
 
 	@RequestMapping(value = "/newretail/findStores", method = RequestMethod.POST)
 	Result<Object> findStores(@RequestParam("storeName") String storeName);
+
+	@RequestMapping(value = "/newretail/feedBackOrder", method = RequestMethod.POST)
+	Result<Object>  deviceVendorFeedback(@RequestParam("tradeNo")String tradeNo,
+										 @RequestParam("deviceCode") String deviceCode,
+										 @RequestParam("itemId") String itemId,
+										 @RequestParam("opTime") String opTime,
+										 @RequestParam("userNick") String userNick,
+										 @RequestParam("merchantName") String merchantName,
+										 @RequestParam("merchantCode") String merchantCode);
 }
