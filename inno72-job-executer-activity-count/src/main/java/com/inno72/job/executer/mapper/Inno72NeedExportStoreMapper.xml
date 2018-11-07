@@ -16,4 +16,7 @@
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
+  <select id="findDeviceSize">
+   select count(*) from inno72_machine_device where seller_id=#{sellerId} and machine_code=#{machineCode}
+  </select>
 </mapper>

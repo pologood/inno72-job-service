@@ -36,15 +36,17 @@ public class FeedBackServiceImpl implements FeedBackService {
         LOGGER.info("feedBackOrder started");
         int currentPage = 1;
         boolean runflag = true;
+        int totalsize = 0;
         while(runflag){
             LOGGER.info("feedBackOrder currentPage ={}",currentPage);
             int size = doFeedBackOrder(type,currentPage,Constants.PAGE_SIZE);
             if(size < Constants.PAGE_SIZE){
                 runflag = false;
             }
+            totalsize += size;
             currentPage++;
         }
-        LOGGER.info("feedBackOrder end use time = {}",System.currentTimeMillis()-startTime);
+        LOGGER.info("feedBackOrder end totalsize={} use time = {}",totalsize,System.currentTimeMillis()-startTime);
     }
     @Transactional
     public int doFeedBackOrder(Integer type,Integer currentPage, Integer pageSize) {

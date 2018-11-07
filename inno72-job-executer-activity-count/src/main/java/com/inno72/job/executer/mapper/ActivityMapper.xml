@@ -32,4 +32,32 @@ area.province,area.city,locale.`name` as locale
   AND apg.prize_type = 1
     limit #{currIndex} , #{pageSize}
     </select>
+
+
+
+    <select id="findAddDeviceInteractMachineIdAndSellerId" resultType="com.inno72.job.executer.vo.MachineSellerVo">
+    select DISTINCT  im.machine_code as machineCode,m.merchant_code as sellerId
+    from inno72_interact_machine im
+    join inno72_interact_machine_goods img on im.id=img.interact_machine_id
+    left join inno72_goods g on g.id=img.goods_id
+    left join inno72_merchant m on g.seller_id = m.id
+    where img.type = 0
+    limit #{currIndex} , #{pageSize}
+    </select>
+
+    <select id="findAddDeviceActivityMachineIdAndSellerId" resultType="com.inno72.job.executer.vo.MachineSellerVo">
+    SELECT
+      distinct  m.machine_code AS machineCode,ms.merchant_code AS sellerId
+     FROM
+      inno72_activity_plan_game_result apg
+      LEFT JOIN inno72_activity_plan ap ON ap.id = apg.activity_plan_id
+      LEFT JOIN inno72_activity_plan_machine apm ON apm.activity_plan_id = apg.activity_plan_id
+      LEFT JOIN inno72_machine m ON m.id = apm.machine_id
+      LEFT JOIN inno72_goods g ON g.id = apg.prize_id
+      LEFT JOIN inno72_merchant ms ON ms.id = g.seller_id
+     WHERE
+      m.machine_status = 4 AND ap.is_delete = 0
+      AND apg.prize_type = 1
+    limit #{currIndex} , #{pageSize}
+    </select>
 </mapper>
