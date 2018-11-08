@@ -49,14 +49,13 @@ public class FocusCountTask implements IJobHandler {
 		long workTime = 0;
 		boolean isCover = false;
 		if (StringUtils.isNotBlank(param)) {
-			String[] params = StringUtils.split(param,',');
+			String[] params = StringUtils.split(param, ',');
 			if (params.length > 1) {
-				if ("1".equals(params[1])) 
-					isCover = true;
+				if ("1".equals(params[1])) isCover = true;
 			}
 			workTime = formatStartTime.parse(params[0]).getTime();
 		} else {
-			workTime = System.currentTimeMillis() - 1000*60*60*24;
+			workTime = System.currentTimeMillis() - 1000 * 60 * 60 * 24;
 		}
 
 		Date workDate = new Date(workTime);
@@ -66,12 +65,12 @@ public class FocusCountTask implements IJobHandler {
 		String startTime = time + "00:00:00 000";
 		String endTime = time + "23:59:59 999";
 		String handTime = time + "00:00:00";
-		
+
 		int deleteNum = 0;
-		if(isCover) {
+		if (isCover) {
 			deleteNum = this.deleteMachineInfos(handTime);
 		}
-		
+
 		if (queryFocusInfo(handTime)) {
 			return new ReturnT<String>(ReturnT.SUCCESS_CODE, time + "已经被处理");
 		}
@@ -90,9 +89,9 @@ public class FocusCountTask implements IJobHandler {
 		}
 
 		Map<String, MachineInfoLogModel> statistics = new HashMap<String, MachineInfoLogModel>();
-		
+
 		Map<String, GameAverageTime> averageStatistics = new HashMap<String, GameAverageTime>();
-		
+
 		for (Inno72MachineInfomation info : machineInfomations) {
 
 			if ("002001".equals(info.getType())) { // 关注
@@ -102,48 +101,49 @@ public class FocusCountTask implements IJobHandler {
 			} else if ("100100".equals(info.getType())) { // 点击商品
 				countInfo(handTime, 4, statistics, info);
 			}
-			
-			//统计平均时常
+
+			// 统计平均时常
 			countAverageInfo(averageStatistics, info);
 		}
-		
-		if(statistics.keySet().size() > 0) {
+
+		if (statistics.keySet().size() > 0) {
 			insertMachineInfos(new ArrayList<MachineInfoLogModel>(statistics.values()));
 		}
-		
-		if(averageStatistics.keySet().size() > 0) {
+
+		if (averageStatistics.keySet().size() > 0) {
 			insertAverageInfos(new ArrayList<GameAverageTime>(averageStatistics.values()), handTime);
 		}
 
-		return new ReturnT<String>(ReturnT.SUCCESS_CODE, handTime +" 处理"+machineInfomations.size()+"条machineInfomations 删除:" + deleteNum +"条");
+		return new ReturnT<String>(ReturnT.SUCCESS_CODE,
+				handTime + " 处理" + machineInfomations.size() + "条machineInfomations 删除:" + deleteNum + "条");
 	}
-	
-	
+
+
 	private void countAverageInfo(Map<String, GameAverageTime> statistics, Inno72MachineInfomation info) {
-		
-		if(StringUtils.isNotEmpty(info.getTraceId()) && StringUtils.isNotEmpty(info.getServiceTime())){
-			
-			if(statistics.containsKey(info.getTraceId())) {
+
+		if (StringUtils.isNotEmpty(info.getTraceId()) && StringUtils.isNotEmpty(info.getServiceTime())) {
+
+			if (statistics.containsKey(info.getTraceId())) {
 
 				GameAverageTime model = statistics.get(info.getTraceId());
 
-				if(StringUtils.isNotBlank(info.getActivityId())) {
+				if (StringUtils.isNotBlank(info.getActivityId())) {
 					model.setActivityId(info.getActivityId());
 				}
-				if(StringUtils.isNotBlank(info.getMachineCode())) {
+				if (StringUtils.isNotBlank(info.getMachineCode())) {
 					model.setMachineCode(info.getMachineCode());
 				}
-				
-				if(info.getServiceTime().compareTo(model.getMaxTime()) > 0) {
+
+				if (info.getServiceTime().compareTo(model.getMaxTime()) > 0) {
 					model.setMaxTime(info.getServiceTime());
 				}
-				
-				if(info.getServiceTime().compareTo(model.getMinTime()) < 0) {
+
+				if (info.getServiceTime().compareTo(model.getMinTime()) < 0) {
 					model.setMinTime(info.getServiceTime());
 				}
-				
+
 				statistics.put(info.getTraceId(), model);
-			}else {
+			} else {
 				GameAverageTime model = new GameAverageTime();
 				model.setActivityId(info.getActivityId());
 				model.setMachineCode(info.getMachineCode());
@@ -187,8 +187,8 @@ public class FocusCountTask implements IJobHandler {
 		// TODO Auto-generated method stub
 
 	}
-	
-	
+
+
 	private int deleteMachineInfos(String startTime) throws SQLException {
 
 		Connection conn = null;
@@ -225,44 +225,42 @@ public class FocusCountTask implements IJobHandler {
 	}
 
 	private String nulltoEmpty(String item) {
-		return item == null? "" :item;
+		return item == null ? "" : item;
 	}
-	
+
 	private Number nulltoZero(Number item) {
-		return item == null? 0 :item;
+		return item == null ? 0 : item;
 	}
-	
-	
+
+
 	private void insertAverageInfos(List<GameAverageTime> infos, String startTime) throws SQLException, ParseException {
-		
+
 		Connection conn = null;
 		PreparedStatement stm = null;
 
 		try {
-			
+
 			StringBuilder insertSql = new StringBuilder(
 					"insert into inno72.inno72_machine_info_log_hour(type, activity_id, machine_code, seller_id, goods_id, num, time, reserve1, reserve2, reserve3) values");
 
 			for (int i = 1; i <= infos.size(); i++) {
-				
+
 				DateFormat formatTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss S");
 				Date maxTime = formatTime.parse(infos.get(i - 1).getMaxTime());
 				Date minTime = formatTime.parse(infos.get(i - 1).getMinTime());
-				
+
 				if (i == infos.size()) {
-					insertSql.append(String.format(("(%d, '%s','%s','', '', %d,'%s','%s','%s','%s')"),
-							5,
+					insertSql.append(String.format(("(%d, '%s','%s','', '', %d,'%s','%s','%s','%s')"), 5,
 							nulltoEmpty(infos.get(i - 1).getActivityId()),
-							nulltoEmpty(infos.get(i - 1).getMachineCode()), 
-							maxTime.getTime() - minTime.getTime(),
-							startTime, infos.get(i - 1).getMaxTime(), infos.get(i - 1).getMinTime(), infos.get(i - 1).getTraceId()));
+							nulltoEmpty(infos.get(i - 1).getMachineCode()), maxTime.getTime() - minTime.getTime(),
+							startTime, infos.get(i - 1).getMaxTime(), infos.get(i - 1).getMinTime(),
+							infos.get(i - 1).getTraceId()));
 				} else {
-					insertSql.append(String.format(("(%d, '%s','%s','', '', %d,'%s','%s','%s','%s'),"),
-							5,
+					insertSql.append(String.format(("(%d, '%s','%s','', '', %d,'%s','%s','%s','%s'),"), 5,
 							nulltoEmpty(infos.get(i - 1).getActivityId()),
-							nulltoEmpty(infos.get(i - 1).getMachineCode()), 
-							maxTime.getTime() - minTime.getTime(),
-							startTime, infos.get(i - 1).getMaxTime(), infos.get(i - 1).getMinTime(), infos.get(i - 1).getTraceId()));
+							nulltoEmpty(infos.get(i - 1).getMachineCode()), maxTime.getTime() - minTime.getTime(),
+							startTime, infos.get(i - 1).getMaxTime(), infos.get(i - 1).getMinTime(),
+							infos.get(i - 1).getTraceId()));
 				}
 
 			}
@@ -275,9 +273,9 @@ public class FocusCountTask implements IJobHandler {
 			if (stm != null) stm.close();
 			if (conn != null) conn.close();
 		}
-		
+
 	}
-	
+
 	private void insertMachineInfos(List<MachineInfoLogModel> infos) throws SQLException {
 
 
@@ -285,30 +283,24 @@ public class FocusCountTask implements IJobHandler {
 		PreparedStatement stm = null;
 
 		try {
-			
+
 			StringBuilder insertSql = new StringBuilder(
 					"insert into inno72.inno72_machine_info_log_hour(type, activity_id, machine_code, seller_id, goods_id, num, time) values");
 
 			for (int i = 1; i <= infos.size(); i++) {
-				
-				
+
+
 				if (i == infos.size()) {
-					insertSql.append(String.format(("(%d, '%s','%s','%s', '%s', %d,'%s')"),
-							infos.get(i - 1).getType(),
+					insertSql.append(String.format(("(%d, '%s','%s','%s', '%s', %d,'%s')"), infos.get(i - 1).getType(),
 							nulltoEmpty(infos.get(i - 1).getActivityId()),
-							nulltoEmpty(infos.get(i - 1).getMachineCode()), 
-							nulltoEmpty(infos.get(i - 1).getSellerId()),
-							nulltoEmpty(infos.get(i - 1).getGoodsId()),
-							nulltoZero(infos.get(i - 1).getNum()),
+							nulltoEmpty(infos.get(i - 1).getMachineCode()), nulltoEmpty(infos.get(i - 1).getSellerId()),
+							nulltoEmpty(infos.get(i - 1).getGoodsId()), nulltoZero(infos.get(i - 1).getNum()),
 							nulltoEmpty(infos.get(i - 1).getTime())));
 				} else {
-					insertSql.append(String.format(("(%d, '%s','%s','%s', '%s', %d,'%s'),"),
-							infos.get(i - 1).getType(),
+					insertSql.append(String.format(("(%d, '%s','%s','%s', '%s', %d,'%s'),"), infos.get(i - 1).getType(),
 							nulltoEmpty(infos.get(i - 1).getActivityId()),
-							nulltoEmpty(infos.get(i - 1).getMachineCode()), 
-							nulltoEmpty(infos.get(i - 1).getSellerId()),
-							nulltoEmpty(infos.get(i - 1).getGoodsId()),
-							nulltoZero(infos.get(i - 1).getNum()),
+							nulltoEmpty(infos.get(i - 1).getMachineCode()), nulltoEmpty(infos.get(i - 1).getSellerId()),
+							nulltoEmpty(infos.get(i - 1).getGoodsId()), nulltoZero(infos.get(i - 1).getNum()),
 							nulltoEmpty(infos.get(i - 1).getTime())));
 				}
 

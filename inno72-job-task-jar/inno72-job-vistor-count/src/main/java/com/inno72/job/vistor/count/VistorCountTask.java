@@ -5,7 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -26,6 +29,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.inno72.job.core.biz.model.ReturnT;
 import com.inno72.job.core.handle.IJobHandler;
 import com.inno72.job.core.handle.annotation.JobHandler;
+import com.inno72.job.core.log.JobLogger;
 
 
 /**
@@ -57,38 +61,82 @@ public class VistorCountTask implements IJobHandler {
 	@Override
 	public ReturnT<String> execute(String param) throws Exception {
 
-		DateFormat formatStartTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-		long workTime = 0;
 		boolean isCover = false;
+		List<Date> dateList = new ArrayList<Date>();
 		if (StringUtils.isNotBlank(param)) {
-			String[] params = StringUtils.split(param,',');
-			if (params.length > 1) {
-				if ("1".equals(params[1])) 
-					isCover = true;
+			String[] params = StringUtils.split(param, ',');
+			if (params.length == 2) {
+				if ("1".equals(params[1])) isCover = true;
+
+				DateFormat formatStartTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				long workTime = formatStartTime.parse(params[0]).getTime();
+				Date workDate = new Date(workTime);
+				dateList.add(workDate);
+
+			} else if (params.length == 3) {
+				if ("1".equals(params[2])) isCover = true;
+				DateFormat formatStartTime = new SimpleDateFormat("yyyy-MM-dd");
+
+				long workTime1 = formatStartTime.parse(params[0]).getTime();
+				long workTime2 = formatStartTime.parse(params[1]).getTime();
+
+				int gap = daysBetween(new Date(workTime1), new Date(workTime2));
+
+				for (int i = 0; i < gap; i++) {
+					long day = i * 24 * 60 * 60 * 1000L;
+					for (int j = 0; j < 24; j++) {
+						dateList.add(new Date(workTime1 + day + j * 1000L * 60 * 60));
+					}
+				}
+			} else {
+				return new ReturnT<String>(ReturnT.FAIL_CODE, "参数错误:" + param);
 			}
-			workTime = formatStartTime.parse(param).getTime();
 		} else {
 			long currentTime = System.currentTimeMillis();
-			workTime = currentTime - 1000 * 60 * 60;
+			long workTime = currentTime - 1000 * 60 * 60;
+			Date workDate = new Date(workTime);
+			dateList.add(workDate);
 		}
 
-		Date workDate = new Date(workTime);
 
 		DateFormat formatTime = new SimpleDateFormat("yyyy-MM-dd HH");
 		DateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
-		String date = formatDate.format(workDate);
-		String time = formatTime.format(workDate);
-		String startTime = time + ":00:00";
-		String endTime = time + ":59:59";
-		
+
+		for (Date workDate : dateList) {
+
+			String date = formatDate.format(workDate);
+			String time = formatTime.format(workDate);
+			ReturnT<String> ret = handleData(date, time, isCover);
+			JobLogger.log(ret.getMsg());
+		}
+
+		StringBuilder sb = new StringBuilder("已处理	cover is " + isCover + ":[");
+		for (Date workDate : dateList) {
+			sb.append(formatTime.format(workDate) + ":00:00, ");
+		}
+		sb.append("]");
+
+		return new ReturnT<String>(ReturnT.SUCCESS_CODE, sb.toString());
+
+	}
+
+
+	private ReturnT<String> handleData(String dateTime, String hourTime, boolean isCover)
+			throws SQLException, ParseException {
+
+		String startTime = hourTime + ":00:00";
+		String endTime = hourTime + ":59:59";
+
+		DateFormat formatStartTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 		int deleteNum = 0;
-		if(isCover) {
+		if (isCover) {
 			deleteNum = deleteMachineInfos(startTime);
 		}
-		
+
 		if (queryVistorInfo(startTime)) {
-			return new ReturnT<String>(ReturnT.SUCCESS_CODE, time + "已经被处理");
+			return new ReturnT<String>(ReturnT.SUCCESS_CODE, hourTime + "已经被处理");
 		}
 
 		Query pointLogQuery = new Query();
@@ -148,7 +196,7 @@ public class VistorCountTask implements IJobHandler {
 
 				Query activityQuery = new Query();
 				activityQuery.addCriteria(Criteria.where("machineCode").is(machineCode));
-				activityQuery.addCriteria(Criteria.where("date").is(date));
+				activityQuery.addCriteria(Criteria.where("date").is(dateTime));
 				List<MachineDataCount> machineDataCountList = mongoOperations.find(activityQuery,
 						MachineDataCount.class, "MachineDataCount");
 
@@ -185,8 +233,8 @@ public class VistorCountTask implements IJobHandler {
 			insertMachineInfos(vistorInfos);
 		}
 
-		return new ReturnT<String>(ReturnT.SUCCESS_CODE,
-				startTime + " 处理" + pointLogs.size() + "条pointLogs " + vistorInfos.size() + "条vistorInfos 删除:" + deleteNum +"条");
+		return new ReturnT<String>(ReturnT.SUCCESS_CODE, startTime + " 处理" + pointLogs.size() + "条pointLogs "
+				+ vistorInfos.size() + "条vistorInfos 删除:" + deleteNum + "条");
 
 	}
 
@@ -304,7 +352,7 @@ public class VistorCountTask implements IJobHandler {
 			if (conn != null) conn.close();
 		}
 	}
-	
+
 	private int deleteMachineInfos(String startTime) throws SQLException {
 
 		Connection conn = null;
@@ -319,6 +367,17 @@ public class VistorCountTask implements IJobHandler {
 			if (stm != null) stm.close();
 			if (conn != null) conn.close();
 		}
+	}
+
+	private static int daysBetween(Date date1, Date date2) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date1);
+		long time1 = cal.getTimeInMillis();
+		cal.setTime(date2);
+		long time2 = cal.getTimeInMillis();
+		long between_days = (time2 - time1) / (1000 * 3600 * 24);
+
+		return Integer.parseInt(String.valueOf(between_days));
 	}
 
 
