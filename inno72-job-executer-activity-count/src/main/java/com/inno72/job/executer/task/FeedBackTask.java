@@ -15,6 +15,6 @@ public class FeedBackTask extends BaseTask{
     @Override
     public ReturnT<String> execute(String param) throws Exception {
         service.feedBackOrder(EXECUTE_TYPE_ERROR);
-        return null;
+        return new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
     }
 }
