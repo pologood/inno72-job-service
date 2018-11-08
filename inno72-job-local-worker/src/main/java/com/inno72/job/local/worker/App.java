@@ -2,6 +2,7 @@ package com.inno72.job.local.worker;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.inno72.job.core.biz.model.ReturnT;
 import com.inno72.job.core.handle.IJobHandler;
 import com.inno72.job.local.worker.config.Configure;
 
@@ -15,15 +16,16 @@ public class App {
 	public static void main(String[] args) throws Exception {
 
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-		context.getEnvironment().setActiveProfiles("dev");
+		context.getEnvironment().setActiveProfiles("test");
 		context.register(Configure.class);
 		context.scan("com.inno72");
 		context.refresh();
 
-		IJobHandler handler = context.getBean(IJobHandler.class);
+		IJobHandler handler = (IJobHandler) context.getBean("testTask");
 		if (handler != null) {
 			handler.init();
-			handler.execute("");
+			ReturnT<String> ret = handler.execute("2018-11-07 00:00:00");
+			System.out.println(ret.toString());
 			handler.destroy();
 		}
 		context.close();

@@ -1,6 +1,5 @@
 package com.inno72.job.local.worker.config;
 
-import org.inno72.job.example.task.TaskExample;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
@@ -11,6 +10,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 
 import com.inno72.job.core.handle.IJobHandler;
+import com.inno72.job.focus.count.FocusCountTask;
 
 @Configuration
 @Import({RedisAutoConfiguration.class, MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
@@ -33,9 +33,9 @@ public class Configure {
     }
     
     
-    @Bean
+    @Bean(name="testTask")
     public IJobHandler jobHandler() {
-    	return new TaskExample();
+    	return new FocusCountTask();
     }
 
 }
