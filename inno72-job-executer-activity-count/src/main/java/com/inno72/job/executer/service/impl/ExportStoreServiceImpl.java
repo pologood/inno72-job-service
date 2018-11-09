@@ -105,16 +105,21 @@ public class ExportStoreServiceImpl implements ExportStoreService {
                             inno72NeedExportStoreMapper.insert(store);
                         }
                     }else{
-                        Inno72NeedExportStore param = new Inno72NeedExportStore();
-                        param.setMachineCode(store.getMachineCode());
-                        param.setSellerId(store.getSellerId());
-                        inno72NeedExportStoreMapper.delete(store);
+                        deleteNeedExportStore(store.getMachineCode(),store.getSellerId());
                     }
                 }else{
                     LOGGER.info("handInno72NeedExportStore storeName 已经存在");
+                    deleteNeedExportStore(store.getMachineCode(),store.getSellerId());
                 }
             }
         }
+    }
+
+    private void deleteNeedExportStore(String machineCode, String sellerId) {
+        Inno72NeedExportStore param = new Inno72NeedExportStore();
+        param.setMachineCode(machineCode);
+        param.setSellerId(sellerId);
+        inno72NeedExportStoreMapper.delete(param);
     }
 
     /**
