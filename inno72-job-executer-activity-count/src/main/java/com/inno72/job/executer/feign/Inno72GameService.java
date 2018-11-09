@@ -20,4 +20,9 @@ public interface Inno72GameService {
 										 @RequestParam("userNick") String userNick,
 										 @RequestParam("merchantName") String merchantName,
 										 @RequestParam("merchantCode") String merchantCode);
+
+	@RequestMapping(value = "/newretail/saveMachine4Task",method = RequestMethod.POST)
+	Result<Object> saveMachine4Task(@RequestParam("merchantCode")String merchantCode,
+							   @RequestParam("machineCode") String machineCode);
+
 }

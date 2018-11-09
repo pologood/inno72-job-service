@@ -2,19 +2,20 @@ package com.inno72.job.executer.task;
 
 import com.inno72.job.core.biz.model.ReturnT;
 import com.inno72.job.core.handle.annotation.JobHandler;
-import com.inno72.job.executer.service.FeedBackService;
+import com.inno72.job.executer.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-@JobHandler("FeedBackTask")
-public class FeedBackTask extends BaseTask{
+@JobHandler("DeviceAddTask")
+public class DeviceAddTask extends BaseTask {
+
     @Autowired
-    FeedBackService service;
-    public static final Integer EXECUTE_TYPE_ERROR=0;
+    DeviceService deviceService;
     @Override
     public ReturnT<String> execute(String param) throws Exception {
-        service.feedBackOrder(EXECUTE_TYPE_ERROR);
+        deviceService.executeInteract();
+        deviceService.executeActivity();
         return new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
     }
 }

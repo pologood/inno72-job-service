@@ -42,33 +42,37 @@ public class ExportStoreServiceImpl implements ExportStoreService {
         LOGGER.info("executeInteract started");
         int currentPage = 1;
         boolean runflag = true;
+        int totalsize = 0;
         while(runflag){
             LOGGER.info("exportInteract currentPage ={}",currentPage);
             int size = exportInteract(currentPage,Constants.PAGE_SIZE);
             if(size < Constants.PAGE_SIZE){
                 runflag = false;
             }
+            totalsize += size;
             currentPage++;
         }
-        LOGGER.info("executeInteract end use time = {}",System.currentTimeMillis()-startTime);
+        LOGGER.info("executeInteract end totalsize={} use time = {}",totalsize,System.currentTimeMillis()-startTime);
     }
 
     @Override
     public void executeActivity() {
         Long startTime = System.currentTimeMillis();
-        LOGGER.info("executeInteract started");
+        LOGGER.info("executeActivity started");
         //普通活动
         int currentPage = 1;
         boolean runflag = true;
+        int totalsize = 0;
         while(runflag){
             LOGGER.info("exportActivity currentPage ={}",currentPage);
             int size = exportActivity(currentPage,Constants.PAGE_SIZE);
             if(size < Constants.PAGE_SIZE){
                 runflag = false;
             }
+            totalsize += size;
             currentPage++;
         }
-        LOGGER.info("executeInteract end use time = {}",System.currentTimeMillis()-startTime);
+        LOGGER.info("executeActivity end totalsize={} use time = {}",totalsize,System.currentTimeMillis()-startTime);
     }
 
     @Transactional
@@ -83,25 +87,31 @@ public class ExportStoreServiceImpl implements ExportStoreService {
             for(Inno72NeedExportStore store : list){
                 //查看是否已经添加
                 String storeName = store.getSellerId()+"-"+store.getMachineCode();
-                Result result = inno72GameService.findStores(storeName);
-                LOGGER.info("查找门店storeName = {}返回= {}",storeName,JsonUtil.toJson(result));
-                if(null == result.getData()){
-                    Inno72NeedExportStore param = new Inno72NeedExportStore();
-                    param.setMachineCode(store.getMachineCode());
-                    param.setSellerId(store.getSellerId());
-                    param.setActivityId(store.getActivityId());
-                    List<Inno72NeedExportStore> tmplist = inno72NeedExportStoreMapper.select(param);
-                    if(tmplist.size()==0){
-                        store.setPhone(getTel());
-                        store.setId(StringUtil.getUUID());
-                        store.setCreateTime(new Date());
-                        inno72NeedExportStoreMapper.insert(store);
+                //查看本地库是否存在
+                Long size = inno72NeedExportStoreMapper.findDeviceSize(store.getSellerId(),store.getMachineCode());
+                if(size == 0){
+                    Result result = inno72GameService.findStores(storeName);
+                    LOGGER.info("查找门店storeName = {}返回= {}",storeName,JsonUtil.toJson(result));
+                    if(null == result.getData()){
+                        Inno72NeedExportStore param = new Inno72NeedExportStore();
+                        param.setMachineCode(store.getMachineCode());
+                        param.setSellerId(store.getSellerId());
+                        param.setActivityId(store.getActivityId());
+                        List<Inno72NeedExportStore> tmplist = inno72NeedExportStoreMapper.select(param);
+                        if(tmplist.size()==0){
+                            store.setPhone(getTel());
+                            store.setId(StringUtil.getUUID());
+                            store.setCreateTime(new Date());
+                            inno72NeedExportStoreMapper.insert(store);
+                        }
+                    }else{
+                        Inno72NeedExportStore param = new Inno72NeedExportStore();
+                        param.setMachineCode(store.getMachineCode());
+                        param.setSellerId(store.getSellerId());
+                        inno72NeedExportStoreMapper.delete(store);
                     }
                 }else{
-                    Inno72NeedExportStore param = new Inno72NeedExportStore();
-                    param.setMachineCode(store.getMachineCode());
-                    param.setSellerId(store.getSellerId());
-                    inno72NeedExportStoreMapper.delete(store);
+                    LOGGER.info("handInno72NeedExportStore storeName 已经存在");
                 }
             }
         }
