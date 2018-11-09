@@ -89,7 +89,7 @@ public class FeedBackServiceImpl implements FeedBackService {
     }
 
     private List<OrderOrderGoodsVo> findByFeedBackErrorLog(Integer currentPage, Integer pageSize) {
-        return orderMapper.findByFeedBackErrorLog(currentPage,pageSize);
+        return orderMapper.findByFeedBackErrorLog((currentPage-1)*pageSize,pageSize);
     }
 
     private String findDeviceCode(String sellerId, String machineCode) {
@@ -109,6 +109,6 @@ public class FeedBackServiceImpl implements FeedBackService {
     }
 
     public List<OrderOrderGoodsVo> findSuccessOrder(Integer currentPage, Integer pageSize) {
-        return orderMapper.findSuccessOrder(currentPage,pageSize);
+        return orderMapper.findSuccessOrder((currentPage-1)*pageSize,pageSize);
     }
 }
