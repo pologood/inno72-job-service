@@ -1,21 +1,21 @@
 package com.inno72.job.focus.count;
 
 public class MachineInfoLogModel {
-
+	
 	private String activityId;
-
+	
 	private int type;
-
+	
 	private String machineCode;
-
+	
 	private String sellerId;
-
+	
 	private String goodsId;
-
+	
 	private String time;
-
+	
 	private int num;
-
+	
 	private String info;
 
 	public String getActivityId() {
@@ -81,12 +81,12 @@ public class MachineInfoLogModel {
 	public void setInfo(String info) {
 		this.info = info;
 	}
-
-
+	
+	
 	public String getHashKey() {
-
-		return type + "_" + activityId + "_" + machineCode + "_" + sellerId + "_" + goodsId;
-
+		
+		return type +"_" + activityId +"_" + machineCode + "_" + sellerId + "_" + goodsId;
+		
 	}
 
 }

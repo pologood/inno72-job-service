@@ -374,5 +374,6 @@ public class Inno72MachineInfomation {
 		this.requestId = requestId;
 	}
 
+	
 
 }

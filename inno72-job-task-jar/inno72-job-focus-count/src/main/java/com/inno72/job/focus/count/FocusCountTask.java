@@ -51,8 +51,7 @@ public class FocusCountTask implements IJobHandler {
 		if (StringUtils.isNotBlank(param)) {
 			String[] params = StringUtils.split(param, ',');
 			if (params.length > 1) {
-				if ("1".equals(params[1]))
-					isCover = true;
+				if ("1".equals(params[1])) isCover = true;
 			}
 			workTime = formatStartTime.parse(params[0]).getTime();
 		} else {
@@ -82,8 +81,8 @@ public class FocusCountTask implements IJobHandler {
 		cond.andOperator(Criteria.where("serviceTime").gte(startTime), Criteria.where("serviceTime").lte(endTime));
 		pointLogQuery.addCriteria(cond);
 
-		List<Inno72MachineInfomation> machineInfomations = mongoOperations
-				.find(pointLogQuery, Inno72MachineInfomation.class, "Inno72MachineInformation");
+		List<Inno72MachineInfomation> machineInfomations = mongoOperations.find(pointLogQuery,
+				Inno72MachineInfomation.class, "Inno72MachineInformation");
 
 		if (machineInfomations == null || machineInfomations.isEmpty()) {
 			return new ReturnT<String>(ReturnT.SUCCESS_CODE, "处理0条pointLogs");
@@ -103,7 +102,7 @@ public class FocusCountTask implements IJobHandler {
 				countInfo(handTime, 4, statistics, info);
 			}
 
-			//统计平均时常
+			// 统计平均时常
 			countAverageInfo(averageStatistics, info);
 		}
 
@@ -201,10 +200,8 @@ public class FocusCountTask implements IJobHandler {
 			stm.setString(1, startTime);
 			return stm.executeUpdate();
 		} finally {
-			if (stm != null)
-				stm.close();
-			if (conn != null)
-				conn.close();
+			if (stm != null) stm.close();
+			if (conn != null) conn.close();
 		}
 	}
 
@@ -221,12 +218,9 @@ public class FocusCountTask implements IJobHandler {
 			rs = stm.executeQuery();
 			return rs.next();
 		} finally {
-			if (rs != null)
-				rs.close();
-			if (stm != null)
-				stm.close();
-			if (conn != null)
-				conn.close();
+			if (rs != null) rs.close();
+			if (stm != null) stm.close();
+			if (conn != null) conn.close();
 		}
 	}
 
@@ -276,10 +270,8 @@ public class FocusCountTask implements IJobHandler {
 			stm.executeUpdate();
 
 		} finally {
-			if (stm != null)
-				stm.close();
-			if (conn != null)
-				conn.close();
+			if (stm != null) stm.close();
+			if (conn != null) conn.close();
 		}
 
 	}
@@ -320,10 +312,8 @@ public class FocusCountTask implements IJobHandler {
 			stm.executeUpdate();
 
 		} finally {
-			if (stm != null)
-				stm.close();
-			if (conn != null)
-				conn.close();
+			if (stm != null) stm.close();
+			if (conn != null) conn.close();
 		}
 
 

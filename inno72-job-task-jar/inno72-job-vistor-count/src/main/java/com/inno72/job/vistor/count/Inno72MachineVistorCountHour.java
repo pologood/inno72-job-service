@@ -1,15 +1,15 @@
 package com.inno72.job.vistor.count;
 
 public class Inno72MachineVistorCountHour {
-
+	
 	private Integer id;
-
+	
 	private String activityId;
-
+	
 	private String machineCode;
-
+	
 	private String time;
-
+	
 	private Integer vistor;
 
 	public Integer getId() {
@@ -51,6 +51,7 @@ public class Inno72MachineVistorCountHour {
 	public void setVistor(Integer vistor) {
 		this.vistor = vistor;
 	}
-
+	
+	
 
 }

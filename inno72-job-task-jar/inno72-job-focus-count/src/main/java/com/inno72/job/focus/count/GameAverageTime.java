@@ -1,15 +1,15 @@
 package com.inno72.job.focus.count;
 
 public class GameAverageTime {
-
+	
 	private String ActivityId;
-
+	
 	private String machineCode;
-
+	
 	private String traceId;
-
+	
 	private String maxTime;
-
+	
 	private String minTime;
 
 	public String getActivityId() {
@@ -51,11 +51,11 @@ public class GameAverageTime {
 	public void setMinTime(String minTime) {
 		this.minTime = minTime;
 	}
-
-
+	
+	
 	public String getHashKey() {
-		return traceId;
+		return  traceId;
 	}
-
+	
 
 }
