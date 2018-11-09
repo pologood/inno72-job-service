@@ -3,7 +3,6 @@ package com.inno72.job.executer.service.impl;
 import com.inno72.job.executer.config.Constants;
 import com.inno72.job.executer.feign.Inno72GameService;
 import com.inno72.job.executer.mapper.ActivityMapper;
-import com.inno72.job.executer.model.Inno72NeedExportStore;
 import com.inno72.job.executer.service.DeviceService;
 import com.inno72.job.executer.vo.MachineSellerVo;
 import org.apache.commons.lang.StringUtils;
@@ -11,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
