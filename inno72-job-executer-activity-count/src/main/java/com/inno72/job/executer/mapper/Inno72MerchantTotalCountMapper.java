@@ -3,9 +3,11 @@ package com.inno72.job.executer.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.inno72.job.executer.model.Inno72MerchantTotalCount;
 
-
+@Mapper
 public interface Inno72MerchantTotalCountMapper{
 	List<Inno72MerchantTotalCount> selectByMerchantId(String machantId);
 	List<Map<String, String>> selectActivityAndCity(String date);
