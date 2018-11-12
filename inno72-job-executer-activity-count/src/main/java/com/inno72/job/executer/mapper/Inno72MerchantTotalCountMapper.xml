@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.executer.mapper.Inno72MerchantTotalCountMapper">
+    <resultMap id="BaseResultMap" type="com.inno72.job.executer.model.Inno72MerchantTotalCount">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
+        <result column="activity_id" jdbcType="VARCHAR" property="activityId"/>
+        <result column="activity_status" jdbcType="VARCHAR" property="activityStatus"/>
+        <result column="machine_num" jdbcType="INTEGER" property="machineNum"/>
+        <result column="visitor_num" jdbcType="INTEGER" property="visitorNum"/>
+        <result column="stayUser" jdbcType="INTEGER" property="stayuser"/>
+        <result column="pv" jdbcType="INTEGER" property="pv"/>
+        <result column="uv" jdbcType="INTEGER" property="uv"/>
+        <result column="order" jdbcType="INTEGER" property="order"/>
+        <result column="shipment" jdbcType="INTEGER" property="shipment"/>
+        <result column="machant_id" jdbcType="VARCHAR" property="machantId"/>
+        <result column="seller_id" jdbcType="VARCHAR" property="sellerId"/>
+    </resultMap>
+    <delete id="deleteByIdS" parameterType="java.util.List" >
+        delete from inno72_merchant_total_count
+        where id in
+        <foreach collection="," item="item" open="(" separator=")">
+            #{item}
+        </foreach>
+    </delete>
+    <select id="selectByMerchantId" resultMap="BaseResultMap" parameterType="string">
+
+        select * from inno72_merchant_total_count where machant_id = #{machantId}
+
+    </select>
+
+    <select id="selectActivityAndCity" parameterType="string" resultType="java.util.Map">
+
+            select
+            plan.activity_id as activity_id,
+            area.city as area
+
+            from (
+                select * from inno72_activity_plan plan
+                where #{date} BETWEEN plan.start_time and plan.end_time and is_delete = 0
+                ) as plan
+            LEFT join
+            inno72_activity_plan_machine on inno72_activity_plan_machine.activity_plan_id = plan.id
+
+            left join
+            inno72_machine machine on machine.id = inno72_activity_plan_machine.machine_id
+
+            left join
+            inno72_locale locale on locale.id = machine.locale_id
+
+            left join
+            inno72_admin_area area on area.`code` = locale.area_code
+
+    </select>
+    <select id="getTotolCount" resultMap="BaseResultMap" >
+        select * from inno72_merchant_total_count where activity_id = #{activityId} and seller_id = #{sellerId}
+    </select>
+    <select id="getActivityStatus" resultType="java.lang.Integer">
+        select count(*) from inno72_activity_plan where activity_id = #{activityId} and subDate between start_time and end_time
+    </select>
+    <select id="getMachineNum" resultType="java.lang.Integer" parameterType="string">
+        select count(machine.id) from inno72_activity_plan plan
+        left join inno72_activity_plan_machine l on plan.id = l.activity_plan_id
+        left join inno72_machine machine on machine.id = l.machine_id
+        where plan.activity_id = #{activityId}
+    </select>
+    <select id="getVisitorNumFromHourLog" resultType="java.lang.Integer" parameterType="string">
+        select sum(num) from inno72_machine_info_log_hour
+            where type = 1 and activity_id = #{activityId}
+    </select>
+    <select id="selectByIds" resultMap="BaseResultMap" parameterType="list">
+        select * from inno72_merchant_total_count
+        where id in
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+    <insert id="insertS" parameterType="java.util.List">
+        insert into `inno72`.`inno72_merchant_total_count`
+        ( `id`, `activity_name`, `activity_id`, `activity_status`, `machine_num`, `visitor_num`, `stayUser`, `pv`, `uv`, `order`, `shipment`, `machant_id`, `seller_id`)
+        values
+        <foreach collection="list" separator=",">
+            ( #{id}, #{activityName}, #{activityId}, #{activityStatus}, #{machine_num}, #{visitorNum}, #{stayUser}, #{pv}, #{uv}, #{order}, #{shipment}, #{machantId}, #{sellerId})
+        </foreach>
+    </insert>
+</mapper>

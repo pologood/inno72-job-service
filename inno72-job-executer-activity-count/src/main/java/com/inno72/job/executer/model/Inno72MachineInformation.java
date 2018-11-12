@@ -1,6 +1,11 @@
-package com.inno72.job.merchant.count;
+package com.inno72.job.executer.model;
 
-public class Inno72MachineInfomation {
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+
+public class Inno72MachineInformation {
+
 
 	/** sessionUuid */
 	private String sessionUuid;
@@ -41,7 +46,42 @@ public class Inno72MachineInfomation {
 	private String serviceTime;
 
 	/** 行为 - (登录:  、关注:002 、入会:003  、、、、 */
+	@NotNull(message = "消息类型不能为空!")
+	@Length(max = 6, min = 6, message = "非法类型")
 	private String type;
+
+	public static enum ENUM_INNO72_MACHINE_INFORMATION_TYPE{
+		LOGIN("001001","登录"),
+		CONCERN("002001","关注"),
+		MEMBERSHIP("003001","入会"),
+		CLICK("004","点击"),// 客户端自由定义
+		GAME_START("005001","游戏开始"),
+		GAME_OVER("006001","游戏结束"),
+		ORDER_GOODS("007001","下单-商品"),
+		ORDER_COUPON("007002","下单-优惠券"),
+		SHIPMENT("008001","出货"),
+		SCAN_LOGIN("009001","扫码"),
+		SCAN_PAY("009002","扫码"),
+		JUMP("010001","跳转"),
+		PAY("011002 ","订单支付"),
+		PRODUCT_CLICK("100100","商品点击"),
+		;
+		private String type;
+		private String desc;
+
+		ENUM_INNO72_MACHINE_INFORMATION_TYPE(String type, String desc) {
+			this.type = type;
+			this.desc = desc;
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public String getDesc() {
+			return desc;
+		}
+	}
 
 	/** 品牌ID(seller_id) */
 	private String sellerId;
@@ -373,6 +413,4 @@ public class Inno72MachineInfomation {
 	public void setRequestId(String requestId) {
 		this.requestId = requestId;
 	}
-
-
 }

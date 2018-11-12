@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.executer.mapper.Inno72MerchantTotalCountByDayMapper">
+    <resultMap id="BaseResultMap" type="com.inno72.job.executer.model.Inno72MerchantTotalCountByDay">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="date" jdbcType="VARCHAR" property="date"/>
+        <result column="city" jdbcType="VARCHAR" property="city"/>
+        <result column="goods_id" jdbcType="VARCHAR" property="goodsId"/>
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="merchant_id" jdbcType="VARCHAR" property="merchantId"/>
+        <result column="activity_id" jdbcType="VARCHAR" property="activityId"/>
+        <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
+        <result column="order_qty_total" jdbcType="INTEGER" property="orderQtyTotal"/>
+        <result column="order_qty_succ" jdbcType="INTEGER" property="orderQtySucc"/>
+        <result column="goods_num" jdbcType="INTEGER" property="goodsNum"/>
+        <result column="coupon_num" jdbcType="INTEGER" property="couponNum"/>
+        <result column="concern_num" jdbcType="INTEGER" property="concernNum"/>
+        <result column="pv" jdbcType="INTEGER" property="pv"/>
+        <result column="uv" jdbcType="INTEGER" property="uv"/>
+        <result column="seller_id" jdbcType="VARCHAR" property="sellerId"/>
+        <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" javaType="java.time.LocalDateTime"
+                typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.inno72.job.executer.model.Inno72MerchantTotalCountByDay">
+      insert into `inno72`.`inno72_merchant_total_count_by_day` (
+      `id`, `date`, `city`, `goods_id`, `goods_name`,
+      `merchant_id`, `order_qty_total`, `order_qty_succ`, `goods_num`, `coupon_num`,
+      `concern_num`, `pv`, `uv`, `seller_id`, `last_update_time`, `activity_id`, `activity_name`) values
+      ( #{id}, #{date}, #{city}, #{goodsId}, #{goodsName},
+       #{merchantId}, #{orderQtyTotal}, #{orderQtySucc}, #{goodsNum}, #{couponNum},
+       #{concernNum}, #{pv}, #{uv}, #{sellerId}, #{lastUpdateTime}, #{activityId}, #{activity_name});
+    </insert>
+    <select id="getLastTime" resultType="java.lang.String">
+        select DATE_FORMAT("MAX"(last_update_time),'%Y-%m-%d %T') from inno72_merchant_total_count_by_day
+    </select>
+    <select id="getYestodayData" resultMap="BaseResultMap" parameterType="string">
+        select * from inno72_merchant_total_count_by_day where `date` = #{subDate}
+    </select>
+</mapper>

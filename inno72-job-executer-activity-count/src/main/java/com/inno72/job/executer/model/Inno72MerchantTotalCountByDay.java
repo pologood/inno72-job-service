@@ -1,4 +1,4 @@
-package com.inno72.job.merchant.count;
+package com.inno72.job.executer.model;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +16,21 @@ public class Inno72MerchantTotalCountByDay {
 	 * 商品名称
 	 */
 	private String goodsName;
+
+	/**
+	 * 活动Id
+	 */
+	private String activityId;
+
+	/**
+	 * 活动Name
+	 */
+	private String activityName;
+
+	/**
+	 * 停留用户数
+	 */
+	private Integer stayNum;
 
 	/**
 	 * 商户ID主键
@@ -130,6 +145,22 @@ public class Inno72MerchantTotalCountByDay {
 	 */
 	public void setGoodsName(String goodsName) {
 		this.goodsName = goodsName;
+	}
+
+	public String getActivityId() {
+		return activityId;
+	}
+
+	public void setActivityId(String activityId) {
+		this.activityId = activityId;
+	}
+
+	public String getActivityName() {
+		return activityName;
+	}
+
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
 	}
 
 	/**
@@ -292,5 +323,40 @@ public class Inno72MerchantTotalCountByDay {
 
 	public void setLastUpdateTime(LocalDateTime lastUpdateTime) {
 		this.lastUpdateTime = lastUpdateTime;
+	}
+
+	public Inno72MerchantTotalCountByDay(String id, String date, String city, String goodsId, String goodsName,
+			String merchantId, Integer orderQtyTotal, Integer orderQtySucc, Integer goodsNum, Integer couponNum,
+			Integer concernNum, Integer pv, Integer uv, String sellerId, LocalDateTime lastUpdateTime,
+			String activityId, String activityName, Integer stayNum) {
+		this.id = id;
+		this.date = date;
+		this.city = city;
+		this.goodsName = goodsName;
+		this.merchantId = merchantId;
+		this.goodsId = goodsId;
+		this.orderQtySucc = orderQtySucc;
+		this.orderQtyTotal = orderQtyTotal;
+		this.goodsNum = goodsNum;
+		this.couponNum = couponNum;
+		this.concernNum = concernNum;
+		this.pv = pv;
+		this.uv = uv;
+		this.sellerId = sellerId;
+		this.lastUpdateTime = lastUpdateTime;
+		this.activityId = activityId;
+		this.activityName = activityName;
+		this.stayNum = stayNum;
+	}
+
+	public Inno72MerchantTotalCountByDay() {
+	}
+
+	public Integer getStayNum() {
+		return stayNum;
+	}
+
+	public void setStayNum(Integer stayNum) {
+		this.stayNum = stayNum;
 	}
 }
