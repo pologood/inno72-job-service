@@ -24,6 +24,7 @@ import com.inno72.common.utils.StringUtil;
 import com.inno72.job.core.biz.model.ReturnT;
 import com.inno72.job.core.handle.IJobHandler;
 import com.inno72.job.core.handle.annotation.JobHandler;
+import com.inno72.job.core.log.JobLogger;
 import com.inno72.job.executer.mapper.Inno72MerchantTotalCountByDayMapper;
 import com.inno72.job.executer.mapper.Inno72MerchantTotalCountMapper;
 import com.inno72.job.executer.model.Inno72MachineInformation;
@@ -46,7 +47,7 @@ public class MerchantCountByDayTask implements IJobHandler {
 	private ExecutorService exec = Executors.newFixedThreadPool(10);
 	@Override
 	public ReturnT<String> execute(String param) {
-
+		JobLogger.log("商户日统计任务开始");
 		String lastActionTime = inno72MerchantTotalCountByDayMapper.getLastTime();
 		Query query = new Query();
 		if (StringUtils.isEmpty(lastActionTime)){

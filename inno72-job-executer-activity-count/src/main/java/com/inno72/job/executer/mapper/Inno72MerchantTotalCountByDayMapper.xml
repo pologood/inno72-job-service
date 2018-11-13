@@ -34,7 +34,7 @@
        #{concernNum}, #{pv}, #{uv}, #{sellerId}, #{lastUpdateTime}, #{activityId}, #{activity_name});
     </insert>
     <select id="getLastTime" resultType="java.lang.String">
-        select DATE_FORMAT("MAX"(last_update_time),'%Y-%m-%d %T') from inno72_merchant_total_count_by_day
+        select DATE_FORMAT(MAX(last_update_time),'%Y-%m-%d %T') from inno72_merchant_total_count_by_day
     </select>
     <select id="getYestodayData" resultMap="BaseResultMap" parameterType="string">
         select * from inno72_merchant_total_count_by_day where `date` = #{subDate}
