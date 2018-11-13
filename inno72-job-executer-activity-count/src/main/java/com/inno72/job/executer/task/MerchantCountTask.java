@@ -41,6 +41,7 @@ public class MerchantCountTask implements IJobHandler {
 
 		List<Inno72MerchantTotalCountByDay> days =  inno72MerchantTotalCountByDayMapper.getYestodayData(subDate);
 
+		JobLogger.log("商户日总计统计任务开始 查询日期"+ subDate +"已获取数据"+JSON.toJSONString(days));
 		if (days.size() == 0){
 			return  new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
 		}
@@ -61,11 +62,6 @@ public class MerchantCountTask implements IJobHandler {
 			int visitorNum = inno72MerchantTotalCountMapper.getVisitorNumFromHourLog(activityId);
 
 			if (count == null){
-				/**
-				 * String activityName, String activityId, String activityStatus, Integer machineNum,
-				 * Integer visitorNum, Integer stayuser, Integer pv, Integer uv, Integer order, Integer shipment,
-				 * String machantId, String sellerId, Integer buyer
-				 */
 				int i = inno72MerchantTotalCountMapper.getActivityStatus(activityId, subDate);
 				count = new Inno72MerchantTotalCount(activityName, activityId, i+"", machineNum,
 						visitorNum, day.getStayNum(), day.getPv(), day.getPv(), day.getOrderQtyTotal(), day.getOrderQtySucc(),
@@ -98,6 +94,8 @@ public class MerchantCountTask implements IJobHandler {
 			for (Map.Entry<String, Inno72MerchantTotalCount> entry : countMap.entrySet()){
 				insertS.add(entry.getValue());
 			}
+
+			JobLogger.log("插入数据 "+JSON.toJSONString(insertS));
 			inno72MerchantTotalCountMapper.insertS(insertS);
 
 		}

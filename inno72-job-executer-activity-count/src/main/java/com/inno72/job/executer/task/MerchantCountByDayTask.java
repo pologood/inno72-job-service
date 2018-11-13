@@ -20,6 +20,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.common.utils.StringUtil;
 import com.inno72.job.core.biz.model.ReturnT;
 import com.inno72.job.core.handle.IJobHandler;
@@ -61,6 +62,9 @@ public class MerchantCountByDayTask implements IJobHandler {
 			}
 			lastActionTime = inno72MachineInformation.getServiceTime();
 		}
+
+		JobLogger.log("商户日统计任务上次执行时间" + lastActionTime);
+
 		List<String> types = new ArrayList<>();
 		types.add("004001");//停留用户数 用户体验数
 		types.add("002001");//关注数
@@ -77,6 +81,9 @@ public class MerchantCountByDayTask implements IJobHandler {
 
 		List<Inno72MachineInformation> inno72MachineInfomations = mongoOperations
 				.find(query, Inno72MachineInformation.class, "Inno72MachineInformation");
+
+		JobLogger.log("商户日统计任务查询到待统计数据" + JSON.toJSONString(inno72MachineInfomations));
+
 		if (inno72MachineInfomations.size() == 0){
 			return new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
 		}
@@ -186,6 +193,7 @@ public class MerchantCountByDayTask implements IJobHandler {
 
 				inno72MerchantTotalCountByDayMapper.insert(day);
 
+				JobLogger.log("商户日统计任务插入统计数据" + JSON.toJSONString(day));
 			});
 		}
 		return new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
