@@ -58,11 +58,11 @@ public class MerchantCountTask implements IJobHandler {
 				count = inno72MerchantTotalCountMapper.getTotolCount(activityId, sellerId);
 			}
 
-			int machineNum = inno72MerchantTotalCountMapper.getMachineNum(activityId);
-			int visitorNum = inno72MerchantTotalCountMapper.getVisitorNumFromHourLog(activityId);
+			Integer machineNum = inno72MerchantTotalCountMapper.getMachineNum(activityId);
+			Integer visitorNum = inno72MerchantTotalCountMapper.getVisitorNumFromHourLog(activityId);
 
 			if (count == null){
-				int i = inno72MerchantTotalCountMapper.getActivityStatus(activityId, subDate);
+				Integer i = inno72MerchantTotalCountMapper.getActivityStatus(activityId, subDate);
 				count = new Inno72MerchantTotalCount(activityName, activityId, i+"", machineNum,
 						visitorNum, day.getStayNum(), day.getPv(), day.getPv(), day.getOrderQtyTotal(), day.getOrderQtySucc(),
 						day.getMerchantId(), day.getSellerId(), day.getOrderQtySucc());
@@ -72,7 +72,7 @@ public class MerchantCountTask implements IJobHandler {
 				count.setOrder(count.getOrder() + day.getOrderQtyTotal());
 				count.setPv(count.getPv() + day.getPv());
 				count.setShipment(count.getShipment() + day.getOrderQtySucc());
-				count.setStayuser(count.getStayuser() + day.getStayNum());
+				count.setStayUser(count.getStayUser() + day.getStayNum());
 				count.setUv(count.getUv() + day.getUv());
 				count.setVisitorNum(count.getVisitorNum() + visitorNum);
 			}

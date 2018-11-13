@@ -38,8 +38,8 @@ public class Inno72MerchantTotalCount {
 	/**
 	 * 停留用户数(最多的点击数量)
 	 */
-	@Column(name = "stayUser")
-	private Integer stayuser;
+	@Column(name = "stay_user")
+	private Integer stayUser;
 
 	private Integer pv;
 
@@ -71,7 +71,7 @@ public class Inno72MerchantTotalCount {
 		this.activityStatus = activityStatus;
 		this.machineNum = machineNum;
 		this.visitorNum = Optional.ofNullable(visitorNum).orElse(0);
-		this.stayuser = Optional.ofNullable(stayuser).orElse(0);
+		this.stayUser = Optional.ofNullable(stayuser).orElse(0);
 		this.pv = Optional.ofNullable(pv).orElse(0);
 		this.uv = Optional.ofNullable(uv).orElse(0);
 		this.order = Optional.ofNullable(order).orElse(0);
@@ -178,8 +178,8 @@ public class Inno72MerchantTotalCount {
 	 *
 	 * @return stayUser - 停留用户数(最多的点击数量)
 	 */
-	public Integer getStayuser() {
-		return stayuser;
+	public Integer getStayUser() {
+		return stayUser;
 	}
 
 	/**
@@ -187,8 +187,8 @@ public class Inno72MerchantTotalCount {
 	 *
 	 * @param stayuser 停留用户数(最多的点击数量)
 	 */
-	public void setStayuser(Integer stayuser) {
-		this.stayuser = stayuser;
+	public void setStayUser(Integer stayUser) {
+		this.stayUser = stayUser;
 	}
 
 	/**

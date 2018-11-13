@@ -52,6 +52,7 @@ public class MerchantCountByDayTask implements IJobHandler {
 		String lastActionTime = inno72MerchantTotalCountByDayMapper.getLastTime();
 		Query query = new Query();
 		if (StringUtils.isEmpty(lastActionTime)){
+			JobLogger.log("从埋点中获取初始化的时间");
 			Query _query = new Query();
 			_query.with(new Sort(new Sort.Order(Sort.Direction.ASC,"serviceTime")));
 			_query.limit(1);
@@ -96,8 +97,10 @@ public class MerchantCountByDayTask implements IJobHandler {
 			String city = information.getCity();
 			String goodsId = information.getGoodsId();
 			String serviceTime = information.getServiceTime();
-
-			String groupKey = activityId+city+goodsId+serviceTime;
+			if (StringUtil.isEmpty(serviceTime)){
+				continue;
+			}
+			String groupKey = activityId+city+goodsId+serviceTime.substring(0, 10);
 
 			List<Inno72MachineInformation> inno72MachineInformations = group.get(groupKey);
 			if (inno72MachineInformations == null){
@@ -160,25 +163,25 @@ public class MerchantCountByDayTask implements IJobHandler {
 					}
 
 					switch (type){
-						case "004001":
+						case "004001"://停留用户数
 							stay++;
 							break;
-						case "002001":
+						case "002001"://关注
 							concern++;
 							break;
-						case "007001":
+						case "007001"://商品订单
 							gorder++;
 							break;
-						case "007002":
+						case "007002"://优惠券订单
 							corder++;
 							break;
-						case "008001":
+						case "008001"://出货
 							goods++;
 							break;
-						case "011001":
+						case "011001"://订单支付
 							pay++;
 							break;
-						case "001001":
+						case "001001"://登录
 							pv++;
 							break;
 					}

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.inno72.job.executer.model.Inno72MerchantTotalCount;
 
@@ -14,13 +15,13 @@ public interface Inno72MerchantTotalCountMapper{
 
 	int insertS(List<Inno72MerchantTotalCount> list);
 
-	Inno72MerchantTotalCount getTotolCount(String activityId, String sellerId);
+	Inno72MerchantTotalCount getTotolCount(@Param("activityId") String activityId, @Param("sellerId") String sellerId);
 
-	int getActivityStatus(String activityId, String subDate);
+	Integer getActivityStatus(@Param("activityId")String activityId, @Param("subDate")String subDate);
 
-	int getMachineNum(String activityId);
+	Integer getMachineNum(String activityId);
 
-	int getVisitorNumFromHourLog(String activityId);
+	Integer getVisitorNumFromHourLog(String activityId);
 
 	int deleteByIdS(List<String> ids);
 

@@ -11,7 +11,7 @@
         <result column="activity_status" jdbcType="VARCHAR" property="activityStatus"/>
         <result column="machine_num" jdbcType="INTEGER" property="machineNum"/>
         <result column="visitor_num" jdbcType="INTEGER" property="visitorNum"/>
-        <result column="stayUser" jdbcType="INTEGER" property="stayuser"/>
+        <result column="stay_user" jdbcType="INTEGER" property="stayUser"/>
         <result column="pv" jdbcType="INTEGER" property="pv"/>
         <result column="uv" jdbcType="INTEGER" property="uv"/>
         <result column="order" jdbcType="INTEGER" property="order"/>
@@ -59,7 +59,7 @@
         select * from inno72_merchant_total_count where activity_id = #{activityId} and seller_id = #{sellerId}
     </select>
     <select id="getActivityStatus" resultType="java.lang.Integer">
-        select count(*) from inno72_activity_plan where activity_id = #{activityId} and subDate between start_time and end_time
+        select count(*) from inno72_activity_plan where activity_id = #{activityId} and #{subDate} between start_time and end_time
     </select>
     <select id="getMachineNum" resultType="java.lang.Integer" parameterType="string">
         select count(machine.id) from inno72_activity_plan plan
@@ -82,8 +82,10 @@
         insert into `inno72`.`inno72_merchant_total_count`
         ( `id`, `activity_name`, `activity_id`, `activity_status`, `machine_num`, `visitor_num`, `stayUser`, `pv`, `uv`, `order`, `shipment`, `machant_id`, `seller_id`)
         values
-        <foreach collection="list" separator=",">
-            ( #{id}, #{activityName}, #{activityId}, #{activityStatus}, #{machine_num}, #{visitorNum}, #{stayUser}, #{pv}, #{uv}, #{order}, #{shipment}, #{machantId}, #{sellerId})
+        <foreach collection="list" separator="," item="item">
+            ( #{item.id}, #{item.activityName}, #{item.activityId}, #{item.activityStatus}, #{item.machineNum},
+            #{item.visitorNum}, #{item.stayUser}, #{item.pv}, #{item.uv}, #{item.order}, #{item.shipment},
+            #{item.machantId}, #{item.sellerId})
         </foreach>
     </insert>
 </mapper>

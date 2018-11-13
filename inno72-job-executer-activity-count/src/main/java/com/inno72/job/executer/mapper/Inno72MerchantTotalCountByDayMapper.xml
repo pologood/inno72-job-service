@@ -18,6 +18,7 @@
         <result column="goods_num" jdbcType="INTEGER" property="goodsNum"/>
         <result column="coupon_num" jdbcType="INTEGER" property="couponNum"/>
         <result column="concern_num" jdbcType="INTEGER" property="concernNum"/>
+        <result column="stay_num" jdbcType="INTEGER" property="stayNum"/>
         <result column="pv" jdbcType="INTEGER" property="pv"/>
         <result column="uv" jdbcType="INTEGER" property="uv"/>
         <result column="seller_id" jdbcType="VARCHAR" property="sellerId"/>
@@ -28,10 +29,10 @@
       insert into `inno72`.`inno72_merchant_total_count_by_day` (
       `id`, `date`, `city`, `goods_id`, `goods_name`,
       `merchant_id`, `order_qty_total`, `order_qty_succ`, `goods_num`, `coupon_num`,
-      `concern_num`, `pv`, `uv`, `seller_id`, `last_update_time`, `activity_id`, `activity_name`) values
+      `concern_num`, `pv`, `uv`, `seller_id`, `last_update_time`, `activity_id`, `activity_name`, `stay_num`) values
       ( #{id}, #{date}, #{city}, #{goodsId}, #{goodsName},
        #{merchantId}, #{orderQtyTotal}, #{orderQtySucc}, #{goodsNum}, #{couponNum},
-       #{concernNum}, #{pv}, #{uv}, #{sellerId}, #{lastUpdateTime}, #{activityId}, #{activity_name});
+       #{concernNum}, #{pv}, #{uv}, #{sellerId}, #{lastUpdateTime}, #{activityId}, #{activityName}, #{stayNum});
     </insert>
     <select id="getLastTime" resultType="java.lang.String">
         select DATE_FORMAT(MAX(last_update_time),'%Y-%m-%d %T') from inno72_merchant_total_count_by_day
