@@ -17,6 +17,7 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Component;
 import com.inno72.job.core.biz.model.ReturnT;
 import com.inno72.job.core.handle.IJobHandler;
 import com.inno72.job.core.handle.annotation.JobHandler;
+import com.inno72.job.core.log.JobLogger;
 
 /**
  * Hello world!
@@ -66,6 +68,8 @@ public class FocusCountTask implements IJobHandler {
 		String endTime = time + "23:59:59 999";
 		String handTime = time + "00:00:00";
 
+		JobLogger.log("FocusCountTask job, handTime:"+handTime + " isCover:" + isCover);
+		
 		int deleteNum = 0;
 		if (isCover) {
 			deleteNum = this.deleteMachineInfos(handTime);
@@ -80,30 +84,45 @@ public class FocusCountTask implements IJobHandler {
 		Criteria cond = new Criteria();
 		cond.andOperator(Criteria.where("serviceTime").gte(startTime), Criteria.where("serviceTime").lte(endTime));
 		pointLogQuery.addCriteria(cond);
-
-		List<Inno72MachineInfomation> machineInfomations = mongoOperations.find(pointLogQuery,
-				Inno72MachineInfomation.class, "Inno72MachineInformation");
-
-		if (machineInfomations == null || machineInfomations.isEmpty()) {
-			return new ReturnT<String>(ReturnT.SUCCESS_CODE, "处理0条pointLogs");
-		}
-
+		
+		int perPage = 10000;
+		long total = mongoOperations.count(pointLogQuery, "Inno72MachineInformation");
+		
+		long pageSize = total/perPage + (total%perPage != 0 ? 1 : 0);
+		
 		Map<String, MachineInfoLogModel> statistics = new HashMap<String, MachineInfoLogModel>();
-
+		
 		Map<String, GameAverageTime> averageStatistics = new HashMap<String, GameAverageTime>();
-
-		for (Inno72MachineInfomation info : machineInfomations) {
-
-			if ("002001".equals(info.getType())) { // 关注
-				countInfo(handTime, 2, statistics, info);
-			} else if ("003001".equals(info.getType())) { // 入会
-				countInfo(handTime, 3, statistics, info);
-			} else if ("100100".equals(info.getType())) { // 点击商品
-				countInfo(handTime, 4, statistics, info);
+		
+		pointLogQuery.with(new Sort(Sort.Direction.ASC, "_id"));
+		pointLogQuery.limit(perPage);
+		
+		for(int i=0; i<pageSize; i++ ) {
+			
+			JobLogger.log("FocusCountTask  job, total:"+total + " limit:" + perPage + " current:" + (i+1));
+			
+			pointLogQuery.skip((int) (i*perPage));
+			
+			List<Inno72MachineInfomation> machineInfomations = mongoOperations.find(pointLogQuery,
+					Inno72MachineInfomation.class, "Inno72MachineInformation");
+	
+			if (machineInfomations == null || machineInfomations.isEmpty()) {
+				return new ReturnT<String>(ReturnT.SUCCESS_CODE, "处理0条pointLogs");
 			}
-
-			// 统计平均时常
-			countAverageInfo(averageStatistics, info);
+	
+			for (Inno72MachineInfomation info : machineInfomations) {
+	
+				if ("002001".equals(info.getType())) { // 关注
+					countInfo(handTime, 2, statistics, info);
+				} else if ("003001".equals(info.getType())) { // 入会
+					countInfo(handTime, 3, statistics, info);
+				} else if ("100100".equals(info.getType())) { // 点击商品
+					countInfo(handTime, 4, statistics, info);
+				}
+	
+				// 统计平均时常
+				countAverageInfo(averageStatistics, info);
+			}
 		}
 
 		if (statistics.keySet().size() > 0) {
@@ -115,7 +134,7 @@ public class FocusCountTask implements IJobHandler {
 		}
 
 		return new ReturnT<String>(ReturnT.SUCCESS_CODE,
-				handTime + " 处理" + machineInfomations.size() + "条machineInfomations 删除:" + deleteNum + "条");
+				handTime + " 处理" + total + "条machineInfomations 删除:" + deleteNum + "条");
 	}
 
 
