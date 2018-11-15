@@ -22,7 +22,7 @@
     <delete id="deleteByIdS" parameterType="java.util.List" >
         delete from inno72_merchant_total_count
         where id in
-        <foreach collection="list" item="item" open="(" separator=")">
+        <foreach collection="list" item="item" open="(" close=")" separator="," >
             #{item}
         </foreach>
     </delete>
