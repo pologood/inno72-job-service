@@ -77,7 +77,7 @@ public class MerchantCountByDayTask implements IJobHandler {
 
 		query.addCriteria(Criteria.where("type").in(types));
 
-		query.addCriteria(Criteria.where("clientTime").gt(lastActionTime));
+		query.addCriteria(Criteria.where("serviceTime").gt(lastActionTime));
 		query.with(new Sort(new Sort.Order(Sort.Direction.ASC,"serviceTime")));
 
 		List<Inno72MachineInformation> inno72MachineInfomations = mongoOperations
