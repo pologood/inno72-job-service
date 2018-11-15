@@ -86,7 +86,9 @@ public class MerchantCountTask implements IJobHandler {
 		if (countMap.size() > 0){
 			if (ids.size() > 0){
 				List<Inno72MerchantTotalCount> delecount = inno72MerchantTotalCountMapper.selectByIds(ids);
-				inno72MerchantTotalCountMapper.deleteByIdS(ids);
+				if(delecount.size() > 0){
+					inno72MerchantTotalCountMapper.deleteByIdS(ids);
+				}
 			}
 			List<Inno72MerchantTotalCount> insertS = new ArrayList<>();
 			for (Map.Entry<String, Inno72MerchantTotalCount> entry : countMap.entrySet()){
