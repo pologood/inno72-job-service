@@ -60,7 +60,6 @@ public class MerchantCountTask implements IJobHandler {
 
 			Integer machineNum = inno72MerchantTotalCountMapper.getMachineNum(activityId);
 			Integer visitorNum = inno72MerchantTotalCountMapper.getVisitorNumFromHourLog(activityId);
-
 			if (count == null){
 				Integer i = inno72MerchantTotalCountMapper.getActivityStatus(activityId, subDate);
 				count = new Inno72MerchantTotalCount(activityName, activityId, i+"", machineNum,
@@ -74,7 +73,7 @@ public class MerchantCountTask implements IJobHandler {
 				count.setShipment(count.getShipment() + day.getOrderQtySucc());
 				count.setStayUser(count.getStayUser() + day.getStayNum());
 				count.setUv(count.getUv() + day.getUv());
-				count.setVisitorNum(count.getVisitorNum() + visitorNum);
+				count.setVisitorNum(count.getVisitorNum() + (visitorNum == null ? 0 :visitorNum));
 			}
 			if (StringUtil.notEmpty(count.getId())){
 				ids.add(count.getId());
@@ -87,7 +86,6 @@ public class MerchantCountTask implements IJobHandler {
 		if (countMap.size() > 0){
 			if (ids.size() > 0){
 				List<Inno72MerchantTotalCount> delecount = inno72MerchantTotalCountMapper.selectByIds(ids);
-				JobLogger.log("reset list -----> " + JSON.toJSONString(delecount));
 				inno72MerchantTotalCountMapper.deleteByIdS(ids);
 			}
 			List<Inno72MerchantTotalCount> insertS = new ArrayList<>();
