@@ -50,7 +50,6 @@ public class FeedBackServiceImpl implements FeedBackService {
     }
     @Transactional
     public int doFeedBackOrder(Integer type,Integer currentPage, Integer pageSize) {
-        currentPage =(currentPage-1)*pageSize;
         //查找需要的order
         List<OrderOrderGoodsVo> list = null;
         if(EXECUTE_TYPE_ALL == type){
