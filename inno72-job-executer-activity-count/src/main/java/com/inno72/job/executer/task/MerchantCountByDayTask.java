@@ -67,7 +67,7 @@ public class MerchantCountByDayTask implements IJobHandler {
 		JobLogger.log("商户日统计任务上次执行时间" + lastActionTime);
 
 		List<String> types = new ArrayList<>();
-		types.add("004001");//停留用户数 用户体验数
+		types.add("100100");//停留用户数 用户体验数
 		types.add("002001");//关注数
 		types.add("007001");//订单数
 		types.add("007002");//订单数
@@ -163,7 +163,7 @@ public class MerchantCountByDayTask implements IJobHandler {
 					}
 
 					switch (type){
-						case "004001"://停留用户数
+						case "100100incr"://停留用户数
 							stay++;
 							break;
 						case "002001"://关注
