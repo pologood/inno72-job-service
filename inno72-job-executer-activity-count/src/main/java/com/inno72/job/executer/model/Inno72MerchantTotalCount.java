@@ -52,9 +52,6 @@ public class Inno72MerchantTotalCount {
 	@Column(name = "machant_id")
 	private String machantId;
 
-	@Column(name = "channel_merchant_id")
-	private String channelMerchantId;
-
 	/**
 	 * 购买人数
 	 */
@@ -65,7 +62,7 @@ public class Inno72MerchantTotalCount {
 
 	public Inno72MerchantTotalCount(String activityName, String activityId, String activityStatus, Integer machineNum,
 			Integer visitorNum, Integer stayuser, Integer pv, Integer uv, Integer order, Integer shipment,
-			String machantId, String channelMerchantId, Integer buyer) {
+			String machantId, Integer buyer) {
 		this.activityName = activityName;
 		this.activityId = activityId;
 		this.activityStatus = activityStatus;
@@ -77,7 +74,6 @@ public class Inno72MerchantTotalCount {
 		this.order = Optional.ofNullable(order).orElse(0);
 		this.shipment = Optional.ofNullable(shipment).orElse(0);
 		this.machantId = machantId;
-		this.channelMerchantId = channelMerchantId;
 		this.buyer = Optional.ofNullable(buyer).orElse(0);
 	}
 

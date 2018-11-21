@@ -66,7 +66,7 @@ public class MerchantCountTask implements IJobHandler {
 				Integer i = inno72MerchantTotalCountMapper.getActivityStatus(activityId, subDate);
 				count = new Inno72MerchantTotalCount(activityName, activityId, i+"", machineNum,
 						visitorNum, day.getStayNum(), day.getPv(), day.getPv(), day.getOrderQtyTotal(), day.getOrderQtySucc(),
-						day.getMerchantId(), day.getChannelMerchantId(), day.getOrderQtySucc());
+						day.getMerchantId(), day.getOrderQtySucc());
 			}else {
 				count.setBuyer(count.getBuyer() + day.getOrderQtySucc());
 				count.setMachineNum(machineNum > count.getMachineNum() ? machineNum  :  count.getMachineNum());

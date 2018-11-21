@@ -135,14 +135,16 @@ public class MerchantCountByDayTask implements IJobHandler {
 				String activityId = "";
 				String activityName = "";
 
-				 // 商户总名称 - table -> inno72_merchant_user.merchant_name =  inno72_merchant.merchant_account_name
-				 String merchantName = "";// TODO 新
-				 // 渠道商家ID - table -> inno72_merchant.id
-				 String channelMerchantId = "";//TODO 新
-				 // 渠道ID - table -> inno72_merchant.channel_id
-				 String channelId = "";//TODO 新
-				 // 渠道名称 - table -> inno72_merchant.channel_name
-				 String channelName = "";//TODO 新
+				// 商户总名称 - table -> inno72_merchant_user.merchant_name =  inno72_merchant.merchant_account_name
+				String merchantName = "";// TODO 新
+				// 渠道商家ID - table -> inno72_merchant.id
+				String channelMerchantId = "";//TODO 新
+				// 渠道ID - table -> inno72_merchant.channel_id
+				String channelId = "";//TODO 新
+				// 渠道名称 - table -> inno72_merchant.channel_name
+				String channelName = "";//TODO 新
+
+				String machineCode = "";
 
 				Set<String> user = new HashSet<>();
 
@@ -171,8 +173,8 @@ public class MerchantCountByDayTask implements IJobHandler {
 						activityName = count.getActivityName();
 					}
 					//merchantAccountId
-					if (StringUtil.isEmpty(merchantId) && StringUtil.notEmpty(count.getMachineCode())) {
-						merchantId = count.getMachineCode();
+					if (StringUtil.isEmpty(machineCode) && StringUtil.notEmpty(count.getMachineCode())) {
+						machineCode = count.getMachineCode();
 					}
 					if (StringUtil.isEmpty(merchantName) && StringUtil.notEmpty(count.getMerchantName())) {
 						merchantName = count.getMerchantName();
@@ -185,6 +187,9 @@ public class MerchantCountByDayTask implements IJobHandler {
 					}
 					if (StringUtil.isEmpty(channelName) && StringUtil.notEmpty(count.getChannelName())) {
 						channelName = count.getChannelName();
+					}
+					if (StringUtil.isEmpty(merchantId) && StringUtil.notEmpty(count.getMerchantId())) {
+						merchantId = count.getMerchantId();
 					}
 
 					switch (type){
@@ -218,7 +223,7 @@ public class MerchantCountByDayTask implements IJobHandler {
 						merchantId, gorder, pay, goods, corder,
 						concern, pv, uv, sellerId, LocalDateTime.now(),
 						activityId, activityName, stay, merchantName, channelMerchantId,
-						channelId, channelName);
+						channelId, channelName, machineCode);
 
 				inno72MerchantTotalCountByDayMapper.insert(day);
 

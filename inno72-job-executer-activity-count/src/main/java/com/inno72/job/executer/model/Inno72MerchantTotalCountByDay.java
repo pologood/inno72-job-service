@@ -37,6 +37,8 @@ public class Inno72MerchantTotalCountByDay {
 	 */
 //	private String merchantAccountId;
 
+	private String machineCode;
+
 	/**
 	 * 商家code -> inno72_merchant.merchant_code
 	 */
@@ -390,7 +392,7 @@ public class Inno72MerchantTotalCountByDay {
 			String merchantId, Integer orderQtyTotal, Integer orderQtySucc, Integer goodsNum, Integer couponNum,
 			Integer concernNum, Integer pv, Integer uv, String sellerId, LocalDateTime lastUpdateTime,
 			String activityId, String activityName, Integer stayNum, String merchantName, String channelMerchantId,
-			String channelId, String channelName) {
+			String channelId, String channelName, String machineCode) {
 		this.id = id;
 		this.date = date;
 		this.city = city;
@@ -413,6 +415,7 @@ public class Inno72MerchantTotalCountByDay {
 		this.channelMerchantId = channelMerchantId;
 		this.channelId = channelId;
 		this.channelName = channelName;
+		this.machineCode = machineCode;
 	}
 
 	public Inno72MerchantTotalCountByDay() {
