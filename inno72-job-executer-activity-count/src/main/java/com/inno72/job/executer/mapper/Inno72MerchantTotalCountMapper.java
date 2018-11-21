@@ -15,7 +15,7 @@ public interface Inno72MerchantTotalCountMapper{
 
 	int insertS(List<Inno72MerchantTotalCount> list);
 
-	Inno72MerchantTotalCount getTotolCount(@Param("activityId") String activityId, @Param("sellerId") String sellerId);
+	Inno72MerchantTotalCount getTotolCount(@Param("activityId") String activityId, @Param("channelMerchantId") String channelMerchantId);
 
 	Integer getActivityStatus(@Param("activityId")String activityId, @Param("subDate")String subDate);
 

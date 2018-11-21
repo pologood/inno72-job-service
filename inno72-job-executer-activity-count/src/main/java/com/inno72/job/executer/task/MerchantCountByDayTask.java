@@ -127,10 +127,22 @@ public class MerchantCountByDayTask implements IJobHandler {
 				String city = "";
 				String goodsId = "";
 				String goodsName = "";
+				//inno72_merchant.merchant_code
 				String sellerId = "";
+				//inno72_merchant_user.id = inno72_merchant.merchant_account_id
 				String merchantId = "";
+
 				String activityId = "";
 				String activityName = "";
+
+				 // 商户总名称 - table -> inno72_merchant_user.merchant_name =  inno72_merchant.merchant_account_name
+				 String merchantName = "";// TODO 新
+				 // 渠道商家ID - table -> inno72_merchant.id
+				 String channelMerchantId = "";//TODO 新
+				 // 渠道ID - table -> inno72_merchant.channel_id
+				 String channelId = "";//TODO 新
+				 // 渠道名称 - table -> inno72_merchant.channel_name
+				 String channelName = "";//TODO 新
 
 				Set<String> user = new HashSet<>();
 
@@ -158,12 +170,25 @@ public class MerchantCountByDayTask implements IJobHandler {
 					if (StringUtil.isEmpty(activityName) && StringUtil.notEmpty(count.getActivityName())) {
 						activityName = count.getActivityName();
 					}
+					//merchantAccountId
 					if (StringUtil.isEmpty(merchantId) && StringUtil.notEmpty(count.getMachineCode())) {
 						merchantId = count.getMachineCode();
 					}
+					if (StringUtil.isEmpty(merchantName) && StringUtil.notEmpty(count.getMerchantName())) {
+						merchantName = count.getMerchantName();
+					}
+					if (StringUtil.isEmpty(channelMerchantId) && StringUtil.notEmpty(count.getChannelMerchantId())) {
+						channelMerchantId = count.getChannelMerchantId();
+					}
+					if (StringUtil.isEmpty(channelId) && StringUtil.notEmpty(count.getChannelId())) {
+						channelId = count.getChannelId();
+					}
+					if (StringUtil.isEmpty(channelName) && StringUtil.notEmpty(count.getChannelName())) {
+						channelName = count.getChannelName();
+					}
 
 					switch (type){
-						case "100100incr"://停留用户数
+						case "100100"://停留用户数
 							stay++;
 							break;
 						case "002001"://关注
@@ -190,9 +215,10 @@ public class MerchantCountByDayTask implements IJobHandler {
 
 				Inno72MerchantTotalCountByDay day = new Inno72MerchantTotalCountByDay(
 						StringUtil.uuid(), date, city, goodsId, goodsName,
-						merchantId, gorder, pay, goods, goods,
+						merchantId, gorder, pay, goods, corder,
 						concern, pv, uv, sellerId, LocalDateTime.now(),
-						activityId, activityName, stay);
+						activityId, activityName, stay, merchantName, channelMerchantId,
+						channelId, channelName);
 
 				inno72MerchantTotalCountByDayMapper.insert(day);
 

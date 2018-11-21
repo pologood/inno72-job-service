@@ -51,11 +51,13 @@ public class MerchantCountTask implements IJobHandler {
 		for (Inno72MerchantTotalCountByDay day : days){
 			String activityId = day.getActivityId();
 			String activityName = day.getActivityName();
+			String merchantId = day.getMerchantId();
 
+			String key = merchantId + activityId;
 			String sellerId = day.getSellerId();
-			Inno72MerchantTotalCount count = countMap.get(activityId);
+			Inno72MerchantTotalCount count = countMap.get(key);
 			if (count == null ){
-				count = inno72MerchantTotalCountMapper.getTotolCount(activityId, sellerId);
+				count = inno72MerchantTotalCountMapper.getTotolCount(activityId, merchantId);
 			}
 
 			Integer machineNum = inno72MerchantTotalCountMapper.getMachineNum(activityId);
@@ -64,7 +66,7 @@ public class MerchantCountTask implements IJobHandler {
 				Integer i = inno72MerchantTotalCountMapper.getActivityStatus(activityId, subDate);
 				count = new Inno72MerchantTotalCount(activityName, activityId, i+"", machineNum,
 						visitorNum, day.getStayNum(), day.getPv(), day.getPv(), day.getOrderQtyTotal(), day.getOrderQtySucc(),
-						day.getMerchantId(), day.getSellerId(), day.getOrderQtySucc());
+						day.getMerchantId(), day.getChannelMerchantId(), day.getOrderQtySucc());
 			}else {
 				count.setBuyer(count.getBuyer() + day.getOrderQtySucc());
 				count.setMachineNum(machineNum > count.getMachineNum() ? machineNum  :  count.getMachineNum());
@@ -80,7 +82,7 @@ public class MerchantCountTask implements IJobHandler {
 			}else {
 				count.setId(StringUtil.uuid());
 			}
-			countMap.put(activityId, count);
+			countMap.put(key, count);
 		}
 
 		if (countMap.size() > 0){

@@ -142,6 +142,69 @@ public class Inno72MachineInformation {
 
 	private String requestId;
 
+	/**
+	 * 商户总ID - table -> inno72_merchant_user.merchant_id
+	 */
+	private String merchantId;// TODO 新
+
+	/**
+	 * 商户总名称 - table -> inno72_merchant_user.merchant_name
+	 */
+	private String merchantName;// TODO 新
+
+	/**
+	 * 渠道商家ID - table -> inno72_merchant.id
+	 */
+	private String channelMerchantId;//TODO 新
+	/**
+	 * 渠道ID - table -> inno72_merchant.channel_id
+	 */
+	private String channelId;//TODO 新
+	/**
+	 * 渠道名称 - table -> inno72_merchant.channel_name
+	 */
+	private String channelName;//TODO 新
+
+	public String getMerchantId() {
+		return merchantId;
+	}
+
+	public void setMerchantId(String merchantId) {
+		this.merchantId = merchantId;
+	}
+
+	public String getMerchantName() {
+		return merchantName;
+	}
+
+	public void setMerchantName(String merchantName) {
+		this.merchantName = merchantName;
+	}
+
+	public String getChannelMerchantId() {
+		return channelMerchantId;
+	}
+
+	public void setChannelMerchantId(String channelMerchantId) {
+		this.channelMerchantId = channelMerchantId;
+	}
+
+	public String getChannelId() {
+		return channelId;
+	}
+
+	public void setChannelId(String channelId) {
+		this.channelId = channelId;
+	}
+
+	public String getChannelName() {
+		return channelName;
+	}
+
+	public void setChannelName(String channelName) {
+		this.channelName = channelName;
+	}
+
 	public String getSessionUuid() {
 		return sessionUuid;
 	}

@@ -52,8 +52,8 @@ public class Inno72MerchantTotalCount {
 	@Column(name = "machant_id")
 	private String machantId;
 
-	@Column(name = "seller_id")
-	private String sellerId;
+	@Column(name = "channel_merchant_id")
+	private String channelMerchantId;
 
 	/**
 	 * 购买人数
@@ -65,7 +65,7 @@ public class Inno72MerchantTotalCount {
 
 	public Inno72MerchantTotalCount(String activityName, String activityId, String activityStatus, Integer machineNum,
 			Integer visitorNum, Integer stayuser, Integer pv, Integer uv, Integer order, Integer shipment,
-			String machantId, String sellerId, Integer buyer) {
+			String machantId, String channelMerchantId, Integer buyer) {
 		this.activityName = activityName;
 		this.activityId = activityId;
 		this.activityStatus = activityStatus;
@@ -77,7 +77,7 @@ public class Inno72MerchantTotalCount {
 		this.order = Optional.ofNullable(order).orElse(0);
 		this.shipment = Optional.ofNullable(shipment).orElse(0);
 		this.machantId = machantId;
-		this.sellerId = sellerId;
+		this.channelMerchantId = channelMerchantId;
 		this.buyer = Optional.ofNullable(buyer).orElse(0);
 	}
 
@@ -185,7 +185,7 @@ public class Inno72MerchantTotalCount {
 	/**
 	 * 设置停留用户数(最多的点击数量)
 	 *
-	 * @param stayuser 停留用户数(最多的点击数量)
+	 * @param stayUser 停留用户数(最多的点击数量)
 	 */
 	public void setStayUser(Integer stayUser) {
 		this.stayUser = stayUser;
@@ -259,20 +259,6 @@ public class Inno72MerchantTotalCount {
 	 */
 	public void setMachantId(String machantId) {
 		this.machantId = machantId;
-	}
-
-	/**
-	 * @return seller_id
-	 */
-	public String getSellerId() {
-		return sellerId;
-	}
-
-	/**
-	 * @param sellerId
-	 */
-	public void setSellerId(String sellerId) {
-		this.sellerId = sellerId;
 	}
 
 	public Integer getBuyer() {

@@ -17,7 +17,7 @@
         <result column="order" jdbcType="INTEGER" property="order"/>
         <result column="shipment" jdbcType="INTEGER" property="shipment"/>
         <result column="machant_id" jdbcType="VARCHAR" property="machantId"/>
-        <result column="seller_id" jdbcType="VARCHAR" property="sellerId"/>
+        <result column="channel_merchant_id" jdbcType="VARCHAR" property="channelMerchantId"/>
     </resultMap>
     <delete id="deleteByIdS" parameterType="java.util.List" >
         delete from inno72_merchant_total_count
@@ -56,7 +56,7 @@
 
     </select>
     <select id="getTotolCount" resultMap="BaseResultMap" >
-        select * from inno72_merchant_total_count where activity_id = #{activityId} and seller_id = #{sellerId}
+        select * from inno72_merchant_total_count where activity_id = #{activityId} and channel_merchant_id = #{channelMerchantId}
     </select>
     <select id="getActivityStatus" resultType="java.lang.Integer">
         select count(*) from inno72_activity_plan where activity_id = #{activityId} and #{subDate} between start_time and end_time
@@ -80,12 +80,12 @@
     </select>
     <insert id="insertS" parameterType="java.util.List">
         insert into `inno72`.`inno72_merchant_total_count`
-        ( `id`, `activity_name`, `activity_id`, `activity_status`, `machine_num`, `visitor_num`, `stay_user`, `pv`, `uv`, `order`, `shipment`, `machant_id`, `seller_id`)
+        ( `id`, `activity_name`, `activity_id`, `activity_status`, `machine_num`, `visitor_num`, `stay_user`, `pv`, `uv`, `order`, `shipment`, `machant_id`, `channel_merchant_id`)
         values
         <foreach collection="list" separator="," item="item">
             ( #{item.id}, #{item.activityName}, #{item.activityId}, #{item.activityStatus}, #{item.machineNum},
             #{item.visitorNum}, #{item.stayUser}, #{item.pv}, #{item.uv}, #{item.order}, #{item.shipment},
-            #{item.machantId}, #{item.sellerId})
+            #{item.machantId}, #{item.channelMerchantId})
         </foreach>
     </insert>
 </mapper>
