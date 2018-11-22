@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +42,10 @@ public class FocusCountTask implements IJobHandler {
 
 	@Resource
 	private MongoOperations mongoOperations;
-
+	
+	
+	private List<String> forcusFilter = new LinkedList<String>();
+	
 	@Override
 	public ReturnT<String> execute(String param) throws Exception {
 
@@ -184,6 +188,15 @@ public class FocusCountTask implements IJobHandler {
 		model.setGoodsId(info.getGoodsId());
 		model.setMachineCode(info.getMachineCode());
 		model.setType(type);
+		
+		if(type == 2) {
+			String focusUnique =  info.getActivityId() + info.getSellerId() + info.getUserId();
+			if(this.forcusFilter.contains(focusUnique)) {
+				return;
+			}else {
+				this.forcusFilter.add(focusUnique);
+			}
+		}
 
 		if (statistics.containsKey(model.getHashKey())) {
 			model = statistics.get(model.getHashKey());
