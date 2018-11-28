@@ -48,7 +48,8 @@ public class TestController {
     }
     @Autowired
     private MerchantCountByDayTask merchantCountByDayTask;
-    @RequestMapping(value = "/merchantCountByDayTask", method = {RequestMethod.POST, RequestMethod.GET})
+
+	@RequestMapping(value = "/merchantCountByDayTask", method = {RequestMethod.POST, RequestMethod.GET})
     public Result<Object> merchantCountByDayTask() {
 		merchantCountByDayTask.execute("");
         return Results.success();

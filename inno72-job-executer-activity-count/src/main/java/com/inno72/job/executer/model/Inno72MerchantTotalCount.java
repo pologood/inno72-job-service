@@ -1,5 +1,6 @@
 package com.inno72.job.executer.model;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import javax.persistence.Column;
@@ -22,6 +23,12 @@ public class Inno72MerchantTotalCount {
 
 	@Column(name = "activity_status")
 	private String activityStatus;
+
+	/**
+	 * 活动类型 1: 常规活动； 2: 互派活动
+	 */
+	@Column(name = "activity_type")
+	private String activityType;
 
 	/**
 	 * 机器数量
@@ -49,20 +56,22 @@ public class Inno72MerchantTotalCount {
 
 	private Integer shipment;
 
-	@Column(name = "machant_id")
-	private String machantId;
+	@Column(name = "merchant_id")
+	private String merchantId;
 
 	/**
 	 * 购买人数
 	 */
 	private Integer buyer;
 
+	private LocalDateTime lastUpdateTime;
+
 	public Inno72MerchantTotalCount() {
 	}
 
 	public Inno72MerchantTotalCount(String activityName, String activityId, String activityStatus, Integer machineNum,
 			Integer visitorNum, Integer stayuser, Integer pv, Integer uv, Integer order, Integer shipment,
-			String machantId, Integer buyer) {
+			String merchantId, Integer buyer, String activityType) {
 		this.activityName = activityName;
 		this.activityId = activityId;
 		this.activityStatus = activityStatus;
@@ -73,8 +82,9 @@ public class Inno72MerchantTotalCount {
 		this.uv = Optional.ofNullable(uv).orElse(0);
 		this.order = Optional.ofNullable(order).orElse(0);
 		this.shipment = Optional.ofNullable(shipment).orElse(0);
-		this.machantId = machantId;
+		this.merchantId = merchantId;
 		this.buyer = Optional.ofNullable(buyer).orElse(0);
+		this.activityType = activityType;
 	}
 
 	/**
@@ -243,18 +253,12 @@ public class Inno72MerchantTotalCount {
 		this.shipment = shipment;
 	}
 
-	/**
-	 * @return machant_id
-	 */
-	public String getMachantId() {
-		return machantId;
+	public String getMerchantId() {
+		return merchantId;
 	}
 
-	/**
-	 * @param machantId
-	 */
-	public void setMachantId(String machantId) {
-		this.machantId = machantId;
+	public void setMerchantId(String merchantId) {
+		this.merchantId = merchantId;
 	}
 
 	public Integer getBuyer() {
@@ -265,4 +269,19 @@ public class Inno72MerchantTotalCount {
 		this.buyer = buyer;
 	}
 
+	public LocalDateTime getLastUpdateTime() {
+		return lastUpdateTime;
+	}
+
+	public void setLastUpdateTime(LocalDateTime lastUpdateTime) {
+		this.lastUpdateTime = lastUpdateTime;
+	}
+
+	public String getActivityType() {
+		return activityType;
+	}
+
+	public void setActivityType(String activityType) {
+		this.activityType = activityType;
+	}
 }

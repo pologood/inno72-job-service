@@ -40,4 +40,22 @@
     <select id="getYestodayData" resultMap="BaseResultMap" parameterType="string">
         select * from inno72_merchant_total_count_by_day where `date` = #{subDate}
     </select>
+    <select id="selectByLastTimeAndDayParam"
+            resultMap="BaseResultMap">
+      select * from inno72_merchant_total_count_by_day
+      where merchant_id = #{merchantId} and activity_id = #{activityId}
+      <if test="lastUpdateTime != null and lastUpdateTime != ''">
+          and last_update_time > #{lastUpdateTime}
+      </if>
+    </select>
+    <select id="selectByNotInCount" resultMap="BaseResultMap" parameterType="list">
+        select * from inno72_merchant_total_count_by_day
+        where merchant_id not in
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select * from inno72_merchant_total_count_by_day
+    </select>
 </mapper>

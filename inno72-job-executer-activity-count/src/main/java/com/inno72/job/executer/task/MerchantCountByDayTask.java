@@ -188,8 +188,8 @@ public class MerchantCountByDayTask implements IJobHandler {
 					if (StringUtil.isEmpty(channelName) && StringUtil.notEmpty(count.getChannelName())) {
 						channelName = count.getChannelName();
 					}
-					if (StringUtil.isEmpty(merchantId) && StringUtil.notEmpty(count.getMerchantId())) {
-						merchantId = count.getMerchantId();
+					if (StringUtil.isEmpty(merchantId) && StringUtil.notEmpty(sellerId)) {
+						merchantId = inno72MerchantTotalCountMapper.findMerchantBySellerId(sellerId);
 					}
 
 					switch (type){
