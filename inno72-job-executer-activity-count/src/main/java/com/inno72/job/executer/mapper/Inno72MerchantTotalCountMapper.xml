@@ -115,6 +115,7 @@
 
 
     <insert id="insertS" parameterType="java.util.List">
+
         insert into `inno72`.`inno72_merchant_total_count`
         ( `id`, `activity_name`, `activity_id`,`activity_type`, `activity_status`, `machine_num`, `visitor_num`, `stay_user`, `pv`, `uv`, `order`, `shipment`, `merchant_id`, `last_update_time`)
         values
