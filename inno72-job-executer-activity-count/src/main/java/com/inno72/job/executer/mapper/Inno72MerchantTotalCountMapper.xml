@@ -22,6 +22,15 @@
         <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" javaType="java.time.LocalDateTime"
                 typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
     </resultMap>
+    <update id="update" parameterType="com.inno72.job.executer.model.Inno72MerchantTotalCount">
+        update `inno72`.`inno72_merchant_total_count`
+        set
+        `activity_status`=#{activityStatus}, `machine_num`=#{machineNum}, `visitor_num`=#{visitorNum},
+        `stay_user`=#{stayUser}, `pv`=#{pv}, `uv`=#{uv},
+        `order`=#{order}, `shipment`=#{shipment}, `buyer`=#{buyer},
+        `last_update_time`=#{lastUpdateTime}
+        where `id`= #{id};
+    </update>
     <delete id="deleteByIdS" parameterType="java.util.List" >
         delete from inno72_merchant_total_count
         where id in
