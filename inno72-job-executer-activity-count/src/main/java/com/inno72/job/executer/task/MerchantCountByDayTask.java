@@ -72,7 +72,8 @@ public class MerchantCountByDayTask implements IJobHandler {
 		types.add("007001");//订单数
 		types.add("007002");//订单数
 		types.add("008001");//出货数
-		types.add("011001");//支付
+		types.add("011002");//支付
+		types.add("011002 ");//支付
 		types.add("001001");//互动次数  去重后是互动人数
 
 		query.addCriteria(Criteria.where("type").in(types));
