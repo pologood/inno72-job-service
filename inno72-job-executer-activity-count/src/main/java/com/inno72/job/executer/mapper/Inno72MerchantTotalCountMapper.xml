@@ -128,7 +128,7 @@
             ( #{item.id}, #{item.activityName}, #{item.activityId}, #{item.activityType},
             #{item.activityStatus}, #{item.machineNum}, #{item.visitorNum}, #{item.stayUser},
             #{item.pv}, #{item.uv}, #{item.order}, #{item.shipment},
-            #{item.merchantId}, #{item.lastUpdateTime}, #{buyer})
+            #{item.merchantId}, #{item.lastUpdateTime}, #{item.buyer})
         </foreach>
     </insert>
 </mapper>
