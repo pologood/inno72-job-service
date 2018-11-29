@@ -213,7 +213,7 @@ public class MerchantCountByDayTask implements IJobHandler {
 						case "008001"://出货
 							goods++;
 							break;
-						case "011001"://订单支付
+						case "011002"://订单支付
 							pay++;
 							break;
 						case "001001"://登录
