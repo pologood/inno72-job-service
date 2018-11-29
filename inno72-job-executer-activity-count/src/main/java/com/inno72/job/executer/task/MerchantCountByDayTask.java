@@ -154,7 +154,7 @@ public class MerchantCountByDayTask implements IJobHandler {
 				Set<String> user = new HashSet<>();
 
 				for (Inno72MachineInformation count : value){
-					user.add(count.getUserId());
+
 					String type = count.getType();
 					if (StringUtil.isEmpty(date)){
 						date = count.getServiceTime().substring(0, 10);
@@ -218,6 +218,7 @@ public class MerchantCountByDayTask implements IJobHandler {
 							break;
 						case "001001"://登录
 							pv++;
+							user.add(count.getUserId());
 							break;
 						default:
 							System.out.println("类型不匹配的数据埋点 -> " + JSON.toJSONString(count));
