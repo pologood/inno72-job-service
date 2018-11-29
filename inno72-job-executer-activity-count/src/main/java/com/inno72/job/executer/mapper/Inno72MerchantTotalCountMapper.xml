@@ -15,6 +15,7 @@
         <result column="pv" jdbcType="INTEGER" property="pv"/>
         <result column="uv" jdbcType="INTEGER" property="uv"/>
         <result column="order" jdbcType="INTEGER" property="order"/>
+        <result column="buyer" jdbcType="INTEGER" property="buyer"/>
         <result column="shipment" jdbcType="INTEGER" property="shipment"/>
         <result column="merchant_id" jdbcType="VARCHAR" property="merchantId"/>
         <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" javaType="java.time.LocalDateTime"
@@ -120,13 +121,13 @@
         ( `id`, `activity_name`, `activity_id`, `activity_type`,
         `activity_status`, `machine_num`, `visitor_num`, `stay_user`,
         `pv`, `uv`, `order`, `shipment`,
-        `merchant_id`, `last_update_time`)
+        `merchant_id`, `last_update_time`, `buyer`)
         values
         <foreach collection="list" separator="," item="item">
             ( #{item.id}, #{item.activityName}, #{item.activityId}, #{item.activityType},
             #{item.activityStatus}, #{item.machineNum}, #{item.visitorNum}, #{item.stayUser},
             #{item.pv}, #{item.uv}, #{item.order}, #{item.shipment},
-            #{item.merchantId}, #{item.lastUpdateTime})
+            #{item.merchantId}, #{item.lastUpdateTime}, #{buyer})
         </foreach>
     </insert>
 </mapper>
