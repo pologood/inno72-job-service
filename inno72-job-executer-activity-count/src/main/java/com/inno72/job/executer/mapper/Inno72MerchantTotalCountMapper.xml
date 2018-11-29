@@ -8,6 +8,7 @@
         <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
         <result column="activity_id" jdbcType="VARCHAR" property="activityId"/>
+        <result column="activity_type" jdbcType="VARCHAR" property="activityType"/>
         <result column="activity_status" jdbcType="VARCHAR" property="activityStatus"/>
         <result column="machine_num" jdbcType="INTEGER" property="machineNum"/>
         <result column="visitor_num" jdbcType="INTEGER" property="visitorNum"/>
