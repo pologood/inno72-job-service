@@ -223,9 +223,9 @@ public class MerchantCountByDayTask implements IJobHandler {
 							System.out.println("类型不匹配的数据埋点 -> " + JSON.toJSONString(count));
 					}
 
-					System.out.println("merchantId 停留用户数 = " + stay + ";关注 = " + concern
+					System.out.println("Thread = "+ Thread.currentThread().getName() + " merchantId = "+ merchantId + " 停留用户数 = " + stay + ";关注 = " + concern
 										+ "; 商品订单 = " + gorder + "; 优惠券订单 = " + corder + "; 出货 = " + goods
-										+ "; 订单支付 = " + pay + "; pv = " + pv + "; uv = " + user.size());
+										+ "; 订单支付 = " + pay + "; pv = " + pv + "; uv = " + user.size() + "; user = " + JSON.toJSONString(user));
 				}
 
 				Inno72MerchantTotalCountByDay day = new Inno72MerchantTotalCountByDay(
