@@ -110,9 +110,14 @@ public class MerchantCountByDayTask implements IJobHandler {
 			group.put(groupKey,inno72MachineInformations);
 		}
 
-		for (Map.Entry entry: group.entrySet()){
-			List<Inno72MachineInformation> value = (List<Inno72MachineInformation>) entry.getValue();
+
+		for (Map.Entry<String, List<Inno72MachineInformation>> entry: group.entrySet()){
+
+			List<Inno72MachineInformation> value = entry.getValue();
+
 			exec.execute(() ->{
+
+				System.out.println("当前分组数据 -> " + JSON.toJSONString(value));
 
 				int stay = 0;//停留用户数
 				int concern = 0;//关注用户数
@@ -214,14 +219,15 @@ public class MerchantCountByDayTask implements IJobHandler {
 						case "001001"://登录
 							pv++;
 							break;
+						default:
+							System.out.println("类型不匹配的数据埋点 -> " + JSON.toJSONString(count));
 					}
-					uv = user.size();
 				}
 
 				Inno72MerchantTotalCountByDay day = new Inno72MerchantTotalCountByDay(
 						StringUtil.uuid(), date, city, goodsId, goodsName,
 						merchantId, gorder, pay, goods, corder,
-						concern, pv, uv, sellerId, LocalDateTime.now(),
+						concern, pv, user.size(), sellerId, LocalDateTime.now(),
 						activityId, activityName, stay, merchantName, channelMerchantId,
 						channelId, channelName, machineCode);
 
