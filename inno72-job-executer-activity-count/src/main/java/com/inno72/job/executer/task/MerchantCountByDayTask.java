@@ -216,6 +216,9 @@ public class MerchantCountByDayTask implements IJobHandler {
 						case "011002"://订单支付
 							pay++;
 							break;
+						case "011002 "://订单支付
+							pay++;
+							break;
 						case "001001"://登录
 							pv++;
 							user.add(count.getUserId());
