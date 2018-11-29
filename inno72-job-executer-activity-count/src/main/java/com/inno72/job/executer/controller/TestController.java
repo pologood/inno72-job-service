@@ -6,6 +6,9 @@ import com.inno72.job.executer.mapper.ActivityMapper;
 import com.inno72.job.executer.service.DeviceService;
 import com.inno72.job.executer.service.ExportStoreService;
 import com.inno72.job.executer.service.FeedBackService;
+import com.inno72.job.executer.task.MerchantCountByDayTask;
+import com.inno72.job.executer.task.MerchantCountTask;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +52,21 @@ public class TestController {
     @RequestMapping(value = "/feedback", method = {RequestMethod.POST, RequestMethod.GET})
     public Result<Object> feedback(Integer type) {
         feedBackService.feedBackOrder(type);
+        return Results.success();
+    }
+    @Autowired
+    private MerchantCountByDayTask merchantCountByDayTask;
+
+	@RequestMapping(value = "/merchantCountByDayTask", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result<Object> merchantCountByDayTask() {
+		merchantCountByDayTask.execute("");
+        return Results.success();
+    }
+    @Autowired
+    private MerchantCountTask merchantCountTask;
+    @RequestMapping(value = "/merchantCountTask", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result<Object> merchantCountTask() throws Exception {
+		merchantCountTask.execute("");
         return Results.success();
     }
 
