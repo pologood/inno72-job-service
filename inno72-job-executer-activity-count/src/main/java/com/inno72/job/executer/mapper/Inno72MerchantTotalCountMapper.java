@@ -38,4 +38,6 @@ public interface Inno72MerchantTotalCountMapper{
 	Integer getMachineNumByInteract(Map<String, String> selectByDayParam);
 
 	String findMerchantBySellerId(String sellerId);
+
+	int update(Inno72MerchantTotalCount count);
 }

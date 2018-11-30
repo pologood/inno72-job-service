@@ -8,6 +8,7 @@
         <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
         <result column="activity_id" jdbcType="VARCHAR" property="activityId"/>
+        <result column="activity_type" jdbcType="VARCHAR" property="activityType"/>
         <result column="activity_status" jdbcType="VARCHAR" property="activityStatus"/>
         <result column="machine_num" jdbcType="INTEGER" property="machineNum"/>
         <result column="visitor_num" jdbcType="INTEGER" property="visitorNum"/>
@@ -15,11 +16,21 @@
         <result column="pv" jdbcType="INTEGER" property="pv"/>
         <result column="uv" jdbcType="INTEGER" property="uv"/>
         <result column="order" jdbcType="INTEGER" property="order"/>
+        <result column="buyer" jdbcType="INTEGER" property="buyer"/>
         <result column="shipment" jdbcType="INTEGER" property="shipment"/>
         <result column="merchant_id" jdbcType="VARCHAR" property="merchantId"/>
         <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" javaType="java.time.LocalDateTime"
                 typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
     </resultMap>
+    <update id="update" parameterType="com.inno72.job.executer.model.Inno72MerchantTotalCount">
+        update `inno72`.`inno72_merchant_total_count`
+        set
+        `activity_status`=#{activityStatus}, `machine_num`=#{machineNum}, `visitor_num`=#{visitorNum},
+        `stay_user`=#{stayUser}, `pv`=#{pv}, `uv`=#{uv},
+        `order`=#{order}, `shipment`=#{shipment}, `buyer`=#{buyer},
+        `last_update_time`=#{lastUpdateTime}
+        where `id`= #{id};
+    </update>
     <delete id="deleteByIdS" parameterType="java.util.List" >
         delete from inno72_merchant_total_count
         where id in
@@ -69,8 +80,14 @@
         where plan.activity_id = #{activityId}
     </select>
     <select id="getVisitorNumFromHourLog" resultType="java.lang.Integer" parameterType="map">
-        select sum(num) from inno72_machine_info_log_hour
-            where type = 1 and activity_id = #{activityId}
+        select SUM(num) from inno72_machine_info_log_hour where machine_code in (
+        select machine_code from inno72_statistic_activity_machine_snapshot
+        where activity_id =  #{activityId}
+        <if test="lastUpdateTime != null">
+            and handle_time > #{lastUpdateTime})
+        </if>
+        )
+        and type = 1
         <if test="lastUpdateTime != null">
             and `time` > #{lastUpdateTime}
         </if>
@@ -120,13 +137,13 @@
         ( `id`, `activity_name`, `activity_id`, `activity_type`,
         `activity_status`, `machine_num`, `visitor_num`, `stay_user`,
         `pv`, `uv`, `order`, `shipment`,
-        `merchant_id`, `last_update_time`)
+        `merchant_id`, `last_update_time`, `buyer`)
         values
         <foreach collection="list" separator="," item="item">
             ( #{item.id}, #{item.activityName}, #{item.activityId}, #{item.activityType},
             #{item.activityStatus}, #{item.machineNum}, #{item.visitorNum}, #{item.stayUser},
             #{item.pv}, #{item.uv}, #{item.order}, #{item.shipment},
-            #{item.merchantId}, #{item.lastUpdateTime})
+            #{item.merchantId}, #{item.lastUpdateTime}, #{item.buyer})
         </foreach>
     </insert>
 </mapper>

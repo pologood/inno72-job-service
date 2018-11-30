@@ -72,7 +72,8 @@ public class MerchantCountByDayTask implements IJobHandler {
 		types.add("007001");//订单数
 		types.add("007002");//订单数
 		types.add("008001");//出货数
-		types.add("011001");//支付
+		types.add("011002");//支付
+		types.add("011002 ");//支付
 		types.add("001001");//互动次数  去重后是互动人数
 
 		query.addCriteria(Criteria.where("type").in(types));
@@ -154,7 +155,7 @@ public class MerchantCountByDayTask implements IJobHandler {
 				Set<String> user = new HashSet<>();
 
 				for (Inno72MachineInformation count : value){
-					user.add(count.getUserId());
+
 					String type = count.getType();
 					if (StringUtil.isEmpty(date)){
 						date = count.getServiceTime().substring(0, 10);
@@ -213,15 +214,23 @@ public class MerchantCountByDayTask implements IJobHandler {
 						case "008001"://出货
 							goods++;
 							break;
-						case "011001"://订单支付
+						case "011002"://订单支付
+							pay++;
+							break;
+						case "011002 "://订单支付
 							pay++;
 							break;
 						case "001001"://登录
 							pv++;
+							user.add(count.getUserId());
 							break;
 						default:
 							System.out.println("类型不匹配的数据埋点 -> " + JSON.toJSONString(count));
 					}
+
+					System.out.println("Thread = "+ Thread.currentThread().getName() + " merchantId = "+ merchantId + " 停留用户数 = " + stay + ";关注 = " + concern
+										+ "; 商品订单 = " + gorder + "; 优惠券订单 = " + corder + "; 出货 = " + goods
+										+ "; 订单支付 = " + pay + "; pv = " + pv + "; uv = " + user.size() + "; user = " + JSON.toJSONString(user));
 				}
 
 				Inno72MerchantTotalCountByDay day = new Inno72MerchantTotalCountByDay(
