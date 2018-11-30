@@ -85,7 +85,7 @@
         where activity_id =  #{activityId}
         and
         <if test="lastUpdateTime != null">
-          handle_time > '2018-11-22 00:00:00')
+          handle_time > #{lastUpdateTime})
         </if>
         and type = 1
         <if test="lastUpdateTime != null">
