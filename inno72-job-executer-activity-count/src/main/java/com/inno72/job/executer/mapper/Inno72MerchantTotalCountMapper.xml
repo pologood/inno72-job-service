@@ -86,6 +86,7 @@
         <if test="lastUpdateTime != null">
             and handle_time > #{lastUpdateTime})
         </if>
+        )
         and type = 1
         <if test="lastUpdateTime != null">
             and `time` > #{lastUpdateTime}
