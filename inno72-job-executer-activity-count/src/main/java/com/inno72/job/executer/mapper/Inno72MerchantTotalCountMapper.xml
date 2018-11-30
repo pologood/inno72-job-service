@@ -83,9 +83,8 @@
         select SUM(num) from inno72_machine_info_log_hour where machine_code in (
         select machine_code from inno72_statistic_activity_machine_snapshot
         where activity_id =  #{activityId}
-        and
         <if test="lastUpdateTime != null">
-          handle_time > #{lastUpdateTime})
+            and handle_time > #{lastUpdateTime})
         </if>
         and type = 1
         <if test="lastUpdateTime != null">
