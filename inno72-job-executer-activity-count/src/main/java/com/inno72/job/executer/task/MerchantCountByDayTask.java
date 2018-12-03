@@ -64,7 +64,7 @@ public class MerchantCountByDayTask implements IJobHandler {
 		if (StringUtils.isEmpty(lastActionTime)){
 			JobLogger.log("从埋点中获取初始化的时间");
 			Query _query = new Query();
-			query.addCriteria(Criteria.where("type").in(types));
+			_query.addCriteria(Criteria.where("type").in(types));
 			_query.with(new Sort(new Sort.Order(Sort.Direction.ASC,"serviceTime")));
 			_query.limit(1);
 			Inno72MachineInformation inno72MachineInformation = mongoOperations
