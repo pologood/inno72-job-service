@@ -69,11 +69,17 @@ public class MerchantCountByDayTask implements IJobHandler {
 			_query.limit(1);
 			Inno72MachineInformation inno72MachineInformation = mongoOperations
 					.findOne(_query, Inno72MachineInformation.class, "Inno72MachineInformation");
-			JobLogger.log("商户日统计任务日志嘴小时间" + JSON.toJSONString(inno72MachineInformation));
+			JobLogger.log("商户日统计任务日志最小时间" + JSON.toJSONString(inno72MachineInformation));
 			if (inno72MachineInformation == null){
 				return  new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
 			}
-			lastActionTime = inno72MachineInformation.getServiceTime();
+			while (StringUtil.isEmpty(lastActionTime = inno72MachineInformation.getServiceTime())){
+				JobLogger.log("商户日统计任务日志最小时间 - 删除没有服务时间的文档" + JSON.toJSONString(inno72MachineInformation));
+				mongoOperations.remove(new Query().addCriteria(Criteria.where("_id").is(inno72MachineInformation.get_id())), Inno72MachineInformation.class, "Inno72MachineInformation");
+				inno72MachineInformation = mongoOperations
+						.findOne(_query, Inno72MachineInformation.class, "Inno72MachineInformation");
+				JobLogger.log("商户日统计任务日志最小时间 - 重新查询" + JSON.toJSONString(inno72MachineInformation));
+			}
 		}
 
 		JobLogger.log("商户日统计任务上次执行时间" + lastActionTime);

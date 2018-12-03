@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.Length;
 
 public class Inno72MachineInformation {
 
+	private String _id;
 
 	/** sessionUuid */
 	private String sessionUuid;
@@ -164,6 +165,14 @@ public class Inno72MachineInformation {
 	 * 渠道名称 - table -> inno72_merchant.channel_name
 	 */
 	private String channelName;//TODO 新
+
+	public String get_id() {
+		return _id;
+	}
+
+	public void set_id(String _id) {
+		this._id = _id;
+	}
 
 	public String getMerchantId() {
 		return merchantId;
