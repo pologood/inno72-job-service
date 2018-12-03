@@ -84,7 +84,7 @@
         select machine_code from inno72_statistic_activity_machine_snapshot
         where activity_id =  #{activityId}
         <if test="lastUpdateTime != null">
-            and handle_time > #{lastUpdateTime})
+            and handle_time > #{lastUpdateTime}
         </if>
         )
         and type = 1
