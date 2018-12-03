@@ -51,21 +51,6 @@ public class MerchantCountByDayTask implements IJobHandler {
 		JobLogger.log("商户日统计任务开始");
 		String lastActionTime = inno72MerchantTotalCountByDayMapper.getLastTime();
 		Query query = new Query();
-		if (StringUtils.isEmpty(lastActionTime)){
-			JobLogger.log("从埋点中获取初始化的时间");
-			Query _query = new Query();
-			_query.with(new Sort(new Sort.Order(Sort.Direction.ASC,"serviceTime")));
-			_query.limit(1);
-			Inno72MachineInformation inno72MachineInformation = mongoOperations
-					.findOne(_query, Inno72MachineInformation.class, "Inno72MachineInformation");
-			if (inno72MachineInformation == null){
-				return  new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
-			}
-			lastActionTime = inno72MachineInformation.getServiceTime();
-		}
-
-		JobLogger.log("商户日统计任务上次执行时间" + lastActionTime);
-
 		List<String> types = new ArrayList<>();
 		types.add("100100");//停留用户数 用户体验数
 		types.add("002001");//关注数
@@ -75,6 +60,24 @@ public class MerchantCountByDayTask implements IJobHandler {
 		types.add("011002");//支付
 		types.add("011002 ");//支付
 		types.add("001001");//互动次数  去重后是互动人数
+
+		if (StringUtils.isEmpty(lastActionTime)){
+			JobLogger.log("从埋点中获取初始化的时间");
+			Query _query = new Query();
+			query.addCriteria(Criteria.where("type").in(types));
+			_query.with(new Sort(new Sort.Order(Sort.Direction.ASC,"serviceTime")));
+			_query.limit(1);
+			Inno72MachineInformation inno72MachineInformation = mongoOperations
+					.findOne(_query, Inno72MachineInformation.class, "Inno72MachineInformation");
+			JobLogger.log("商户日统计任务日志嘴小时间" + JSON.toJSONString(inno72MachineInformation));
+			if (inno72MachineInformation == null){
+				return  new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
+			}
+			lastActionTime = inno72MachineInformation.getServiceTime();
+		}
+
+		JobLogger.log("商户日统计任务上次执行时间" + lastActionTime);
+
 
 		query.addCriteria(Criteria.where("type").in(types));
 
