@@ -23,4 +23,13 @@ public interface Inno72MerchantTotalCountByDayMapper {
 
 	List<Inno72MerchantTotalCountByDay> selectAll();
 
+	void deleteByIds(List<String> dayIds);
+
+	List<Inno72MerchantTotalCountByDay> selectByDate(Map<String, String> sParam);
+
+	String selectLastDateFromOrder();
+
+	String selectLastDateFromLife();
+
+	void insertS(List<Inno72MerchantTotalCountByDay> countByDays);
 }

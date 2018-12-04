@@ -1,5 +1,7 @@
 package com.inno72.job.executer.controller;
 
+import javax.annotation.Resource;
+
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.job.executer.mapper.ActivityMapper;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TestController {
+
     @Autowired
     ActivityMapper activityMapper;
 
@@ -58,7 +61,7 @@ public class TestController {
     private MerchantCountByDayTask merchantCountByDayTask;
 
 	@RequestMapping(value = "/merchantCountByDayTask", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result<Object> merchantCountByDayTask() {
+    public Result<Object> merchantCountByDayTask() throws Exception {
 		merchantCountByDayTask.execute("");
         return Results.success();
     }

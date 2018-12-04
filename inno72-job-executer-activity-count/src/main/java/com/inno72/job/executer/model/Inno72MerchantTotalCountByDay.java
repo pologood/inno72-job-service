@@ -33,6 +33,11 @@ public class Inno72MerchantTotalCountByDay {
 	private Integer stayNum;
 
 	/**
+	 * 客流量
+	 */
+	private Integer vistor;
+
+	/**
 	 * 商户ID主键
 	 */
 //	private String merchantAccountId;
@@ -437,4 +442,19 @@ public class Inno72MerchantTotalCountByDay {
 		this.merchantCode = merchantCode;
 	}
 
+	public Integer getVistor() {
+		return vistor;
+	}
+
+	public void setVistor(Integer vistor) {
+		this.vistor = vistor;
+	}
+
+	public String getMachineCode() {
+		return machineCode;
+	}
+
+	public void setMachineCode(String machineCode) {
+		this.machineCode = machineCode;
+	}
 }
