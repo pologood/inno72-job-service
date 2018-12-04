@@ -343,7 +343,9 @@ public class MerchantCountByDayTask implements IJobHandler {
 					v.setId(StringUtil.uuid());
 					v.setLastUpdateTime(LocalDateTime.now());
 				});
-				inno72MerchantTotalCountByDayMapper.insertS(countByDays);
+				if (countByDays.size()>0){
+					inno72MerchantTotalCountByDayMapper.insertS(countByDays);
+				}
 			});
 			startTimeLocal = plusDays;
 		}
