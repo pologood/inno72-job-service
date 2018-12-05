@@ -13,12 +13,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.annotation.Resource;
+import javax.swing.text.DateFormatter;
 
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.inno72.common.datetime.LocalDateTimeUtil;
+import com.inno72.common.datetime.LocalDateUtil;
 import com.inno72.common.utils.StringUtil;
 import com.inno72.job.core.biz.model.ReturnT;
 import com.inno72.job.core.handle.IJobHandler;
@@ -376,18 +378,18 @@ public class MerchantCountByDayTask implements IJobHandler {
 
 		while (true) {
 
-			LocalDateTime plusDays = startTimeLocal.plusDays(4);
+			LocalDateTime plusDays = startTimeLocal.plusDays(1);
 
 			long days = Duration.between(startTimeLocal, endTimeLocal).toDays();
 			if (days <= 0) {
 				break;
 			}
-			if (days < 4) {
+			if (days < 1) {
 				plusDays = endTimeLocal;
 			}
 			Map<String, String> params = new HashMap<>();
-			params.put("startTime", LocalDateTimeUtil.transfer(startTimeLocal, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-			params.put("endTime",  LocalDateTimeUtil.transfer(plusDays, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+			params.put("startTime", LocalDateUtil.transfer(startTimeLocal.toLocalDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+			params.put("endTime",  LocalDateUtil.transfer(plusDays.toLocalDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 			fixedThreadPool.execute(() -> {
 				JobLogger.log("执行线程 - 参数 " + JSON.toJSONString(params));
 				List<OrderVo> orderVos = inno72MerchantTotalCountByDayMapper.selectOrderByDate(params);
@@ -412,7 +414,6 @@ public class MerchantCountByDayTask implements IJobHandler {
 					String merchantId = orderVo.getMerchantId();
 					String city = orderVo.getCity();
 					String date = orderVo.getDate();
-
 					String key = activityId+city+merchantId+goodsId+date;
 					List<OrderVo> orderVosValue = dayMap.get(key);
 					if (orderVosValue == null){
@@ -420,6 +421,7 @@ public class MerchantCountByDayTask implements IJobHandler {
 					}
 					orderVosValue.add(orderVo);
 					dayMap.put(key, orderVosValue);
+
 				}
 
 				for (Map.Entry<String, List<OrderVo>> entry : dayMap.entrySet()){

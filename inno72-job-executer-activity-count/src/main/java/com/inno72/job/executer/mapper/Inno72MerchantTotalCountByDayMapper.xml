@@ -316,10 +316,10 @@
         <result column="city" jdbcType="VARCHAR" property="city"/>
         <result column="date" jdbcType="VARCHAR" property="date"/>
     </resultMap>
-    <select id="selectOrderByDate" resultMap="BaseResultMap" parameterType="map">
+    <select id="selectOrderByDate" resultMap="OrderVoResultMap" parameterType="map">
         select
             a1.merchant_id,
-            a1.inno72_activity_id,
+            a1.inno72_activity_id as activity_id,
             IFNULL(activity.name, interact.name) as activity_name,
             DATE_FORMAT(a1.order_time , '%Y-%m-%d') AS `date`,
             pay_status,
@@ -349,13 +349,13 @@
     <!--private String activityId;-->
     <!--private String city;-->
     <!--private String date;-->
-    <resultMap id="OrderVoResultMap" type="com.inno72.job.executer.vo.FlowmeterVo">
+    <resultMap id="FlowmeterVoResultMap" type="com.inno72.job.executer.vo.FlowmeterVo">
         <result column="flowmeter" jdbcType="VARCHAR" property="flowmeter"/>
         <result column="activity_id" jdbcType="VARCHAR" property="activityId"/>
         <result column="city" jdbcType="VARCHAR" property="city"/>
         <result column="date" jdbcType="VARCHAR" property="date"/>
     </resultMap>
-    <select id="selectPv" resultMap="OrderVoResultMap" parameterType="map">
+    <select id="selectPv" resultMap="FlowmeterVoResultMap" parameterType="map">
         select count(0) as flowmeter, date, activity_id, city.city from (select a.activity_id , DATE_FORMAT(a.login_time,"%Y-%m-%d") as date,machine_code  from inno72_game_user_life a) a1
             left join (
                           select a1.id, machine_code, city from (select id, machine_code, locale_id from inno72_machine) a1
@@ -365,7 +365,7 @@
         where date BETWEEN #{startTime} and #{endTime}
         group by city.city, a1.activity_id, a1.date;
     </select>
-    <select id="selectUv" resultMap="OrderVoResultMap" parameterType="map">
+    <select id="selectUv" resultMap="FlowmeterVoResultMap" parameterType="map">
         select COUNT(DISTINCT user_channel_id) as flowmeter, date, activity_id, city.city from
             (select a.user_channel_id, a.activity_id , DATE_FORMAT(a.login_time,"%Y-%m-%d") as date,machine_code, a.nick_name from inno72_game_user_life a) a1
             left join (
@@ -376,7 +376,7 @@
         where date BETWEEN  #{startTime} and #{endTime}
         group by city.city, a1.activity_id, a1.date;
     </select>
-    <select id="selectConcernNum" parameterType="map" resultMap="OrderVoResultMap">
+    <select id="selectConcernNum" parameterType="map" resultMap="FlowmeterVoResultMap">
         select sum(num) as flowmeter, activity_id, DATE_FORMAT(time,"%Y-%m-%d") as date, m.city as city from
             (
                 select DATE_FORMAT(time,"%Y-%m-%d") as time, activity_id, num, type , machine_code
@@ -394,7 +394,7 @@
               and time BETWEEN #{startTime} and #{endTime}
         group by activity_id, city
     </select>
-    <select id="selectStay" parameterType="map" resultMap="OrderVoResultMap">
+    <select id="selectStay" parameterType="map" resultMap="FlowmeterVoResultMap">
         select sum(num) as flowmeter, activity_id, DATE_FORMAT(time,"%Y-%m-%d") as date, m.city as city from
             (
                 select DATE_FORMAT(time,"%Y-%m-%d") as time, activity_id, num, type , machine_code
