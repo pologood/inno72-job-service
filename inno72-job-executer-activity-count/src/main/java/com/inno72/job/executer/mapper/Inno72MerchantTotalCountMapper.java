@@ -31,7 +31,7 @@ public interface Inno72MerchantTotalCountMapper{
 
 	List<Inno72MerchantTotalCount> selectAll();
 
-	Map<String,Object> selectActivityById(String activityId);
+	Integer selectActivityById(@Param("activityId") String activityId);
 
 	Integer getActivityStatusFromInteract(@Param("activityId") String activityId, @Param("merchantId") String merchantId);
 

@@ -128,13 +128,13 @@ public class MerchantCountTask implements IJobHandler {
 			selectByDayParam.put("activityId", activityId);
 
 			//查询是否是常规活动 inno72_activity 否则机器数量和活动状态按照互派查询
-			Map<String, Object> o = inno72MerchantTotalCountMapper.selectActivityById(activityId);
+			int o = inno72MerchantTotalCountMapper.selectActivityById(activityId);
 
 			Integer machineNum;
 			if (count == null){
 				//当 count 不存在时 初始化一个count 需计算 机器数量 和 活动状态
 				String activityType = "";
-				if ( o != null){
+				if ( o > 0){
 					//机器数量
 					activityType = "1";
 					machineNum = inno72MerchantTotalCountMapper.getMachineNum(selectByDayParam);
@@ -145,7 +145,7 @@ public class MerchantCountTask implements IJobHandler {
 				Integer visitorNum = inno72MerchantTotalCountMapper.getVisitorNumFromHourLog(selectByDayParam);
 				// 活动状态
 				Integer i;
-				if ( o != null){
+				if ( o > 0){
 					i = inno72MerchantTotalCountMapper.getActivityStatus(activityId, subDate);
 				}else {
 					i = inno72MerchantTotalCountMapper.getActivityStatusFromInteract(activityId, merchantId);
