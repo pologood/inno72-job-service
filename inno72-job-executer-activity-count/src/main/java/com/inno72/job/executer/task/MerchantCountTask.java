@@ -86,17 +86,15 @@ public class MerchantCountTask implements IJobHandler {
 				count.setShipment(count.getShipment() + day.getOrderQtySucc());
 				count.setVisitorNum(count.getVisitorNum() + (visitorNum == null ? 0 :visitorNum));
 				count.setLastUpdateTime(LocalDateTime.now());
+				count.setPv(count.getPv() + day.getPv());
+				count.setStayUser(count.getStayUser() + day.getStayNum());
+				count.setUv(count.getUv() + day.getUv());
 				if (StringUtil.isEmpty(count.getActivityName()) && StringUtil.notEmpty(day.getActivityName())){
 					count.setActivityName(day.getActivityName());
 				}
 				if (StringUtil.isEmpty(count.getMerchantId()) && StringUtil.notEmpty(day.getMerchantId())){
 					count.setMerchantId(day.getMerchantId());
 				}
-			}
-			if (days .size() > 0){
-				count.setPv(count.getPv() + days.get(0).getPv());
-				count.setStayUser(count.getStayUser() + days.get(0).getStayNum());
-				count.setUv(count.getUv() + days.get(0).getUv());
 			}
 			int i = inno72MerchantTotalCountMapper.update(count);
 		}

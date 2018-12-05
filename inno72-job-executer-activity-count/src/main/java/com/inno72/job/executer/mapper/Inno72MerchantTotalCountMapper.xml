@@ -115,14 +115,15 @@
     </select>
 
     <select id="getMachineNumByInteract" resultType="java.lang.Integer" parameterType="map">
-        select count(im.machine_id) from (
-        select g.id as goodsId from inno72_merchant m
-                left join inno72_merchant_user u on u.id = m.merchant_account_id
-            left join inno72_goods g on g.seller_id = m.merchant_code
-            where u.merchant_id = #{merchantId}) goods
-        inner join inno72_interact_machine_goods ig on ig.goods_id = goodsId
-        inner join inno72_interact_machine im on im.id = ig.interact_machine_id
-        where im.interact_id = #{activityId}
+#         select count(im.machine_id) from (
+#         select g.id as goodsId from inno72_merchant m
+#                 left join inno72_merchant_user u on u.id = m.merchant_account_id
+#             left join inno72_goods g on g.seller_id = m.merchant_code
+#             where u.merchant_id = #{merchantId}) goods
+#         inner join inno72_interact_machine_goods ig on ig.goods_id = goodsId
+#         inner join inno72_interact_machine im on im.id = ig.interact_machine_id
+#         where im.interact_id = #{activityId}
+        select count(0) from inno72_interact_machine where interact_id = #{activityId}
     </select>
     <select id="findMerchantBySellerId" resultType="java.lang.String">
         select merchant_id from inno72_merchant_user u
