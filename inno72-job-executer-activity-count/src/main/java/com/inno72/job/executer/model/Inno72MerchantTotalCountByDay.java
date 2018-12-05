@@ -92,22 +92,9 @@ public class Inno72MerchantTotalCountByDay {
 	private LocalDateTime lastUpdateTime;
 
 	/**
-	 * 商户总名称 - table -> inno72_merchant_user.merchant_name
-	 */
-	private String merchantName;// TODO 新
-
-	/**
 	 * 渠道商家ID - table -> inno72_merchant.id
 	 */
 	private String channelMerchantId;//TODO 新
-	/**
-	 * 渠道ID - table -> inno72_merchant.channel_id
-	 */
-	private String channelId;//TODO 新
-	/**
-	 * 渠道名称 - table -> inno72_merchant.channel_name
-	 */
-	private String channelName;//TODO 新
 
 	/**
 	 * @return id
@@ -344,36 +331,12 @@ public class Inno72MerchantTotalCountByDay {
 		return sellerId;
 	}
 
-	public String getMerchantName() {
-		return merchantName;
-	}
-
-	public void setMerchantName(String merchantName) {
-		this.merchantName = merchantName;
-	}
-
 	public String getChannelMerchantId() {
 		return channelMerchantId;
 	}
 
 	public void setChannelMerchantId(String channelMerchantId) {
 		this.channelMerchantId = channelMerchantId;
-	}
-
-	public String getChannelId() {
-		return channelId;
-	}
-
-	public void setChannelId(String channelId) {
-		this.channelId = channelId;
-	}
-
-	public String getChannelName() {
-		return channelName;
-	}
-
-	public void setChannelName(String channelName) {
-		this.channelName = channelName;
 	}
 
 	/**
@@ -396,8 +359,8 @@ public class Inno72MerchantTotalCountByDay {
 	public Inno72MerchantTotalCountByDay(String id, String date, String city, String goodsId, String goodsName,
 			String merchantId, Integer orderQtyTotal, Integer orderQtySucc, Integer goodsNum, Integer couponNum,
 			Integer concernNum, Integer pv, Integer uv, String sellerId, LocalDateTime lastUpdateTime,
-			String activityId, String activityName, Integer stayNum, String merchantName, String channelMerchantId,
-			String channelId, String channelName, String machineCode) {
+			String activityId, String activityName, Integer stayNum, String channelMerchantId,
+			String machineCode) {
 		this.id = id;
 		this.date = date;
 		this.city = city;
@@ -416,10 +379,7 @@ public class Inno72MerchantTotalCountByDay {
 		this.activityId = activityId;
 		this.activityName = activityName;
 		this.stayNum = stayNum;
-		this.merchantName = merchantName;
 		this.channelMerchantId = channelMerchantId;
-		this.channelId = channelId;
-		this.channelName = channelName;
 		this.machineCode = machineCode;
 	}
 

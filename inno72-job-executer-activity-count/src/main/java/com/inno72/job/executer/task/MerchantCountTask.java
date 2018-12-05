@@ -83,10 +83,7 @@ public class MerchantCountTask implements IJobHandler {
 				count.setBuyer(count.getBuyer() + day.getOrderQtySucc());
 				count.setMachineNum(machineNum > count.getMachineNum() ? machineNum  :  count.getMachineNum());
 				count.setOrder(count.getOrder() + day.getOrderQtyTotal());
-				count.setPv(count.getPv() + day.getPv());
 				count.setShipment(count.getShipment() + day.getOrderQtySucc());
-				count.setStayUser(count.getStayUser() + day.getStayNum());
-				count.setUv(count.getUv() + day.getUv());
 				count.setVisitorNum(count.getVisitorNum() + (visitorNum == null ? 0 :visitorNum));
 				count.setLastUpdateTime(LocalDateTime.now());
 				if (StringUtil.isEmpty(count.getActivityName()) && StringUtil.notEmpty(day.getActivityName())){
@@ -95,6 +92,11 @@ public class MerchantCountTask implements IJobHandler {
 				if (StringUtil.isEmpty(count.getMerchantId()) && StringUtil.notEmpty(day.getMerchantId())){
 					count.setMerchantId(day.getMerchantId());
 				}
+			}
+			if (days .size() > 0){
+				count.setPv(count.getPv() + days.get(0).getPv());
+				count.setStayUser(count.getStayUser() + days.get(0).getStayNum());
+				count.setUv(count.getUv() + days.get(0).getUv());
 			}
 			int i = inno72MerchantTotalCountMapper.update(count);
 		}
@@ -159,10 +161,7 @@ public class MerchantCountTask implements IJobHandler {
 				//初始化已经设置
 				//				count.setMachineNum(machineNum > count.getMachineNum() ? machineNum  :  count.getMachineNum());
 				count.setOrder(count.getOrder() + day.getOrderQtyTotal());
-				count.setPv(count.getPv() + day.getPv());
 				count.setShipment(count.getShipment() + day.getOrderQtySucc());
-				count.setStayUser(count.getStayUser() + day.getStayNum());
-				count.setUv(count.getUv() + day.getUv());
 				// 初始化已经设置
 				//				count.setVisitorNum(count.getVisitorNum() + (visitorNum == null ? 0 :visitorNum));
 				if (StringUtil.isEmpty(count.getMerchantId()) && StringUtil.notEmpty(day.getMerchantId())){
@@ -183,7 +182,9 @@ public class MerchantCountTask implements IJobHandler {
 		}
 
 		JobLogger.log("插入数据 " + JSON.toJSONString(insertCounts));
-		inno72MerchantTotalCountMapper.insertS(insertCounts);
+		if (insertCounts.size() > 0){
+			inno72MerchantTotalCountMapper.insertS(insertCounts);
+		}
 
 		return  new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
 	}

@@ -274,7 +274,8 @@
         num FROM inno72_machine_info_log_hour WHERE type = 1
         ) h GROUP BY h.machine_code ,
         h.time
-        ) u7 ON u1.time = u7.time AND u1.machine_code = u7.machine_code LEFT JOIN(
+        ) u7 ON u1.time = u7.time AND u1.machine_code = u7.machine_code  LEFT JOIN(
+
         SELECT h.machine_code ,
         h.time ,
         h.seller_id ,
@@ -299,5 +300,116 @@
     </select>
     <select id="selectLastDateFromLife" resultType="java.lang.String">
         select DATE_FORMAT(MIN(login_time),'%Y-%m-%d %T') from inno72_game_user_life
+    </select>
+    <resultMap id="OrderVoResultMap" type="com.inno72.job.executer.vo.OrderVo">
+        <result column="merchant_id" jdbcType="VARCHAR" property="merchantId"/>
+        <result column="merchant_name" jdbcType="VARCHAR" property="merchantName"/>
+        <result column="activity_id" jdbcType="VARCHAR" property="activityId"/>
+        <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
+        <result column="pay_status" jdbcType="INTEGER" property="payStatus"/>
+        <result column="goods_type" jdbcType="VARCHAR" property="goodsType"/>
+        <result column="goods_id" jdbcType="VARCHAR" property="goodsId"/>
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="merchant_account_code" jdbcType="VARCHAR" property="merchantAccountCode"/>
+        <result column="seller_id" jdbcType="VARCHAR" property="sellerId"/>
+        <result column="city" jdbcType="VARCHAR" property="city"/>
+        <result column="date" jdbcType="VARCHAR" property="date"/>
+    </resultMap>
+    <select id="selectOrderByDate" resultMap="BaseResultMap" parameterType="map">
+        select
+            a1.merchant_id,
+            a1.inno72_activity_id,
+            IFNULL(activity.name, interact.name) as activity_name,
+            DATE_FORMAT(a1.order_time , '%Y-%m-%d') AS `date`,
+            pay_status,
+            a1.goods_type,
+            a2.goods_id,
+            a2.goods_name,
+            a2.`status` ,
+            merchant.merchant_name,
+            merchant.seller_id,
+            merchant.merchant_id as merchant_account_code,
+            city.city
+        from inno72_order a1
+            join inno72_order_goods a2 on a1.order_num = a2.order_num
+            left join (select id, name from inno72_activity) activity on activity.id = a1.inno72_activity_id
+            left join (select id, name from inno72_interact) interact on interact.id = a1.inno72_activity_id
+            left join (select m1.id, m1.merchant_name, m1.merchant_code as seller_id, m2.merchant_id as merchant_id
+                       from inno72_merchant m1 join inno72_merchant_user m2 on m1.merchant_account_id = m2.id) merchant
+                on merchant.id = a1.merchant_id
+            left join (
+                          select a1.id, machine_code, city from (select id, machine_code, locale_id from inno72_machine) a1
+                              left join (select id, area_code from inno72_locale) a2 on a2.id = a1.locale_id
+                              left join (select code, city from inno72_admin_area) a3 on a2.area_code = a3.code
+                      ) city on city.id = a1.machine_id
+        where order_time BETWEEN #{startTime} and #{endTime}
+    </select>
+    <!--private Integer flowmeter;-->
+    <!--private String activityId;-->
+    <!--private String city;-->
+    <!--private String date;-->
+    <resultMap id="OrderVoResultMap" type="com.inno72.job.executer.vo.FlowmeterVo">
+        <result column="flowmeter" jdbcType="VARCHAR" property="flowmeter"/>
+        <result column="activity_id" jdbcType="VARCHAR" property="activityId"/>
+        <result column="city" jdbcType="VARCHAR" property="city"/>
+        <result column="date" jdbcType="VARCHAR" property="date"/>
+    </resultMap>
+    <select id="selectPv" resultMap="OrderVoResultMap" parameterType="map">
+        select count(0) as flowmeter, date, activity_id, city.city from (select a.activity_id , DATE_FORMAT(a.login_time,"%Y-%m-%d") as date,machine_code  from inno72_game_user_life a) a1
+            left join (
+                          select a1.id, machine_code, city from (select id, machine_code, locale_id from inno72_machine) a1
+                              left join (select id, area_code from inno72_locale) a2 on a2.id = a1.locale_id
+                              left join (select code, city from inno72_admin_area) a3 on a2.area_code = a3.code
+                      ) city on city.machine_code = a1.machine_code
+        where date BETWEEN #{startTime} and #{endTime}
+        group by city.city, a1.activity_id, a1.date;
+    </select>
+    <select id="selectUv" resultMap="OrderVoResultMap" parameterType="map">
+        select COUNT(DISTINCT user_channel_id) as flowmeter, date, activity_id, city.city from
+            (select a.user_channel_id, a.activity_id , DATE_FORMAT(a.login_time,"%Y-%m-%d") as date,machine_code, a.nick_name from inno72_game_user_life a) a1
+            left join (
+                          select a1.id, machine_code, city from (select id, machine_code, locale_id from inno72_machine) a1
+                              left join (select id, area_code from inno72_locale) a2 on a2.id = a1.locale_id
+                              left join (select code, city from inno72_admin_area) a3 on a2.area_code = a3.code
+                      ) city on city.machine_code = a1.machine_code
+        where date BETWEEN  #{startTime} and #{endTime}
+        group by city.city, a1.activity_id, a1.date;
+    </select>
+    <select id="selectConcernNum" parameterType="map" resultMap="OrderVoResultMap">
+        select sum(num) as flowmeter, activity_id, DATE_FORMAT(time,"%Y-%m-%d") as date, m.city as city from
+            (
+                select DATE_FORMAT(time,"%Y-%m-%d") as time, activity_id, num, type , machine_code
+                from inno72_machine_info_log_hour h
+                where activity_id is not null
+                      and activity_id != ''
+                      and activity_id != '-1') h
+            left join
+            (select a1.id, machine_code, city from (select id, machine_code, locale_id from inno72_machine) a1
+                left join (select id, area_code from inno72_locale) a2 on a2.id = a1.locale_id
+                left join (select code, city from inno72_admin_area) a3 on a2.area_code = a3.code) m
+                on h.machine_code = m.machine_code
+
+        where type = 2
+              and time BETWEEN #{startTime} and #{endTime}
+        group by activity_id, city
+    </select>
+    <select id="selectStay" parameterType="map" resultMap="OrderVoResultMap">
+        select sum(num) as flowmeter, activity_id, DATE_FORMAT(time,"%Y-%m-%d") as date, m.city as city from
+            (
+                select DATE_FORMAT(time,"%Y-%m-%d") as time, activity_id, num, type , machine_code
+                from inno72_machine_info_log_hour h
+                where activity_id is not null
+                      and activity_id != ''
+                      and activity_id != '-1') h
+            left join
+            (select a1.id, machine_code, city from (select id, machine_code, locale_id from inno72_machine) a1
+                left join (select id, area_code from inno72_locale) a2 on a2.id = a1.locale_id
+                left join (select code, city from inno72_admin_area) a3 on a2.area_code = a3.code) m
+                on h.machine_code = m.machine_code
+
+        where type = 4
+              and time BETWEEN #{startTime} and #{endTime}
+        group by activity_id, city
     </select>
 </mapper>

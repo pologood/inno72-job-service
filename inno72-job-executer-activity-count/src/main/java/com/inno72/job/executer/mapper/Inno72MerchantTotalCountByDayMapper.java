@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.inno72.job.executer.model.Inno72MerchantTotalCount;
 import com.inno72.job.executer.model.Inno72MerchantTotalCountByDay;
+import com.inno72.job.executer.vo.FlowmeterVo;
+import com.inno72.job.executer.vo.OrderVo;
 
 @Mapper
 public interface Inno72MerchantTotalCountByDayMapper {
@@ -32,4 +34,14 @@ public interface Inno72MerchantTotalCountByDayMapper {
 	String selectLastDateFromLife();
 
 	void insertS(List<Inno72MerchantTotalCountByDay> countByDays);
+
+	List<OrderVo> selectOrderByDate(Map<String, String> params);
+
+	List<FlowmeterVo> selectPv(Map<String, String> params);
+
+	List<FlowmeterVo> selectUv(Map<String, String> params);
+
+	List<FlowmeterVo> selectConcernNum(Map<String, String> params);
+
+	List<FlowmeterVo> selectStay(Map<String, String> params);
 }
