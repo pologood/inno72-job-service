@@ -160,6 +160,9 @@ public class MerchantCountTask implements IJobHandler {
 				//				count.setMachineNum(machineNum > count.getMachineNum() ? machineNum  :  count.getMachineNum());
 				count.setOrder(count.getOrder() + day.getOrderQtyTotal());
 				count.setShipment(count.getShipment() + day.getOrderQtySucc());
+				count.setUv(count.getUv() + day.getUv());
+				count.setPv(count.getPv() + day.getPv());
+				count.setStayUser(count.getStayUser() + day.getStayNum());
 				// 初始化已经设置
 				//				count.setVisitorNum(count.getVisitorNum() + (visitorNum == null ? 0 :visitorNum));
 				if (StringUtil.isEmpty(count.getMerchantId()) && StringUtil.notEmpty(day.getMerchantId())){
