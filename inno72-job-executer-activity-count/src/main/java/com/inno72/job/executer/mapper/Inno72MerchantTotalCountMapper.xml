@@ -80,17 +80,10 @@
         where plan.activity_id = #{activityId}
     </select>
     <select id="getVisitorNumFromHourLog" resultType="java.lang.Integer" parameterType="map">
-        select SUM(num) from inno72_machine_info_log_hour where machine_code in (
-        select machine_code from inno72_statistic_activity_machine_snapshot
-        where activity_id =  #{activityId}
-        <if test="lastUpdateTime != null">
-            and handle_time > #{lastUpdateTime}
-        </if>
-        )
-        and type = 1
-        <if test="lastUpdateTime != null">
-            and `time` > #{lastUpdateTime}
-        </if>
+        select sum(num) from inno72_machine_info_log_hour where
+        activity_id = #{activityId}
+        and time > #{lastUpdateTime}
+        and type = 1;
     </select>
     <select id="selectByIds" resultMap="BaseResultMap" parameterType="list">
         select * from inno72_merchant_total_count
