@@ -7,8 +7,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import com.inno72.job.task.UserProfileIntervalTimeTask;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.inno72.job.activity.snapshot.compress.ActivitySnapshotCompressTask;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
@@ -30,7 +30,7 @@ import com.inno72.job.core.handle.annotation.JobMapperScanner;
 @Import({RedisAutoConfiguration.class, MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 public class Configure {
 	
-	static final public Class<? extends IJobHandler> TaskClazz = ActivitySnapshotCompressTask.class;
+	static final public Class<? extends IJobHandler> TaskClazz = UserProfileIntervalTimeTask.class;
 	
 	@Configuration
     @Profile("dev")

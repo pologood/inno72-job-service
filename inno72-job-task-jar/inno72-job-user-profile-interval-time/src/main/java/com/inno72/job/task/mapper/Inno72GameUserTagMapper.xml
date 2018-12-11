@@ -16,6 +16,6 @@
             typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
   </resultMap>
     <select id="selectLastUpdateTime" resultType="java.lang.String" parameterType="string">
-        select date_format(Max(create_time), "%Y-%m-%d %T") from inno72_game_user_tag limit 1
+        select date_format(Max(create_time), "%Y-%m-%d %T") from inno72.inno72_game_user_tag limit 1
     </select>
 </mapper>
