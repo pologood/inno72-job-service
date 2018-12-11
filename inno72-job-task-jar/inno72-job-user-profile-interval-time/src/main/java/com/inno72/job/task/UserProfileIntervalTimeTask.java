@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.annotation.Resource;
 
@@ -79,7 +77,7 @@ public class UserProfileIntervalTimeTask implements IJobHandler
 			params.put("startTime", startTimeLocal.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 			params.put("endTime",  plusDays.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-			JobLogger.log("尝鲜族 执行线程 - 参数 " + JSON.toJSONString(params));
+			JobLogger.log("尝鲜族 执行线程 - 参数 *************************** " + JSON.toJSONString(params));
 
 			List<Inno72GameUserLife> lives = inno72GameUserLifeMapper.selectLifeByLoginTime(params);
 
@@ -88,18 +86,24 @@ public class UserProfileIntervalTimeTask implements IJobHandler
 				continue;
 			}
 
-			for ( Inno72GameUserLife life : lives ){
-				LocalDateTime loginTime = life.getLoginTime();
-				Duration between = Duration.between(startTimeLocal, loginTime);
-				String gameUserId = life.getGameUserId();
-
-
-				// 尝鲜族
-				if (between.toMinutes() >= 15){
-					interaction.add(gameUserId);
-				}
-			}
-
+//			for ( Inno72GameUserLife life : lives ){
+//				LocalDateTime loginTime = life.getLoginTime();
+//				Duration between = Duration.between(startTimeLocal, loginTime);
+//				String gameUserId = life.getGameUserId();
+//
+//				Integer integer = usersMap.get(gameUserId);
+//				if (integer == null){
+//					integer = 1;
+//				}else {
+//					integer += 1;
+//				}
+//				usersMap.put(gameUserId, integer);
+//
+//				// 尝鲜族
+//				if (between.toMinutes() >= 15){
+//					interaction.add(gameUserId);
+//				}
+//			}
 
 			startTimeLocal = plusDays;
 		}
