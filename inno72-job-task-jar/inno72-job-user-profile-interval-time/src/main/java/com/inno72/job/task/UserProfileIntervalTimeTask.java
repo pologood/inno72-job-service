@@ -30,6 +30,7 @@ import tk.mybatis.mapper.util.StringUtil;
 public class UserProfileIntervalTimeTask implements IJobHandler
 {
 
+
 	@Resource
 	private MongoOperations operations;
 
