@@ -34,9 +34,10 @@
 		</dependency>
 		<dependency>
 			<groupId>com.inno72</groupId>
-  			<artifactId>inno72-job-example</artifactId>
+  			<artifactId>inno72-job-activity-snapshot-compress</artifactId>
   			<version>0.0.1-SNAPSHOT</version>
   		</dependency>
+  		
         <!-- plugin -->
 		<dependency>
             <groupId>com.inno72</groupId>

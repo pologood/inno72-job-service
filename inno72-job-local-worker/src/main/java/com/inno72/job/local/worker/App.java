@@ -24,7 +24,7 @@ public class App {
 		IJobHandler handler = (IJobHandler) context.getBean("testTask");
 		if (handler != null) {
 			handler.init();
-			ReturnT<String> ret = handler.execute("2018-11-07 00:00:00");
+			ReturnT<String> ret = handler.execute("2018-11-21");
 			System.out.println(ret.toString());
 			handler.destroy();
 		}
