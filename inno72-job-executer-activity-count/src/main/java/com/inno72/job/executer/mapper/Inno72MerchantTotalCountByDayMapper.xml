@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.executer.mapper.Inno72MerchantTotalCountByDayMapper">
+    <resultMap id="BaseResultMap" type="com.inno72.job.executer.model.Inno72MerchantTotalCountByDay">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="date" jdbcType="VARCHAR" property="date"/>
+        <result column="city" jdbcType="VARCHAR" property="city"/>
+        <result column="goods_id" jdbcType="VARCHAR" property="goodsId"/>
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="vistor" jdbcType="INTEGER" property="vistor"/>
+        <result column="merchant_id" jdbcType="VARCHAR" property="merchantId"/>
+        <result column="activity_id" jdbcType="VARCHAR" property="activityId"/>
+        <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
+        <result column="order_qty_total" jdbcType="INTEGER" property="orderQtyTotal"/>
+        <result column="order_qty_succ" jdbcType="INTEGER" property="orderQtySucc"/>
+        <result column="goods_num" jdbcType="INTEGER" property="goodsNum"/>
+        <result column="coupon_num" jdbcType="INTEGER" property="couponNum"/>
+        <result column="concern_num" jdbcType="INTEGER" property="concernNum"/>
+        <result column="stay_num" jdbcType="INTEGER" property="stayNum"/>
+        <result column="pv" jdbcType="INTEGER" property="pv"/>
+        <result column="uv" jdbcType="INTEGER" property="uv"/>
+        <result column="seller_id" jdbcType="VARCHAR" property="sellerId"/>
+        <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" javaType="java.time.LocalDateTime"
+                typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.inno72.job.executer.model.Inno72MerchantTotalCountByDay">
+      insert into `inno72`.`inno72_merchant_total_count_by_day` (
+      `id`, `date`, `city`, `goods_id`, `goods_name`,
+      `merchant_id`, `order_qty_total`, `order_qty_succ`, `goods_num`, `coupon_num`,
+      `concern_num`, `pv`, `uv`, `seller_id`, `last_update_time`, `activity_id`, `activity_name`, `stay_num`) values
+      ( #{id}, #{date}, #{city}, #{goodsId}, #{goodsName},
+       #{merchantId}, #{orderQtyTotal}, #{orderQtySucc}, #{goodsNum}, #{couponNum},
+       #{concernNum}, #{pv}, #{uv}, #{sellerId}, #{lastUpdateTime}, #{activityId}, #{activityName}, #{stayNum});
+    </insert>
+    <insert id="insertS" parameterType="list">
+        insert into `inno72`.`inno72_merchant_total_count_by_day` (
+            `id`, `date`, `city`, `goods_id`, `goods_name`,
+            `merchant_id`, `order_qty_total`, `order_qty_succ`, `goods_num`, `coupon_num`,
+            `concern_num`, `pv`, `uv`, `seller_id`, `last_update_time`, `activity_id`, `activity_name`, `stay_num`) values
+            <foreach collection="list" item="item" separator=",">
+                (
+                #{item.id}, #{item.date}, #{item.city},
+                #{item.goodsId}, #{item.goodsName},#{item.merchantId},
+                #{item.orderQtyTotal}, #{item.orderQtySucc}, #{item.goodsNum},
+                #{item.couponNum}, #{item.concernNum}, #{item.pv},
+                #{item.uv}, #{item.sellerId}, #{item.lastUpdateTime},
+                #{item.activityId}, #{item.activityName}, #{item.stayNum}
+                )
+            </foreach>
+    </insert>
+    <delete id="deleteByIds" parameterType="list">
+        delete from inno72_merchant_total_count_by_day
+        where id in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </delete>
+    <select id="getLastTime" resultType="java.lang.String">
+        select DATE_FORMAT(MAX(last_update_time),'%Y-%m-%d %T') from inno72_merchant_total_count_by_day
+    </select>
+    <select id="getYestodayData" resultMap="BaseResultMap" parameterType="string">
+        select * from inno72_merchant_total_count_by_day where `date` = #{subDate}
+    </select>
+    <select id="selectByLastTimeAndDayParam"
+            resultMap="BaseResultMap">
+      select * from inno72_merchant_total_count_by_day
+      where 1 = 1
+      <if test="lastUpdateTime != null and lastUpdateTime != ''">
+          and last_update_time > #{lastUpdateTime}
+      </if>
+      <if test="merchantId != null and merchantId != ''">
+          and merchant_id = #{merchantId}
+      </if>
+      <if test="activityId != null and activityId != ''">
+          and activity_id = #{activityId}
+      </if>
+    </select>
+    <select id="selectByNotInCount" resultMap="BaseResultMap" parameterType="list">
+        select * from inno72_merchant_total_count_by_day
+        where merchant_id not in
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select * from inno72_merchant_total_count_by_day
+    </select>
+    <select id="selectByDate" resultMap="BaseResultMap" parameterType="map">
+        SELECT
+        `time` AS `date` ,
+        city AS city ,
+        s.goods_id AS goods_id ,
+        activityId AS activity_id ,
+        activityName AS activity_name ,
+        sum(clickNum) stay_num ,
+        sss. NAME AS goods_name ,
+        sum(vistor) AS vistor ,
+        tu.merchant_id AS merchant_id ,
+        sum(orderCount) order_qty_total ,
+        sum(orderSuccCount) order_qty_succ ,
+        sum(goodsCount) goods_num ,
+        sum(cupponCount) coupon_num ,
+        sum(focusCount) concern_num ,
+        sum(pv) pv ,
+        sum(uv) uv ,
+        t.merchant_code AS seller_id
+        FROM
+        (
+        SELECT
+        u1.time ,
+        goods. NAME ,
+        u3.goods_id AS goods_id ,
+        IFNULL(u7.vistorCount , 0) AS vistor ,
+        IFNULL(u6.clickNum , 0) AS clickNum ,
+        IFNULL(u1.pv , 0) AS pv ,
+        IFNULL(u2.uv , 0) AS uv ,
+        IFNULL(orderCount , 0) AS orderCount ,
+        IFNULL(orderSuccCount , 0) AS orderSuccCount ,
+        IFNULL(goodscount , 0) AS goodsCount ,
+        IFNULL(cupponCount , 0) AS cupponCount ,
+        IFNULL(u8.focusCount , 0) AS focusCount ,
+        IFNULL(area.city , '') AS city ,
+        u1.activity_id AS activityId ,
+        u1.merchant_id AS merchantId ,
+        u1.activity_name AS activityName
+        FROM
+        (
+        -- pv
+        
+        SELECT
+        b.*
+        FROM
+        (
+        SELECT a.time ,
+        a.machine_code ,
+        a.merchant_id ,
+        a.activity_name ,
+        a.merchant_code ,
+        a.good_name ,
+        count(0) AS pv ,
+        a.activity_id FROM(
+        SELECT a1.game_user_id ,
+          a2.id AS merchant_id ,
+          date_format(a1.login_time , '%Y-%m-%d') AS time ,
+          a1.machine_code ,
+          a2.brand_name AS good_name ,
+          a1.merchant_code ,
+          a1.activity_id ,
+          a1.activity_name FROM inno72_game_user_life a1 LEFT JOIN inno72_merchant a2 ON a1.merchant_code = a2.merchant_code WHERE a1.merchant_code != '' AND a1.login_time BETWEEN #{startTime} AND #{endTime} AND a2.is_delete = 0
+        ) a GROUP BY a.time ,
+        a.merchant_id ,
+        a.machine_code ,
+        a.merchant_code ,
+        a.good_name
+        ) b
+        ) u1 LEFT JOIN(
+        -- uv
+        
+        SELECT b.* FROM(
+        SELECT a.time ,
+        a.machine_code ,
+        a.merchant_code ,
+        a.good_name ,
+        a.activity_id ,
+        a.merchant_id ,
+        count(0) AS uv FROM(
+        SELECT DISTINCT a1.game_user_id ,
+        date_format(a1.login_time , '%Y-%m-%d') AS time ,
+        a2.id AS merchant_id ,
+        a1.machine_code ,
+        a2.brand_name AS good_name ,
+        a1.merchant_code ,
+        a1.activity_id FROM inno72_game_user_life a1 LEFT JOIN inno72_merchant a2 ON a1.merchant_code = a2.merchant_code WHERE a1.merchant_code != '' AND a1.login_time BETWEEN #{startTime} AND #{endTime}
+        ) a GROUP BY a.time ,
+        a.machine_code ,
+        a.merchant_code ,
+        a.good_name
+        ) b
+        ) u2 ON u1.machine_code = u2.machine_code AND u1.time = u2.time AND u1.merchant_code = u2.merchant_code LEFT JOIN(
+        -- goodscount
+        
+        SELECT a.time ,
+        a.machine_code ,
+        a.merchant_code ,
+        a.good_name ,
+        a.good_id AS goods_id ,
+        count(0) AS goodscount FROM(
+        SELECT DATE_FORMAT(o.order_time , '%Y-%m-%d') AS time ,
+        m.machine_code ,
+        mer.merchant_code ,
+        mer.brand_name AS good_namemer ,
+        og.goods_name AS good_name ,
+        og.goods_id AS good_id ,
+        o.inno72_activity_id FROM inno72_order o LEFT JOIN inno72_order_goods og ON o.id = og.order_id LEFT JOIN inno72_machine m ON o.machine_id = m.id LEFT JOIN inno72_merchant mer ON o.merchant_id = mer.id WHERE o.goods_status = 1 AND o.goods_type = 1 AND o.order_time BETWEEN #{startTime} AND #{endTime}
+        ) a GROUP BY a.time ,
+        a.machine_code ,
+        a.merchant_code ,
+        a.good_name
+        ) u3 ON u1.machine_code = u3.machine_code AND u1.time = u3.time AND u1.merchant_code = u3.merchant_code LEFT JOIN(
+        -- orderCount
+        
+        SELECT a.time ,
+        a.machine_code ,
+        a.merchant_code ,
+        a.good_name ,
+        count(0) AS orderCount FROM(
+        SELECT DATE_FORMAT(o.order_time , '%Y-%m-%d') AS time ,
+        m.machine_code ,
+        mer.merchant_code ,
+        mer.brand_name AS good_name ,
+        o.inno72_activity_id FROM inno72_order o LEFT JOIN inno72_order_goods og ON o.id = og.order_id LEFT JOIN inno72_machine m ON o.machine_id = m.id LEFT JOIN inno72_goods g ON og.goods_id = g.id LEFT JOIN inno72_merchant mer ON g.seller_id = mer.id WHERE o.goods_type = 1 AND o.order_time BETWEEN #{startTime} AND #{endTime}
+        ) a GROUP BY a.time ,
+        a.machine_code ,
+        a.merchant_code ,
+        a.good_name
+        ) u4 ON u1.machine_code = u4.machine_code AND u1.time = u4.time AND u1.merchant_code = u4.merchant_code LEFT JOIN(
+        -- orderSuccCount
+        
+        SELECT a.time ,
+        a.machine_code ,
+        a.merchant_code ,
+        a.good_name ,
+        count(0) AS orderSuccCount FROM(
+        SELECT DATE_FORMAT(o.order_time , '%Y-%m-%d') AS time ,
+        m.machine_code ,
+        mer.merchant_code ,
+        mer.brand_name AS good_name ,
+        o.inno72_activity_id FROM inno72_order o LEFT JOIN inno72_order_goods og ON o.id = og.order_id LEFT JOIN inno72_machine m ON o.machine_id = m.id LEFT JOIN inno72_goods g ON og.goods_id = g.id LEFT JOIN inno72_merchant mer ON g.seller_id = mer.id WHERE o.goods_type = 1 AND og.`status` = 1 AND o.order_time BETWEEN #{startTime} AND #{endTime}
+        ) a GROUP BY a.time ,
+        a.machine_code ,
+        a.merchant_code ,
+        a.good_name
+        ) u10 ON u1.machine_code = u10.machine_code AND u1.time = u10.time AND u1.merchant_code = u10.merchant_code LEFT JOIN(
+        -- cupponCount
+        
+        SELECT a.time ,
+        a.machine_code ,
+        a.merchant_code ,
+        a.good_name ,
+        count(0) AS cupponCount ,
+        a.inno72_activity_id FROM(
+        SELECT DATE_FORMAT(o.order_time , '%Y-%m-%d') AS time ,
+        m.machine_code ,
+        mer.merchant_code ,
+        mer.brand_name AS good_name ,
+        o.inno72_activity_id FROM inno72_order o LEFT JOIN inno72_order_goods og ON o.id = og.order_id LEFT JOIN inno72_coupon c ON c.id = og.goods_id LEFT JOIN inno72_machine m ON o.machine_id = m.id LEFT JOIN inno72_shops s ON s.id = c.shops_id LEFT JOIN inno72_merchant mer ON s.seller_id = mer.id WHERE o.goods_type = 2 AND o.goods_status = 1 AND o.order_time BETWEEN #{startTime} AND #{endTime} AND c.id != ''
+        ) a GROUP BY a.time ,
+        a.machine_code ,
+        a.merchant_code ,
+        a.good_name
+        ) u5 ON u1.machine_code = u5.machine_code AND u1.time = u5.time AND u1.merchant_code = u5.merchant_code LEFT JOIN(
+        -- clickNum
+        
+        SELECT mytime AS time ,
+        h1.machine_code ,
+        seller_id ,
+        sum(h1.num) AS clickNum FROM(
+        SELECT substr(h.time , 1 , 10) AS mytime ,
+        h.* FROM inno72_machine_info_log_hour h LEFT JOIN inno72_goods g ON h.goods_id = g.CODE AND g.use_type != 0 WHERE h.type = 4
+        ) h1 GROUP BY mytime ,
+        h1.machine_code ,
+        h1.seller_id
+        ) u6 ON u1.machine_code = u6.machine_code AND u1.time = u6.time AND u1.merchant_code = u6.seller_id LEFT JOIN(
+        -- vistorCount
+        
+        SELECT h.machine_code ,
+        h.time ,
+        sum(h.num) AS vistorCount FROM(
+        SELECT substr(time , 1 , 10) AS time ,
+        machine_code ,
+        num FROM inno72_machine_info_log_hour WHERE type = 1
+        ) h GROUP BY h.machine_code ,
+        h.time
+        ) u7 ON u1.time = u7.time AND u1.machine_code = u7.machine_code  LEFT JOIN(
+
+        SELECT h.machine_code ,
+        h.time ,
+        h.seller_id ,
+        sum(h.num) AS focusCount FROM(
+        SELECT substr(time , 1 , 10) AS time ,
+        seller_id ,
+        machine_code ,
+        num FROM inno72_machine_info_log_hour WHERE type = 2
+        ) h GROUP BY h.machine_code ,
+        h.seller_id ,
+        h.time
+        ) u8 ON u1.time = u8.time AND u1.machine_code = u8.machine_code AND u1.merchant_code = u8.seller_id LEFT JOIN inno72_shops shops ON shops.seller_id = u1.merchant_id LEFT JOIN inno72_machine machine ON machine.machine_code = u1.machine_code LEFT JOIN inno72_locale l ON machine.locale_id = l.id LEFT JOIN inno72_admin_area area ON l.area_code = area.CODE LEFT JOIN inno72_goods goods ON u1.merchant_id = goods.seller_id ORDER BY `time` ,
+        u1.machine_code ,
+        goods.NAME
+        ) AS s LEFT JOIN inno72_merchant t ON s.merchantId = t.id LEFT JOIN inno72_merchant_user tu ON tu.id = t.merchant_account_id LEFT JOIN inno72_goods sss ON sss.id = s.goods_id GROUP BY activityId ,
+        city ,
+        merchantId;
+
+    </select>
+    <select id="selectLastDateFromOrder" resultType="java.lang.String">
+        select DATE_FORMAT(MIN(order_time),'%Y-%m-%d %T') from inno72_order
+    </select>
+    <select id="selectLastDateFromLife" resultType="java.lang.String">
+        select DATE_FORMAT(MIN(login_time),'%Y-%m-%d %T') from inno72_game_user_life
+    </select>
+    <resultMap id="OrderVoResultMap" type="com.inno72.job.executer.vo.OrderVo">
+        <result column="merchant_id" jdbcType="VARCHAR" property="merchantId"/>
+        <result column="merchant_name" jdbcType="VARCHAR" property="merchantName"/>
+        <result column="activity_id" jdbcType="VARCHAR" property="activityId"/>
+        <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
+        <result column="pay_status" jdbcType="INTEGER" property="payStatus"/>
+        <result column="goods_type" jdbcType="VARCHAR" property="goodsType"/>
+        <result column="goods_id" jdbcType="VARCHAR" property="goodsId"/>
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="merchant_account_code" jdbcType="VARCHAR" property="merchantAccountCode"/>
+        <result column="seller_id" jdbcType="VARCHAR" property="sellerId"/>
+        <result column="city" jdbcType="VARCHAR" property="city"/>
+        <result column="date" jdbcType="VARCHAR" property="date"/>
+    </resultMap>
+    <select id="selectOrderByDate" resultMap="OrderVoResultMap" parameterType="map">
+        select
+            a1.merchant_id,
+            a1.inno72_activity_id as activity_id,
+            IFNULL(activity.name, interact.name) as activity_name,
+            DATE_FORMAT(a1.order_time , '%Y-%m-%d') AS `date`,
+            pay_status,
+            a1.goods_type,
+            a2.goods_id,
+            a2.goods_name,
+            a2.`status` ,
+            merchant.merchant_name,
+            merchant.seller_id,
+            merchant.merchant_id as merchant_account_code,
+            city.city
+        from inno72_order a1
+            join inno72_order_goods a2 on a1.order_num = a2.order_num
+            left join (select id, name from inno72_activity) activity on activity.id = a1.inno72_activity_id
+            left join (select id, name from inno72_interact) interact on interact.id = a1.inno72_activity_id
+            left join (select m1.id, m1.merchant_name, m1.merchant_code as seller_id, m2.merchant_id as merchant_id
+                       from inno72_merchant m1 join inno72_merchant_user m2 on m1.merchant_account_id = m2.id) merchant
+                on merchant.id = a1.merchant_id
+            left join (
+                          select a1.id, machine_code, city from (select id, machine_code, locale_id from inno72_machine) a1
+                              left join (select id, area_code from inno72_locale) a2 on a2.id = a1.locale_id
+                              left join (select code, city from inno72_admin_area) a3 on a2.area_code = a3.code
+                      ) city on city.id = a1.machine_id
+        where order_time BETWEEN #{startTime} and #{endTime}
+    </select>
+    <!--private Integer flowmeter;-->
+    <!--private String activityId;-->
+    <!--private String city;-->
+    <!--private String date;-->
+    <resultMap id="FlowmeterVoResultMap" type="com.inno72.job.executer.vo.FlowmeterVo">
+        <result column="flowmeter" jdbcType="VARCHAR" property="flowmeter"/>
+        <result column="activity_id" jdbcType="VARCHAR" property="activityId"/>
+        <result column="city" jdbcType="VARCHAR" property="city"/>
+        <result column="date" jdbcType="VARCHAR" property="date"/>
+    </resultMap>
+    <select id="selectPv" resultMap="FlowmeterVoResultMap" parameterType="map">
+        select count(0) as flowmeter, date, activity_id, city.city from (select a.activity_id , DATE_FORMAT(a.login_time,"%Y-%m-%d") as date,machine_code  from inno72_game_user_life a) a1
+            left join (
+                          select a1.id, machine_code, city from (select id, machine_code, locale_id from inno72_machine) a1
+                              left join (select id, area_code from inno72_locale) a2 on a2.id = a1.locale_id
+                              left join (select code, city from inno72_admin_area) a3 on a2.area_code = a3.code
+                      ) city on city.machine_code = a1.machine_code
+        where date BETWEEN #{startTime} and #{endTime}
+        group by city.city, a1.activity_id, a1.date;
+    </select>
+    <select id="selectUv" resultMap="FlowmeterVoResultMap" parameterType="map">
+        select COUNT(DISTINCT user_channel_id) as flowmeter, date, activity_id, city.city from
+            (select a.user_channel_id, a.activity_id , DATE_FORMAT(a.login_time,"%Y-%m-%d") as date,machine_code, a.nick_name from inno72_game_user_life a) a1
+            left join (
+                          select a1.id, machine_code, city from (select id, machine_code, locale_id from inno72_machine) a1
+                              left join (select id, area_code from inno72_locale) a2 on a2.id = a1.locale_id
+                              left join (select code, city from inno72_admin_area) a3 on a2.area_code = a3.code
+                      ) city on city.machine_code = a1.machine_code
+        where date BETWEEN  #{startTime} and #{endTime}
+        group by city.city, a1.activity_id, a1.date;
+    </select>
+    <select id="selectConcernNum" parameterType="map" resultMap="FlowmeterVoResultMap">
+        select sum(num) as flowmeter, activity_id, DATE_FORMAT(time,"%Y-%m-%d") as date, m.city as city from
+            (
+                select DATE_FORMAT(time,"%Y-%m-%d") as time, activity_id, num, type , machine_code
+                from inno72_machine_info_log_hour h
+                where activity_id is not null
+                      and activity_id != ''
+                      and activity_id != '-1') h
+            left join
+            (select a1.id, machine_code, city from (select id, machine_code, locale_id from inno72_machine) a1
+                left join (select id, area_code from inno72_locale) a2 on a2.id = a1.locale_id
+                left join (select code, city from inno72_admin_area) a3 on a2.area_code = a3.code) m
+                on h.machine_code = m.machine_code
+
+        where type = 2
+              and time BETWEEN #{startTime} and #{endTime}
+        group by activity_id, city
+    </select>
+    <select id="selectStay" parameterType="map" resultMap="FlowmeterVoResultMap">
+        select sum(num) as flowmeter, activity_id, DATE_FORMAT(time,"%Y-%m-%d") as date, m.city as city from
+            (
+                select DATE_FORMAT(time,"%Y-%m-%d") as time, activity_id, num, type , machine_code
+                from inno72_machine_info_log_hour h
+                where activity_id is not null
+                      and activity_id != ''
+                      and activity_id != '-1') h
+            left join
+            (select a1.id, machine_code, city from (select id, machine_code, locale_id from inno72_machine) a1
+                left join (select id, area_code from inno72_locale) a2 on a2.id = a1.locale_id
+                left join (select code, city from inno72_admin_area) a3 on a2.area_code = a3.code) m
+                on h.machine_code = m.machine_code
+
+        where type = 4
+              and time BETWEEN #{startTime} and #{endTime}
+        group by activity_id, city
+    </select>
+</mapper>
