@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import com.inno72.job.task.UserProfileIntervalTimeTask;
+import com.inno72.job.task.task.UserProfileIntervalTimeTask;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
@@ -29,46 +29,46 @@ import com.inno72.job.core.handle.annotation.JobMapperScanner;
 @Configuration
 @Import({RedisAutoConfiguration.class, MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 public class Configure {
-	
-	static final public Class<? extends IJobHandler> TaskClazz = UserProfileIntervalTimeTask.class;
-	
-	@Configuration
-    @Profile("dev")
-    @PropertySource("classpath:application-dev.properties")
-    static class Dev
-    { 
-		
-    }
 
-    @Configuration
-    @Profile("test")
-    @PropertySource({"classpath:application-test.properties"})
-    static class Test
-    {
-    	
-    }
-    
-    @Bean
-    @Conditional(MybatisCondition.class)
+	static final public Class<? extends IJobHandler> TaskClazz = UserProfileIntervalTimeTask.class;
+
+	@Configuration
+	@Profile("dev")
+	@PropertySource("classpath:application-dev.properties")
+	static class Dev
+	{
+
+	}
+
+	@Configuration
+	@Profile("test")
+	@PropertySource({"classpath:application-test.properties"})
+	static class Test
+	{
+
+	}
+
+	@Bean
+	@Conditional(MybatisCondition.class)
 	public SqlSessionFactory sqlSessionFactoryBean(DataSource dataSource) throws IOException {
-		
+
 		JobMapperScanner jobMapperScanner = TaskClazz.getAnnotation(JobMapperScanner.class);
 		SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
-		
+
 		factory.setDataSource(dataSource);
-		
+
 		ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-		
+
 		List<org.springframework.core.io.Resource> resourceList = new LinkedList<org.springframework.core.io.Resource>();
-		
+
 		for(String value : jobMapperScanner.value()) {
 			org.springframework.core.io.Resource[] res =  resolver.getResources(value);
 			if(res != null && res.length > 0)
 				resourceList.addAll(Arrays.asList(res));
 		}
-	
+
 		try {
-			
+
 			org.springframework.core.io.Resource[] res = new org.springframework.core.io.Resource[resourceList.size()];
 			factory.setMapperLocations(resourceList.toArray(res));
 			return factory.getObject();
@@ -77,21 +77,21 @@ public class Configure {
 			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
-    
-    @Bean
-    @Conditional(MybatisCondition.class)
+
+	@Bean
+	@Conditional(MybatisCondition.class)
 	public MapperScannerConfigurer mapperScannerConfigurer() {
-    	JobMapperScanner jobMapperScanner = TaskClazz.getAnnotation(JobMapperScanner.class);
-    	MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
+		JobMapperScanner jobMapperScanner = TaskClazz.getAnnotation(JobMapperScanner.class);
+		MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
 		mapperScannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactoryBean");
 		mapperScannerConfigurer.setBasePackage(jobMapperScanner.basePackage());
 		return mapperScannerConfigurer;
 	}
 
-    
-    @Bean(name="testTask")
-    public IJobHandler jobHandler() throws Exception {
-    	return TaskClazz.newInstance();
-    }
+
+	@Bean(name="testTask")
+	public IJobHandler jobHandler() throws Exception {
+		return TaskClazz.newInstance();
+	}
 
 }

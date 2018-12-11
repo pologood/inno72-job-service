@@ -26,10 +26,11 @@
     <result column="age" jdbcType="TINYINT" property="age" />
   </resultMap>
     <select id="selectMinDateFromLife" resultType="java.lang.String">
-        select DATE_FORMAT(MIN(login_time),'%Y-%m-%d %T') from inno72_game_user_life
+        select DATE_FORMAT(MIN(login_time),'%Y-%m-%d %T') from inno72.inno72_game_user_life
     </select>
     <select id="selectLifeByLoginTime" resultMap="BaseResultMap" parameterType="map">
-        select * from inno72_game_user_life
+        select * from inno72.inno72_game_user_life
         where login_time between #{startTime} and #{endTime}
+        order by login_time asc
     </select>
 </mapper>

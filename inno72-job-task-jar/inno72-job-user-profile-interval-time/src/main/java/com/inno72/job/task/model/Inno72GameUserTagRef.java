@@ -16,7 +16,17 @@ public class Inno72GameUserTagRef {
 
     private String content;
 
-    /**
+	public Inno72GameUserTagRef(String id, String userId, String tagId, String content) {
+		this.id = id;
+		this.userId = userId;
+		this.tagId = tagId;
+		this.content = content;
+	}
+
+	public Inno72GameUserTagRef() {
+	}
+
+	/**
      * @return id
      */
     public String getId() {

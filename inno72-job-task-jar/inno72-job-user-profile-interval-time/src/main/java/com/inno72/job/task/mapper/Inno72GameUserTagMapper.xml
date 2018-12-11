@@ -15,7 +15,17 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"  javaType="java.time.LocalDateTime"
             typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
   </resultMap>
-    <select id="selectLastUpdateTime" resultType="java.lang.String" parameterType="string">
-        select date_format(Max(create_time), "%Y-%m-%d %T") from inno72.inno72_game_user_tag limit 1
+
+    <update id="update" parameterType="com.inno72.job.task.model.Inno72GameUserTag">
+        update `inno72`.`inno72_game_user_tag`
+        set `update_id`=#{updateId}, `update_time`=#{updateTime}
+        where `id`= #{id}
+    </update>
+
+    <select id="selectLastUpdateTime" resultMap="BaseResultMap" parameterType="string">
+        select id, `name`, `code`, update_time
+        from inno72.inno72_game_user_tag
+        where `code` = #{code} limit 1
     </select>
+
 </mapper>

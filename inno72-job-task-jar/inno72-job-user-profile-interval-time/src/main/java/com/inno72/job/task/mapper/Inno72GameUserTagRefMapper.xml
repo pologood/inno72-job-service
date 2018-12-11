@@ -10,4 +10,12 @@
     <result column="tag_id" jdbcType="VARCHAR" property="tagId" />
     <result column="content" jdbcType="VARCHAR" property="content" />
   </resultMap>
+    <insert id="insertS" parameterType="list">
+          insert into `inno72`.`inno72_game_user_tag_ref`
+          ( `id`, `user_id`, `tag_id`, `content`)
+          values
+          <foreach collection="list" item="item" separator=",">
+              ( #{item.id}, #{item.userId},  #{item.tagId},  #{item.content})
+          </foreach>
+    </insert>
 </mapper>
