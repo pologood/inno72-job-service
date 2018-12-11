@@ -18,4 +18,11 @@
               ( #{item.id}, #{item.userId},  #{item.tagId},  #{item.content})
           </foreach>
     </insert>
+    <delete id="deleteByUserIdAndTagId">
+        delete from `inno72`.`inno72_game_user_tag_ref`
+        where tag_id = #{tagId} and user_id in
+        <foreach collection="set" separator="," item="users" open="(" close=")">
+            #{users}
+        </foreach>
+    </delete>
 </mapper>
