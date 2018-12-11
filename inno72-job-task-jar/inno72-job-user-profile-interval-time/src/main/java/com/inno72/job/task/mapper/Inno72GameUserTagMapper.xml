@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.task.mapper.Inno72GameUserTagMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.job.task.model.Inno72GameUserTag">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" javaType="java.time.LocalDateTime"
+            typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"  javaType="java.time.LocalDateTime"
+            typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+  </resultMap>
+    <select id="selectLastUpdateTime" resultType="java.lang.String" parameterType="string">
+        select date_format(Max(create_time), "%Y-%m-%d %T") from inno72_game_user_tag limit 1
+    </select>
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.executer.mapper.Inno72GameUserLifeMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.job.executer.model.Inno72GameUserLife">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="game_user_id" jdbcType="VARCHAR" property="gameUserId" />
+    <result column="user_channel_id" jdbcType="VARCHAR" property="userChannelId" />
+    <result column="third_ref_id" jdbcType="VARCHAR" property="thirdRefId" />
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
+    <result column="activity_plan_id" jdbcType="VARCHAR" property="activityPlanId" />
+    <result column="game_id" jdbcType="VARCHAR" property="gameId" />
+    <result column="game_name" jdbcType="VARCHAR" property="gameName" />
+    <result column="mer_point_id" jdbcType="VARCHAR" property="merPointId" />
+    <result column="mer_point_address" jdbcType="VARCHAR" property="merPointAddress" />
+    <result column="game_result" jdbcType="VARCHAR" property="gameResult" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="sex" jdbcType="TINYINT" property="sex" />
+    <result column="age" jdbcType="TINYINT" property="age" />
+  </resultMap>
+    <select id="selectLifeByLoginTime" resultMap="BaseResultMap" parameterType="map">
+      select * from inno72_game_user_life
+        where login_time between #{startTime} and #{endTime}
+    </select>
+</mapper>
