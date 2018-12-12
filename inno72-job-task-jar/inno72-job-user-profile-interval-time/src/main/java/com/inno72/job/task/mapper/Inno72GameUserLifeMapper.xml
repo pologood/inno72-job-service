@@ -24,6 +24,10 @@
     <result column="order_id" jdbcType="VARCHAR" property="orderId" />
     <result column="sex" jdbcType="TINYINT" property="sex" />
     <result column="age" jdbcType="TINYINT" property="age" />
+      <result column="game_start_time" jdbcType="TIMESTAMP" property="gameStartTime" />
+      <result column="game_end_time" jdbcType="TIMESTAMP" property="gameEndTime" />
+      <result column="shipment_time" jdbcType="TIMESTAMP" property="shipmentTime" />
+      <result column="share_time" jdbcType="TIMESTAMP" property="shareTime" />
   </resultMap>
     <select id="selectMinDateFromLife" resultType="java.lang.String">
         select DATE_FORMAT(MIN(login_time),'%Y-%m-%d %T') from inno72.inno72_game_user_life
@@ -32,5 +36,28 @@
         select * from inno72.inno72_game_user_life
         where login_time between #{startTime} and #{endTime}
         order by login_time asc
+    </select>
+
+    <select id="findShareUserIds" resultType="java.lang.String" parameterType="java.lang.Integer">
+        select game_user_id from inno72.inno72_game_user_life
+        where share_time != '0000-00-00 00:00:00'
+        group by game_user_id
+        having count(1) > #{count}
+    </select>
+
+    <select id="findGameTalentUserIds" resultType="java.lang.String">
+        select game_user_id , game_start_time , game_end_time, TIMESTAMPDIFF(SECOND, game_start_time,game_end_time)
+        from inno72.inno72_game_user_life
+        where game_start_time != '0000-00-00 00:00:00' and
+        game_end_time != '0000-00-00 00:00:00' and
+        TIMESTAMPDIFF(SECOND, game_start_time,game_end_time) BETWEEN 10 AND 15
+    </select>
+
+    <select id="findGameNoviceUserIds" resultType="java.lang.String">
+       select game_user_id , game_start_time , game_end_time, TIMESTAMPDIFF(SECOND, game_start_time,game_end_time)
+       from inno72.inno72_game_user_life
+       where game_start_time != '0000-00-00 00:00:00' and
+       game_end_time != '0000-00-00 00:00:00' and
+       TIMESTAMPDIFF(SECOND, game_start_time,game_end_time) > 15
     </select>
 </mapper>

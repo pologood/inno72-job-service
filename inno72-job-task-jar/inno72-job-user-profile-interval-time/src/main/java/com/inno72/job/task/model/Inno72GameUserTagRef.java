@@ -16,6 +16,8 @@ public class Inno72GameUserTagRef {
      */
     private String tagId;
 
+    private String tagCode;
+
     private String content;
 
     private LocalDateTime createTime;
@@ -96,4 +98,28 @@ public class Inno72GameUserTagRef {
     public void setContent(String content) {
         this.content = content;
     }
+
+	public LocalDateTime getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(LocalDateTime createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getActivityId() {
+		return activityId;
+	}
+
+	public void setActivityId(String activityId) {
+		this.activityId = activityId;
+	}
+
+	public String getTagCode() {
+		return tagCode;
+	}
+
+	public void setTagCode(String tagCode) {
+		this.tagCode = tagCode;
+	}
 }
