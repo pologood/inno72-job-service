@@ -155,7 +155,7 @@ public class UserProfileBaseInfoTask implements IJobHandler
 		for (Map.Entry<String, String> u : user.entrySet()) {
 			String key = u.getKey();
 			if (!existUserIds.contains(key)) {
-				tags.add(new Inno72GameUserTagRef(Uuid.genUuid(), key, u.getValue(), userTag.getName(), now));
+				tags.add(new Inno72GameUserTagRef(Uuid.genUuid(), key, userTag.getId(), u.getValue(), now));
 			}
 		}
 		inno72GameUserTagRefMapper.insertS(tags);
