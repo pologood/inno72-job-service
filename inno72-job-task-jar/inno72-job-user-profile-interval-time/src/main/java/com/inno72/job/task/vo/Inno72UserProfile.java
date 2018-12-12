@@ -15,7 +15,7 @@ public class Inno72UserProfile implements Serializable {
 
     public String userId;
 
-    public String sex;
+    public String gender;
 
 	public String age;
 
@@ -47,14 +47,6 @@ public class Inno72UserProfile implements Serializable {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
-	}
-
-	public String getSex() {
-		return sex;
-	}
-
-	public void setSex(String sex) {
-		this.sex = sex;
 	}
 
 	public String getAge() {
@@ -119,5 +111,13 @@ public class Inno72UserProfile implements Serializable {
 
 	public void setBuypower(String buypower) {
 		this.buypower = buypower;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 }

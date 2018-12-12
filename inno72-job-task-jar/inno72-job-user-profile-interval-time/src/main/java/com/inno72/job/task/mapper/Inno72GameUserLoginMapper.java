@@ -18,4 +18,6 @@ public interface Inno72GameUserLoginMapper{
 	Inno72GameUserLogin findMinTime();
 
 	List<Inno72GameUserLogin> selectByTime(Map<String, String> loginParam);
+
+	List<Inno72GameUserLogin> selectByPhoneModel(Map<String, String> param);
 }

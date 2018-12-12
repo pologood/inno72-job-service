@@ -74,11 +74,11 @@ public class UserProfileSynToMongoTask implements IJobHandler
 					}
 				}
 
-				if (tagCode.equals(TagEnum.SEX.getValue())) {
+				if (tagCode.equals(TagEnum.GENDER.getValue())) {
 					if (isUpdate) {
-						map.put(TagEnum.SEX.getValue(), content);
+						map.put(TagEnum.GENDER.getValue(), content);
 					} else {
-						inno72UserProfile.setSex(content);
+						inno72UserProfile.setGender(content);
 					}
 				}
 

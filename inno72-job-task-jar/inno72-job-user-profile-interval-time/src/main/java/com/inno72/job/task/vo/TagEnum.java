@@ -5,7 +5,7 @@ package com.inno72.job.task.vo;
  */
 public enum TagEnum {
 
-	SEX("sex", "性别"),
+	GENDER("gender", "性别"),
 	AGE("age", "年龄"),
 	PAYMENT("payment", "支付"),
 	INTERACTION("interaction", "互动控"),

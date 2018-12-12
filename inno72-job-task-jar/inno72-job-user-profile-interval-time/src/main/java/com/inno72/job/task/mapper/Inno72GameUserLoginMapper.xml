@@ -45,5 +45,20 @@
         order by login_time asc
     </select>
 
+    <select id="selectByPhoneModel" resultMap="BaseResultMap" parameterType="map">
+        select * from inno72.inno72_game_user_login
+        where 1 = 1
+        <if test="time != ''">
+            and login_time >= #{time}
+        </if>
+
+        <if test="phoneModel != ''">
+            and phone_model REGEXP #{phoneModel}
+        </if>
+
+        order by login_time asc
+
+    </select>
+
 
 </mapper>
