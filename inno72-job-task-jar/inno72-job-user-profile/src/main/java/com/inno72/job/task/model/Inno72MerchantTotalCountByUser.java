@@ -38,9 +38,9 @@ public class Inno72MerchantTotalCountByUser {
     private Integer age;
 
     /**
-     * 0:女， 1: 男， 2其他
+     * 女， 男， 其他
      */
-    private Integer sex;
+    private String sex;
 
     /**
      * 用户分类标签
@@ -62,7 +62,41 @@ public class Inno72MerchantTotalCountByUser {
      */
     private LocalDateTime lastUpdateTime;
 
-    /**
+	/**
+	 * @param id
+	 * @param activityId
+	 * @param activityName
+	 * @param merchantId
+	 * @param date
+	 * @param sellerId
+	 * @param age
+	 * @param sex
+	 * @param userTag
+	 * @param pointTag
+	 * @param city
+	 * @param lastUpdateTime
+	 */
+	public Inno72MerchantTotalCountByUser(String id, String activityId, String activityName, String merchantId,
+			String date, String sellerId, Integer age, String sex, String userTag, String pointTag, String city,
+			LocalDateTime lastUpdateTime) {
+		this.id = id;
+		this.activityId = activityId;
+		this.activityName = activityName;
+		this.merchantId = merchantId;
+		this.date = date;
+		this.sellerId = sellerId;
+		this.age = age;
+		this.sex = sex;
+		this.userTag = userTag;
+		this.pointTag = pointTag;
+		this.city = city;
+		this.lastUpdateTime = lastUpdateTime;
+	}
+
+	public Inno72MerchantTotalCountByUser() {
+	}
+
+	/**
      * @return id
      */
     public String getId() {
@@ -189,7 +223,7 @@ public class Inno72MerchantTotalCountByUser {
      *
      * @return sex - 0:女， 1: 男， 2其他
      */
-    public Integer getSex() {
+    public String getSex() {
         return sex;
     }
 
@@ -198,7 +232,7 @@ public class Inno72MerchantTotalCountByUser {
      *
      * @param sex 0:女， 1: 男， 2其他
      */
-    public void setSex(Integer sex) {
+    public void setSex(String sex) {
         this.sex = sex;
     }
 

@@ -21,6 +21,7 @@ import com.inno72.job.task.model.Inno72GameUserLogin;
 import com.inno72.job.task.model.Inno72GameUserTag;
 import com.inno72.job.task.model.Inno72GameUserTagRef;
 import com.inno72.job.task.util.Uuid;
+import com.inno72.job.task.vo.Inno72GameUserLoginVo;
 import com.inno72.job.task.vo.LocaleVo;
 
 /**
@@ -79,7 +80,7 @@ public class UserProfileBaseInfoTask implements IJobHandler
 
 		Map<String, String> loginParam = new HashMap<>();
 		loginParam.put("time", updateTime);
-		List<Inno72GameUserLogin> userLogins = inno72GameUserLoginMapper.selectByTime(loginParam);
+		List<Inno72GameUserLoginVo> userLogins = inno72GameUserLoginMapper.selectByTime(loginParam);
 		Map<String, String> userAgeMap = new HashMap<>();
 		Map<String, String> userSexMap = new HashMap<>();
 		Map<String, String> userCityMap = new HashMap<>();

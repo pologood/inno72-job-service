@@ -24,13 +24,13 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 
 import com.inno72.job.core.handle.IJobHandler;
 import com.inno72.job.core.handle.annotation.JobMapperScanner;
-import com.inno72.job.task.task.UserProfileBaseInfoTask;
+import com.inno72.job.task.task.MerchantUserTask;
 
 @Configuration
 @Import({RedisAutoConfiguration.class, MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 public class Configure {
 
-	static final public Class<? extends IJobHandler> TaskClazz = UserProfileBaseInfoTask.class;
+	static final public Class<? extends IJobHandler> TaskClazz = MerchantUserTask.class;
 
 	@Configuration
 	@Profile("dev")

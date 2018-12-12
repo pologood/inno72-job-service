@@ -9,8 +9,15 @@
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
     <result column="tag_id" jdbcType="VARCHAR" property="tagId" />
     <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
     <result column="create_time" jdbcType="VARCHAR" property="createTime" javaType="java.time.LocalDateTime"
             typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+  </resultMap>
+  <resultMap id="BaseResultVoMap" type="com.inno72.job.task.vo.Inno72GameUserTagRefVo" extends="BaseResultMap">
+    <!--Inno72GameUserTagRefVo
+      WARNING - @mbg.generated
+    -->
+    <result column="code" jdbcType="VARCHAR" property="code" />
   </resultMap>
     <insert id="insertS" parameterType="list">
           insert into `inno72`.`inno72_game_user_tag_ref`
@@ -45,6 +52,11 @@
       left join inno72.inno72_game_user_tag t
       on tr.tag_id = t.id
       where user_id = #{userId}
+    </select>
+    <select id="selectByActIdAndUserId" resultMap="BaseResultVoMap" parameterType="map">
+        select ref.id, ref.user_id, ref.tag_id, ref.content, tag.code from inno72.inno72_game_user_tag_ref ref
+            left join inno72.inno72_game_user_tag tag on ref.tag_id = tag.id
+      where ref.user_id = #{userId} and (ref.activity_id = #{actId} or ref.activity_id = '')
     </select>
 
 </mapper>

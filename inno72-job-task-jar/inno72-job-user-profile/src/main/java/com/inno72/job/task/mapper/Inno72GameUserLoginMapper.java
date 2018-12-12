@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.inno72.job.task.model.Inno72GameUserLogin;
+import com.inno72.job.task.vo.Inno72GameUserLoginVo;
 
 public interface Inno72GameUserLoginMapper{
 
@@ -17,7 +18,7 @@ public interface Inno72GameUserLoginMapper{
 
 	Inno72GameUserLogin findMinTime();
 
-	List<Inno72GameUserLogin> selectByTime(Map<String, String> loginParam);
+	List<Inno72GameUserLoginVo> selectByTime(Map<String, String> loginParam);
 
 	List<Inno72GameUserLogin> selectByPhoneModel(Map<String, String> param);
 }

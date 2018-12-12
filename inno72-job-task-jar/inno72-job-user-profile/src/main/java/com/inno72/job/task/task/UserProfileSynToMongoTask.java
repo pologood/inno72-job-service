@@ -31,7 +31,7 @@ public class UserProfileSynToMongoTask implements IJobHandler
 	@Resource
 	private Inno72GameUserTagRefMapper inno72GameUserTagRefMapper;
 
-	@Autowired
+	@Resource
 	private MongoUtil mongoUtil;
 
 	@Override

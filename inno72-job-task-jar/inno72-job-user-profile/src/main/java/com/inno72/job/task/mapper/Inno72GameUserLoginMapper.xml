@@ -20,6 +20,13 @@
     <result column="sacn_software" jdbcType="VARCHAR" property="sacnSoftware" />
     <result column="locale_id" jdbcType="VARCHAR" property="localeId" />
   </resultMap>
+  <resultMap id="BaseResultVoMap" type="com.inno72.job.task.vo.Inno72GameUserLoginVo" extends="BaseResultMap">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="login_date" jdbcType="VARCHAR" property="loginDate" />
+    <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
+  </resultMap>
 
     <select id="findAllNoProcessed" resultType="com.inno72.job.task.model.Inno72GameUserLogin">
         select * from inno72.inno72_game_user_login where processed = 0
@@ -37,11 +44,17 @@
     <select id="findMinTime" resultMap="BaseResultMap">
         select * from inno72.inno72_game_user_login where login_time is not null order by login_time asc limit 1
     </select>
-    <select id="selectByTime" resultMap="BaseResultMap" parameterType="map">
-        select * from inno72.inno72_game_user_login
-        <if test="time != ''">
+    <select id="selectByTime" resultMap="BaseResultVoMap" parameterType="map">
+        select login.id, login.user_id, login.activity_id, login.login_time, date_format(login.login_time, "%Y-%m-%d") as login_date, acti.name as activity_name
+        from (select id, user_id, activity_id, login_time, date_format(login_time, "%Y-%m-%d") as loginDate from inno72.inno72_game_user_login) login
+        left join (select id, name from inno72.`inno72_interact`) acti on acti.id = login.activity_id
+        <if test="time != '' and time != null">
             where login_time >= #{time}
         </if>
+        <if test="startTime != null and startTime != ''">
+            where login_time between #{startTime} and #{endTime}
+        </if>
+        group by loginDate, user_id
         order by login_time asc
     </select>
 

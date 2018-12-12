@@ -1,11 +1,13 @@
 package com.inno72.job.task.mapper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 
 import com.inno72.job.task.model.Inno72GameUserTagRef;
+import com.inno72.job.task.vo.Inno72GameUserTagRefVo;
 
 public interface Inno72GameUserTagRefMapper {
 	int insertS(List<Inno72GameUserTagRef> refsInteraction);
@@ -25,4 +27,6 @@ public interface Inno72GameUserTagRefMapper {
 	 * @return
 	 */
 	List<Inno72GameUserTagRef> findInno72GameUserTagRefByUserId(String userId);
+
+	List<Inno72GameUserTagRefVo> selectByActIdAndUserId(Map<String, String> refParam);
 }
