@@ -1,6 +1,7 @@
 package com.inno72.job.task.model;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Inno72GameUserLife {
 
@@ -72,15 +73,25 @@ public class Inno72GameUserLife {
      */
     private String orderId;
 
-    /**
-     * 0 - 女； 1 - 男；
-     */
-    private Byte sex;
+	/**
+	 * 开始游戏时间
+	 */
+	private Date gameStartTime;
 
-    /**
-     * 年龄
-     */
-    private Byte age;
+	/**
+	 * 结束游戏时间
+	 */
+	private Date gameEndTime;
+
+	/**
+	 * 出货时间
+	 */
+	private Date shipmentTime;
+
+	/**
+	 * 分享时间
+	 */
+	private Date shareTime;
 
     /**
      * @return id
@@ -354,39 +365,4 @@ public class Inno72GameUserLife {
         this.orderId = orderId;
     }
 
-    /**
-     * 获取0 - 女； 1 - 男；
-     *
-     * @return sex - 0 - 女； 1 - 男；
-     */
-    public Byte getSex() {
-        return sex;
-    }
-
-    /**
-     * 设置0 - 女； 1 - 男；
-     *
-     * @param sex 0 - 女； 1 - 男；
-     */
-    public void setSex(Byte sex) {
-        this.sex = sex;
-    }
-
-    /**
-     * 获取年龄
-     *
-     * @return age - 年龄
-     */
-    public Byte getAge() {
-        return age;
-    }
-
-    /**
-     * 设置年龄
-     *
-     * @param age 年龄
-     */
-    public void setAge(Byte age) {
-        this.age = age;
-    }
 }

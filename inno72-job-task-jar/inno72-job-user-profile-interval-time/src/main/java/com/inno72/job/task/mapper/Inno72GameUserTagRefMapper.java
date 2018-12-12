@@ -13,4 +13,16 @@ public interface Inno72GameUserTagRefMapper {
 	int deleteByUserIdAndTagId(@Param("tagId") String tagId, @Param("set")Set<String> users);
 
 	List<String> selectUserIdsByTagIdAndUserId(@Param("tagId") String tagId, @Param("set")Set<String> users);
+
+	/**
+	 * 查找需要同步的用户
+	 * @return
+	 */
+	List<String> findUserIdsNeedSyn(String date);
+
+	/**
+	 * 查询 Inno72GameUserTagRef 通过条件i
+	 * @return
+	 */
+	List<Inno72GameUserTagRef> findInno72GameUserTagRefByUserId(String userId);
 }

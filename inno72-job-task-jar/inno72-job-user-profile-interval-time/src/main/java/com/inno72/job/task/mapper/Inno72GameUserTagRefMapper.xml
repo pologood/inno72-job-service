@@ -32,4 +32,17 @@
             #{users}
         </foreach>
     </select>
+
+    <select id="findUserIdsNeedSyn" parameterType="java.lang.String" resultType="java.lang.String">
+      select DISTINCT user_id from inno72.inno72_game_user_tag_ref
+      where create_time > #{date}
+    </select>
+
+    <select id="findInno72GameUserTagRefByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+      select tr.* , t.code as tag_code from inno72.inno72_game_user_tag_ref tr
+      left join inno72.inno72_game_user_tag t
+      on tr.tag_id = t.id
+      where user_id = #{userId}
+    </select>
+
 </mapper>
