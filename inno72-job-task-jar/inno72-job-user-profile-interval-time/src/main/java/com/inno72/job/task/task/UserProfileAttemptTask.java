@@ -135,7 +135,7 @@ public class UserProfileAttemptTask implements IJobHandler
 		if (attempt.size() > 0){
 			List<Inno72GameUserTagRef> refsAttempt = new ArrayList<>(attempt.size());
 			for (String userId : attempt){
-				refsAttempt.add(new Inno72GameUserTagRef(Uuid.genUuid(), userId, userTag.getId(), userTag.getName(), endTimeLocal));
+				refsAttempt.add(new Inno72GameUserTagRef(Uuid.genUuid(), userId, userTag.getId(), "互动控", endTimeLocal));
 			}
 			int deleteSize = inno72GameUserTagRefMapper.deleteByUserIdAndTagId(userTag.getId(), attempt);
 			JobLogger.log("互动控 job, 删除已有互动控用户ID集合"+JSON.toJSONString(attempt)+"关联,共 【"+deleteSize+"】条");
