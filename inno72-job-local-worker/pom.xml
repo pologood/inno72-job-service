@@ -32,15 +32,10 @@
 			<artifactId>inno72-job-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-      <dependency>
-          <groupId>com.inno72</groupId>
-          <artifactId>inno72-job-user-profile-interval-time</artifactId>
-          <version>0.0.1-SNAPSHOT</version>
-      </dependency>
 
       <dependency>
           <groupId>com.inno72</groupId>
-          <artifactId>inno72-job-user-profile-interval-time</artifactId>
+          <artifactId>inno72-job-user-profile</artifactId>
           <version>0.0.1-SNAPSHOT</version>
       </dependency>
 
