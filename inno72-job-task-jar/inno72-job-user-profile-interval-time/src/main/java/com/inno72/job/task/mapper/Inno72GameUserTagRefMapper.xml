@@ -9,13 +9,15 @@
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
     <result column="tag_id" jdbcType="VARCHAR" property="tagId" />
     <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" javaType="java.time.LocalDateTime"
+            typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
   </resultMap>
     <insert id="insertS" parameterType="list">
           insert into `inno72`.`inno72_game_user_tag_ref`
-          ( `id`, `user_id`, `tag_id`, `content`)
+          ( `id`, `user_id`, `tag_id`, `content`, `create_time`)
           values
           <foreach collection="list" item="item" separator=",">
-              ( #{item.id}, #{item.userId},  #{item.tagId},  #{item.content})
+              ( #{item.id}, #{item.userId},  #{item.tagId},  #{item.content}, #{item.createTime})
           </foreach>
     </insert>
     <delete id="deleteByUserIdAndTagId">
