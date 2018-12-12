@@ -1,5 +1,7 @@
 package com.inno72.job.task.model;
 
+import java.time.LocalDateTime;
+
 public class Inno72GameUserTagRef {
 
     private String id;
@@ -16,11 +18,16 @@ public class Inno72GameUserTagRef {
 
     private String content;
 
-	public Inno72GameUserTagRef(String id, String userId, String tagId, String content) {
+    private LocalDateTime createTime;
+
+    private String activityId;
+
+	public Inno72GameUserTagRef(String id, String userId, String tagId, String content, LocalDateTime createTime) {
 		this.id = id;
 		this.userId = userId;
 		this.tagId = tagId;
 		this.content = content;
+		this.createTime = createTime;
 	}
 
 	public Inno72GameUserTagRef() {

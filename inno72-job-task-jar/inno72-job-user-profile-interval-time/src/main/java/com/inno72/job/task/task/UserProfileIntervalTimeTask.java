@@ -124,7 +124,7 @@ public class UserProfileIntervalTimeTask implements IJobHandler
 		if (interaction.size() > 0){
 			List<Inno72GameUserTagRef> refsInteraction = new ArrayList<>(interaction.size());
 			for (String userId : interaction){
-				refsInteraction.add(new Inno72GameUserTagRef(Uuid.genUuid(), userId, userTag.getId(), userTag.getName()));
+				refsInteraction.add(new Inno72GameUserTagRef(Uuid.genUuid(), userId, userTag.getId(), userTag.getName(), endTimeLocal));
 			}
 			int deleteSize = inno72GameUserTagRefMapper.deleteByUserIdAndTagId(userTag.getId(), interaction);
 			JobLogger.log("尝鲜族 job, 删除已有尝鲜族用户ID集合"+JSON.toJSONString(interaction)+"关联,共 【"+deleteSize+"】条");
