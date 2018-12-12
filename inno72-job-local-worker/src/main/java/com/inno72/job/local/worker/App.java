@@ -16,7 +16,7 @@ public class App {
 	public static void main(String[] args) throws Exception {
 
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-		context.getEnvironment().setActiveProfiles("dev");
+		context.getEnvironment().setActiveProfiles("test");
 		context.register(Configure.class);
 		context.scan("com.inno72");
 		context.refresh();

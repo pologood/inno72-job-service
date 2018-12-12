@@ -25,4 +25,11 @@
             #{users}
         </foreach>
     </delete>
+    <select id="selectUserIdsByTagIdAndUserId" resultType="java.lang.String">
+        select user_id from `inno72`.`inno72_game_user_tag_ref`
+        where tag_id = #{tagId}  and user_id in
+        <foreach collection="set" separator="," item="users" open="(" close=")">
+            #{users}
+        </foreach>
+    </select>
 </mapper>

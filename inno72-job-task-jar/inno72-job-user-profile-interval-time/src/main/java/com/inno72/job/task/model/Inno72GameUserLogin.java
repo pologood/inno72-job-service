@@ -1,6 +1,6 @@
 package com.inno72.job.task.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Inno72GameUserLogin {
     private String id;
@@ -17,7 +17,7 @@ public class Inno72GameUserLogin {
 
     private String machineId;
 
-    private Date loginTime;
+    private LocalDateTime loginTime;
 
     private Boolean processed;
 
@@ -130,14 +130,14 @@ public class Inno72GameUserLogin {
     /**
      * @return login_time
      */
-    public Date getLoginTime() {
+    public LocalDateTime getLoginTime() {
         return loginTime;
     }
 
     /**
      * @param loginTime
      */
-    public void setLoginTime(Date loginTime) {
+    public void setLoginTime(LocalDateTime loginTime) {
         this.loginTime = loginTime;
     }
 

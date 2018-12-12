@@ -53,7 +53,7 @@ public class UserProfileIntervalTimeTask implements IJobHandler
 		JobLogger.log("尝鲜族 job, start");
 
 		//尝鲜族
-		Inno72GameUserTag userTag = inno72GameUserTagMapper.selectLastUpdateTime(CODE_INTERACTION);
+		Inno72GameUserTag userTag = inno72GameUserTagMapper.selectByCode(CODE_INTERACTION);
 		if (userTag == null){
 			return new ReturnT<>(ReturnT.SUCCESS_CODE, "未找到需要处理的标签");
 		}

@@ -53,7 +53,7 @@ public class UserProfileAttemptTask implements IJobHandler
 		JobLogger.log("互动控 job, start");
 
 		//互动控
-		Inno72GameUserTag userTag = inno72GameUserTagMapper.selectLastUpdateTime(CODE_ATTEMPT);
+		Inno72GameUserTag userTag = inno72GameUserTagMapper.selectByCode(CODE_ATTEMPT);
 		if (userTag == null){
 			return new ReturnT<>(ReturnT.SUCCESS_CODE, "未找到需要处理的标签");
 		}

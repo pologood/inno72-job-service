@@ -3,6 +3,7 @@ package com.inno72.job.task.model;
 import java.time.LocalDateTime;
 
 public class Inno72GameUserTag {
+
     private String id;
 
     /**

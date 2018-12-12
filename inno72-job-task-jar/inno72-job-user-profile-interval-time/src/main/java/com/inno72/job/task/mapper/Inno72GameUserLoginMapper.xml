@@ -12,7 +12,8 @@
     <result column="age" jdbcType="VARCHAR" property="age" />
     <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
     <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
-    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
+    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" javaType="java.time.LocalDateTime"
+            typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
     <result column="processed" jdbcType="BIT" property="processed" />
     <result column="operating_system" jdbcType="BIT" property="operatingSystem" />
     <result column="phone_model" jdbcType="VARCHAR" property="phoneModel" />
@@ -32,6 +33,16 @@
             processed = #{processed}
         where
             id = #{id}
+    </select>
+    <select id="findMinTime" resultMap="BaseResultMap">
+        select * from inno72.inno72_game_user_login where login_time is not null order by login_time asc limit 1
+    </select>
+    <select id="selectByTime" resultMap="BaseResultMap" parameterType="map">
+        select * from inno72.inno72_game_user_login
+        <if test="time != ''">
+            where login_time >= #{time}
+        </if>
+        order by login_time asc
     </select>
 
 

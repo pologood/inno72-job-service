@@ -11,4 +11,6 @@ public interface Inno72GameUserTagRefMapper {
 	int insertS(List<Inno72GameUserTagRef> refsInteraction);
 
 	int deleteByUserIdAndTagId(@Param("tagId") String tagId, @Param("set")Set<String> users);
+
+	List<String> selectUserIdsByTagIdAndUserId(@Param("tagId") String tagId, @Param("set")Set<String> users);
 }

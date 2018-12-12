@@ -22,7 +22,7 @@
         where `id`= #{id}
     </update>
 
-    <select id="selectLastUpdateTime" resultMap="BaseResultMap" parameterType="string">
+    <select id="selectByCode" resultMap="BaseResultMap" parameterType="string">
         select id, `name`, `code`, update_time
         from inno72.inno72_game_user_tag
         where `code` = #{code} limit 1
