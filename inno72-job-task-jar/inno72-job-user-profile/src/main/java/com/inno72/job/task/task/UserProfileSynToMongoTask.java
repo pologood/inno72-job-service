@@ -82,11 +82,19 @@ public class UserProfileSynToMongoTask implements IJobHandler
 					}
 				}
 
-				if (tagCode.equals(TagEnum.PAYMENT.getValue())) {
+				if (tagCode.equals(TagEnum.SHOPPING.getValue())) {
 					if (isUpdate) {
-						map.put(TagEnum.PAYMENT.getValue(), content);
+						map.put(TagEnum.SHOPPING.getValue(), content);
 					} else {
-						inno72UserProfile.setPayment(content);
+						inno72UserProfile.setShopping(content);
+					}
+				}
+
+				if (tagCode.equals(TagEnum.SAMPLE.getValue())) {
+					if (isUpdate) {
+						map.put(TagEnum.SAMPLE.getValue(), content);
+					} else {
+						inno72UserProfile.setSample(content);
 					}
 				}
 

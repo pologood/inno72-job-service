@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.task.mapper.Inno72GameUserMapper">
+    <resultMap id="BaseResultMap" type="com.inno72.job.task.model.Inno72GameUser">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" javaType="java.time.LocalDateTime"
+                typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+    </resultMap>
+
+    <select id="selectByChannelUserKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select * from inno72_game_user where channel_user_key = #{userId}
+    </select>
+
+    <select id="getShoppingUsers" resultType="java.lang.String" parameterType="java.lang.Integer">
+         select user_id as count from inno72.inno72_order
+         where pay_status = 1 and pay_price > 1
+         group by user_id
+         HAVING  count(1) > #{count}
+    </select>
+
+    <select id="getSampleUsers" resultType="java.lang.String" parameterType="java.lang.Integer">
+         select user_id as count from inno72.inno72_order
+         where pay_status = 1 and
+        <![CDATA[ pay_price < 1 ]]>
+         group by user_id
+         HAVING  count(1) > #{count}
+    </select>
+</mapper>

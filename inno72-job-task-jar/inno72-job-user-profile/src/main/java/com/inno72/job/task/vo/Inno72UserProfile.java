@@ -19,7 +19,9 @@ public class Inno72UserProfile implements Serializable {
 
 	public String age;
 
-	public String payment;
+	public String shopping;
+
+	public String sample;
 
 	public String interaction;
 
@@ -55,14 +57,6 @@ public class Inno72UserProfile implements Serializable {
 
 	public void setAge(String age) {
 		this.age = age;
-	}
-
-	public String getPayment() {
-		return payment;
-	}
-
-	public void setPayment(String payment) {
-		this.payment = payment;
 	}
 
 	public String getInteraction() {
@@ -119,5 +113,21 @@ public class Inno72UserProfile implements Serializable {
 
 	public void setGender(String gender) {
 		this.gender = gender;
+	}
+
+	public String getShopping() {
+		return shopping;
+	}
+
+	public void setShopping(String shopping) {
+		this.shopping = shopping;
+	}
+
+	public String getSample() {
+		return sample;
+	}
+
+	public void setSample(String sample) {
+		this.sample = sample;
 	}
 }
