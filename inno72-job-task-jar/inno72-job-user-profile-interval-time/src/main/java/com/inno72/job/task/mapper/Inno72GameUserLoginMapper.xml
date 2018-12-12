@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.task.mapper.Inno72GameUserLoginMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.job.task.model.Inno72GameUserLogin">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="age" jdbcType="VARCHAR" property="age" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
+    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
+    <result column="processed" jdbcType="BIT" property="processed" />
+    <result column="operating_system" jdbcType="BIT" property="operatingSystem" />
+    <result column="phone_model" jdbcType="VARCHAR" property="phoneModel" />
+    <result column="sacn_software" jdbcType="VARCHAR" property="sacnSoftware" />
+    <result column="locale_id" jdbcType="VARCHAR" property="localeId" />
+  </resultMap>
+
+    <select id="findAllNoProcessed" resultType="com.inno72.job.task.model.Inno72GameUserLogin">
+        select * from inno72.inno72_game_user_login where processed = 0
+    </select>
+
+    <select id="update" parameterType="com.inno72.job.task.model.Inno72GameUserLogin">
+        update inno72.inno72_game_user_login
+        set
+            sex = #{sex},
+            age = #{age},
+            processed = #{processed}
+        where
+            id = #{id}
+    </select>
+
+
+</mapper>
