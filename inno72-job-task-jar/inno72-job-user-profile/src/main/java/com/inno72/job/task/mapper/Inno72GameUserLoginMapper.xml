@@ -48,11 +48,13 @@
         select login.*, acti.name as activity_name
         from (select * , date_format(login_time, "%Y-%m-%d") as login_date from inno72.inno72_game_user_login) login
         left join (select id, name from inno72.`inno72_interact`) acti on acti.id = login.activity_id
+        left join inno72_channel c on c.id = login.channel_id
+        where c.channel_code = '002003'
         <if test="time != '' and time != null">
-            where login_time >= #{time}
+            and login_time >= #{time}
         </if>
         <if test="startTime != null and startTime != ''">
-            where login_time between #{startTime} and #{endTime}
+            and login_time between #{startTime} and #{endTime}
         </if>
         group by login_date, user_id
         order by login_time asc
@@ -71,6 +73,12 @@
 
         order by login_time asc
 
+    </select>
+    <select id="selectAllUseId" resultType="java.lang.String">
+        select id from inno72.inno72_game_user
+    </select>
+    <select id="selectAllCity" resultType="java.lang.String">
+        select distinct city from inno72.inno72_admin_area where city is not null limit 10
     </select>
 
 

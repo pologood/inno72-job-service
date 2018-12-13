@@ -31,7 +31,7 @@ import com.inno72.job.task.task.UserProfileBaseInfoTask;
 @Import({RedisAutoConfiguration.class, MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 public class Configure {
 
-	static final public Class<? extends IJobHandler> TaskClazz = UserProfileBaseInfoTask.class;
+	static final public Class<? extends IJobHandler> TaskClazz = TestInsertLoginTask.class;
 
 	@Configuration
 	@Profile("dev")

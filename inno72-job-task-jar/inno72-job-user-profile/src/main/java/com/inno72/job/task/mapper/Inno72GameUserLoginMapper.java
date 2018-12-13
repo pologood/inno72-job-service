@@ -21,4 +21,9 @@ public interface Inno72GameUserLoginMapper{
 	List<Inno72GameUserLoginVo> selectByTime(Map<String, String> loginParam);
 
 	List<Inno72GameUserLogin> selectByPhoneModel(Map<String, String> param);
+
+	List<String> selectAllUseId();
+
+	List<String> selectAllCity();
+
 }

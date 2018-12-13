@@ -68,7 +68,7 @@ public class Inno72MerchantTotalCountByUser {
 	 * @param activityName
 	 * @param merchantId
 	 * @param date
-	 * @param sellerId
+	 * @param userId
 	 * @param age
 	 * @param sex
 	 * @param userTag
