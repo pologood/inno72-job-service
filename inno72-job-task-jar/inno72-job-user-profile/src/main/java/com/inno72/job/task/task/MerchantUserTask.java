@@ -168,7 +168,7 @@ public class MerchantUserTask implements IJobHandler {
 				}
 
 				users.add(new Inno72MerchantTotalCountByUser(Uuid.genUuid(), login.getActivityId(), login.getActivityName(),
-						"", loginTime, "", age, gender, JSON.toJSONString(tags), point, city, endTimeLocal));
+						"", loginTime, userId, age, gender, JSON.toJSONString(tags), point, city, endTimeLocal));
 
 			}
 			if (users.size() > 0){

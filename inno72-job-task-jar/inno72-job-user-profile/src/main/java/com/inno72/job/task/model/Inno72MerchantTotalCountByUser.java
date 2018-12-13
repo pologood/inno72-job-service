@@ -28,9 +28,9 @@ public class Inno72MerchantTotalCountByUser {
     private String date;
 
     /**
-     * 商家code
+     * 用户ID
      */
-    private String sellerId;
+    private String userId;
 
     /**
      * 年龄
@@ -77,14 +77,14 @@ public class Inno72MerchantTotalCountByUser {
 	 * @param lastUpdateTime
 	 */
 	public Inno72MerchantTotalCountByUser(String id, String activityId, String activityName, String merchantId,
-			String date, String sellerId, Integer age, String sex, String userTag, String pointTag, String city,
+			String date, String userId, Integer age, String sex, String userTag, String pointTag, String city,
 			LocalDateTime lastUpdateTime) {
 		this.id = id;
 		this.activityId = activityId;
 		this.activityName = activityName;
 		this.merchantId = merchantId;
 		this.date = date;
-		this.sellerId = sellerId;
+		this.userId = userId;
 		this.age = age;
 		this.sex = sex;
 		this.userTag = userTag;
@@ -187,8 +187,8 @@ public class Inno72MerchantTotalCountByUser {
      *
      * @return seller_id - 商家code
      */
-    public String getSellerId() {
-        return sellerId;
+    public String getUserId() {
+        return userId;
     }
 
     /**
@@ -196,8 +196,8 @@ public class Inno72MerchantTotalCountByUser {
      *
      * @param sellerId 商家code
      */
-    public void setSellerId(String sellerId) {
-        this.sellerId = sellerId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     /**
