@@ -9,6 +9,7 @@ import com.inno72.job.task.mapper.Inno72GameUserLoginMapper;
 import com.inno72.job.task.mapper.Inno72GameUserTagRefMapper;
 import com.inno72.job.task.model.Inno72GameUserTagRef;
 import com.inno72.job.task.util.DateUtil;
+import com.inno72.job.task.vo.Inno72GameUserTagRefVo;
 import com.inno72.job.task.vo.Inno72UserProfile;
 import com.inno72.job.task.vo.TagEnum;
 import com.inno72.mongo.MongoUtil;
@@ -56,12 +57,12 @@ public class UserProfileSynToMongoTask implements IJobHandler
 				isUpdate = true;
 			}
 
-			List<Inno72GameUserTagRef> gameUserTagRefs = inno72GameUserTagRefMapper.findInno72GameUserTagRefByUserId(userId);
-			for (Inno72GameUserTagRef gameUserTagRef : gameUserTagRefs) {
+			List<Inno72GameUserTagRefVo> gameUserTagRefs = inno72GameUserTagRefMapper.findInno72GameUserTagRefByUserId(userId);
+			for (Inno72GameUserTagRefVo gameUserTagRef : gameUserTagRefs) {
 
 				Map<String, Object> map = new HashMap<>();
 
-				String tagCode = gameUserTagRef.getTagCode();
+				String tagCode = gameUserTagRef.getCode();
 				String content = gameUserTagRef.getContent();
 				Inno72UserProfile inno72UserProfile = new Inno72UserProfile();
 				inno72UserProfile.setUserId(userId);
@@ -130,11 +131,19 @@ public class UserProfileSynToMongoTask implements IJobHandler
 					}
 				}
 
-				if (tagCode.equals(TagEnum.GAMETIME.getValue())) {
+				if (tagCode.equals(TagEnum.GAME_TALENT.getValue())) {
 					if (isUpdate) {
-						map.put(TagEnum.GAMETIME.getValue(), content);
+						map.put(TagEnum.GAME_TALENT.getValue(), content);
 					} else {
-						inno72UserProfile.setGametime(content);
+						inno72UserProfile.setGameTalent(content);
+					}
+				}
+
+				if (tagCode.equals(TagEnum.GAME_NOVICE.getValue())) {
+					if (isUpdate) {
+						map.put(TagEnum.GAME_NOVICE.getValue(), content);
+					} else {
+						inno72UserProfile.setGameNovice(content);
 					}
 				}
 

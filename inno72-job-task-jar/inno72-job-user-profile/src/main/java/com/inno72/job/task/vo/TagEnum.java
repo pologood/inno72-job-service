@@ -13,7 +13,8 @@ public enum TagEnum {
 	ATTEMPT("attempt", "尝鲜族"),
 	CITY("city", "城市"),
 	POS("pos", "点位"),
-	GAMETIME("gametime", "游戏时长"),
+	GAME_TALENT("gameTalent", "游戏达人"),
+	GAME_NOVICE("gameNovice", "游戏新手"),
 	BUYPOWER("buypower", "购买力");
 
 	String value;

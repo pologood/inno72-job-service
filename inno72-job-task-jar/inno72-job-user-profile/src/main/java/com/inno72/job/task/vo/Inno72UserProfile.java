@@ -31,9 +31,11 @@ public class Inno72UserProfile implements Serializable {
 
 	public String pos;
 
-	public String gametime;
-
 	public String buypower;
+
+	public String gameTalent;
+
+	public String gameNovice;
 
 	public String getId() {
 		return id;
@@ -91,14 +93,6 @@ public class Inno72UserProfile implements Serializable {
 		this.pos = pos;
 	}
 
-	public String getGametime() {
-		return gametime;
-	}
-
-	public void setGametime(String gametime) {
-		this.gametime = gametime;
-	}
-
 	public String getBuypower() {
 		return buypower;
 	}
@@ -129,5 +123,21 @@ public class Inno72UserProfile implements Serializable {
 
 	public void setSample(String sample) {
 		this.sample = sample;
+	}
+
+	public String getGameTalent() {
+		return gameTalent;
+	}
+
+	public void setGameTalent(String gameTalent) {
+		this.gameTalent = gameTalent;
+	}
+
+	public String getGameNovice() {
+		return gameNovice;
+	}
+
+	public void setGameNovice(String gameNovice) {
+		this.gameNovice = gameNovice;
 	}
 }

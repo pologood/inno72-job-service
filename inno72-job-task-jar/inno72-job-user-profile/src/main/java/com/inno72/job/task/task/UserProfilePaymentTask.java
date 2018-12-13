@@ -22,7 +22,7 @@ import com.inno72.job.core.handle.IJobHandler;
 import com.inno72.job.core.handle.annotation.JobHandler;
 
 /**
- * Hello world!
+ * 购物控 ，样品控
  *
  */
 @JobMapperScanner(value = "classpath*:/com/inno72/job/task/mapper/*.xml", basePackage="com.inno72.job.task.mapper")
@@ -43,9 +43,6 @@ public class UserProfilePaymentTask implements IJobHandler {
 	private Inno72GameUserTagRefMapper inno72GameUserTagRefMapper;
 
 	@Resource
-	private Inno72GameUserLifeMapper inno72GameUserLifeMapper;
-
-	@Resource
 	private Inno72GameUserMapper inno72GameUserMapper;
 
 	@Override
@@ -55,8 +52,8 @@ public class UserProfilePaymentTask implements IJobHandler {
 		Inno72GameUserTag shoppingTag = inno72GameUserTagMapper.selectByCode(CODE_SHOPPING);
 		Inno72GameUserTag sampleTag = inno72GameUserTagMapper.selectByCode(CODE_SAMPLE);
 
-		Set<String> shoppingUsers = inno72GameUserMapper.getShoppingUsers(2);
-		Set<String> sampleUsers = inno72GameUserMapper.getSampleUsers(2);
+		Set<String> shoppingUsers = inno72GameUserMapper.getShoppingUsers(1);
+		Set<String> sampleUsers = inno72GameUserMapper.getSampleUsers(1);
 
 		this.saveTag(shoppingTag, shoppingUsers, TAG_SHOPPING);
 		this.saveTag(sampleTag, sampleUsers, TAG_SAMPLE);

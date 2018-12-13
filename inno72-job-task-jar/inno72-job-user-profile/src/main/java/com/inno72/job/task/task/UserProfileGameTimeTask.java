@@ -26,7 +26,8 @@ import java.util.Set;
 public class UserProfileGameTimeTask implements IJobHandler
 {
 
-	private static final String CODE = "gametime";
+	private static final String CODE_GAME_TALENT = "game_talent";
+	private static final String CODE_GAME_NOVICE = "game_novice";
 
 	public static final String TAG_GAME_TALENT = "游戏达人";
 
@@ -43,26 +44,25 @@ public class UserProfileGameTimeTask implements IJobHandler
 
 	@Override
 	public ReturnT<String> execute(String param) throws Exception {
-		JobLogger.log("游戏时长标签 job, start");
+		JobLogger.log("游戏达人游戏新手job, start");
 
 		// 游戏时长
-		Inno72GameUserTag userTag = inno72GameUserTagMapper.selectByCode(CODE);
-		if (userTag == null){
-			return new ReturnT<>(ReturnT.SUCCESS_CODE, "未找到需要处理的标签");
-		}
+		Inno72GameUserTag gameTalentTag = inno72GameUserTagMapper.selectByCode(CODE_GAME_TALENT);
+
+		Inno72GameUserTag gameNoviceTag = inno72GameUserTagMapper.selectByCode(CODE_GAME_NOVICE);
 
 		Set<String> gameTalentUserIds = inno72GameUserLifeMapper.findGameTalentUserIds();
 
 		Set<String> gameNoviceUserIds = inno72GameUserLifeMapper.findGameNoviceUserIds();
 
 		if (gameTalentUserIds.size() > 0) {
-			saveTag(userTag, gameTalentUserIds, TAG_GAME_TALENT);
+			saveTag(gameTalentTag, gameTalentUserIds, TAG_GAME_TALENT);
 		}
 		if (gameNoviceUserIds.size() > 0) {
-			saveTag(userTag, gameNoviceUserIds, TAG_GAME_NOVICE);
+			saveTag(gameNoviceTag, gameNoviceUserIds, TAG_GAME_NOVICE);
 		}
 
-		JobLogger.log("游戏时长标签 job, end");
+		JobLogger.log("游戏达人游戏新手job, end");
 		return new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
 	}
 

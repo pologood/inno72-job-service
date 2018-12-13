@@ -26,7 +26,7 @@ public interface Inno72GameUserTagRefMapper {
 	 * 查询 Inno72GameUserTagRef 通过条件i
 	 * @return
 	 */
-	List<Inno72GameUserTagRef> findInno72GameUserTagRefByUserId(String userId);
+	List<Inno72GameUserTagRefVo> findInno72GameUserTagRefByUserId(String userId);
 
 	List<Inno72GameUserTagRefVo> selectByActIdAndUserId(Map<String, String> refParam);
 }
