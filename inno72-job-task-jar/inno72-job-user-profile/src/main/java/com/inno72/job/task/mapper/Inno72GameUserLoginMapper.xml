@@ -48,7 +48,7 @@
         select login.*, acti.name as activity_name
         from (select * , date_format(login_time, "%Y-%m-%d") as login_date from inno72.inno72_game_user_login) login
         left join (select id, name from inno72.`inno72_interact`) acti on acti.id = login.activity_id
-        left join inno72_channel c on c.id = login.channel_id
+        left join inno72.inno72_channel c on c.id = login.channel_id
         where c.channel_code = '002003'
         <if test="time != '' and time != null">
             and login_time >= #{time}
