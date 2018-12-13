@@ -180,6 +180,9 @@ public class UserProfileBaseInfoTask implements IJobHandler
 		if (tags.size() > 0) {
 			inno72GameUserTagRefMapper.insertS(tags);
 		}
+		userTag.setUpdateId("UserProfileBaseInfoTask");
+		userTag.setUpdateTime(now);
+		inno72GameUserTagMapper.update(userTag);
 	}
 
 	@Override
