@@ -8,6 +8,7 @@ import com.inno72.job.core.handle.annotation.JobMapperScanner;
 import com.inno72.job.core.log.JobLogger;
 import com.inno72.job.task.mapper.Inno72GameUserLoginMapper;
 import com.inno72.job.task.model.Inno72GameUserLogin;
+import com.inno72.job.task.util.DownloadUtil;
 import com.inno72.job.task.util.FaceIdentifyUtil;
 import com.inno72.job.task.util.FastJsonUtils;
 import com.inno72.job.task.vo.FaceV3DetectBean;
@@ -41,35 +42,63 @@ public class UserProfileUrlAnalysisTask implements IJobHandler
 	}
 
 	private String detectFace(Inno72GameUserLogin gameUserLogin) {
-		// todo gxg 解析 url
 		String url = gameUserLogin.getUrl();
-		File file = new File("/Users/72cy-0101-01-0009/Documents/rl1.jpeg");
+
+		JobLogger.log("detectFace url is " + url);
+
+		DownloadUtil downloadUtil = new DownloadUtil();
+
+		long l = System.currentTimeMillis();
+
+		downloadUtil.download(url, "/Users/72cy-0101-01-0009/Documents/temp", String.valueOf(l), new DownloadUtil.OnDownloadListener(){
+
+			@Override
+			public void onDownloadSuccess(File file) {
+				System.out.println("下载成功");
+			}
+
+			@Override
+			public void onDownloading(int progress) {
+				System.out.println("下载中" + progress);
+			}
+
+			@Override
+			public void onDownloadFailed(Exception e) {
+				System.out.println("下载失败");
+			}
+		});
+
+		File file = new File("/Users/72cy-0101-01-0009/Documents/temp/"+String.valueOf(l));
+
 		String s = FaceIdentifyUtil.detectFace(file, "");
-		String errorCode = FastJsonUtils.getString(s, "error_code");
-		JobLogger.log("detectFace result is {}", s);
-		if (!StringUtils.isEmpty(errorCode)) {
-			JSON json = JSON.parseObject(s);
-			FaceV3DetectBean bean = JSON.toJavaObject(json, FaceV3DetectBean.class);
+		if (!StringUtils.isEmpty(s)) {
+			String errorCode = FastJsonUtils.getString(s, "error_code");
+			JobLogger.log("detectFace result is" + s);
+			if (!StringUtils.isEmpty(errorCode) && errorCode.equals("0")) {
+				JSON json = JSON.parseObject(s);
+				FaceV3DetectBean bean = JSON.toJavaObject(json, FaceV3DetectBean.class);
 
-			int age = bean.getResult().getFace_list().get(0).getAge();
-			String sex = bean.getResult().getFace_list().get(0).getGender().getType();
+				int age = bean.getResult().getFace_list().get(0).getAge();
+				String sex = bean.getResult().getFace_list().get(0).getGender().getType();
 
-			if (!StringUtils.isEmpty(age)) {
-				gameUserLogin.setAge(String.valueOf(age));
-			}
-			if (!StringUtils.isEmpty(sex)) {
-				if (sex.equals("male")) {
-					sex = "男";
-				} else if (sex.equals("female")) {
-					sex = "女";
+				if (!StringUtils.isEmpty(age)) {
+					gameUserLogin.setAge(String.valueOf(age));
 				}
-			} else {
-				sex = "未知";
+				if (!StringUtils.isEmpty(sex)) {
+					if (sex.equals("male")) {
+						sex = "男";
+					} else if (sex.equals("female")) {
+						sex = "女";
+					}
+				} else {
+					sex = "未知";
+				}
+				gameUserLogin.setSex(sex);
+				gameUserLogin.setProcessed(true);
+				inno72GameUserLoginMapper.update(gameUserLogin);
 			}
-			gameUserLogin.setSex(sex);
-			gameUserLogin.setProcessed(true);
-			inno72GameUserLoginMapper.update(gameUserLogin);
 		}
+
 		return s;
 	}
 

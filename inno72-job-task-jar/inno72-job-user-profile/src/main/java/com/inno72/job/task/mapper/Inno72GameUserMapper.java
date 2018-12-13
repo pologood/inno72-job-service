@@ -1,9 +1,6 @@
 package com.inno72.job.task.mapper;
 
 import com.inno72.job.task.model.Inno72GameUser;
-import com.inno72.job.task.vo.PaymentUser;
-
-import java.util.List;
 import java.util.Set;
 
 public interface Inno72GameUserMapper {

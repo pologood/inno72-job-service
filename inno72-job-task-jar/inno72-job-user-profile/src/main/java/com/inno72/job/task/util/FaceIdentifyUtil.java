@@ -468,13 +468,25 @@ public class FaceIdentifyUtil {
 	public static void main(String[] args) throws InterruptedException {
 
 		for (int i=0; i< 1; i++) {
-			File file = new File("/Users/72cy-0101-01-0009/Documents/rl2.jpg");
+			File file = new File("/Users/72cy-0101-01-0009/Documents/rl21.jpeg");
 			String s = FaceIdentifyUtil.detectFace(file, "");
-			String errorCode = FastJsonUtils.getString(s, "error_code");
+			System.out.println(s);
 
-			if (!StringUtils.isEmpty(errorCode)) {
 
-			}
+
+
+			JSON json = JSON.parseObject(s);
+			FaceV3DetectBean bean = JSON.toJavaObject(json, FaceV3DetectBean.class);
+			int age = bean.getResult().getFace_list().get(0).getAge();
+			String sex = bean.getResult().getFace_list().get(0).getGender().getType();
+			System.out.println(sex);
+			System.out.println(age);
+			// Thread.sleep(200);
+//			String errorCode = FastJsonUtils.getString(s, "error_code");
+//
+//			if (!StringUtils.isEmpty(errorCode)) {
+//
+//			}
 
 
 

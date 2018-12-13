@@ -29,7 +29,7 @@
   </resultMap>
 
     <select id="findAllNoProcessed" resultType="com.inno72.job.task.model.Inno72GameUserLogin">
-        select * from inno72.inno72_game_user_login where processed = 0
+        select * from inno72.inno72_game_user_login where processed = 0 and url != ''
     </select>
 
     <select id="update" parameterType="com.inno72.job.task.model.Inno72GameUserLogin">
