@@ -13,7 +13,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.data.mongodb.core.MongoOperations;
 
 import com.alibaba.fastjson.JSON;
 import com.inno72.job.core.biz.model.ReturnT;
@@ -35,9 +34,6 @@ public class UserProfileAttemptTask implements IJobHandler
 {
 
 	@Resource
-	private MongoOperations operations;
-
-	@Resource
 	private Inno72GameUserTagMapper inno72GameUserTagMapper;
 
 	@Resource
@@ -49,10 +45,10 @@ public class UserProfileAttemptTask implements IJobHandler
 	private static final String CODE_ATTEMPT = "attempt";
 
 	@Override
-	public ReturnT<String> execute(String param) throws Exception {
-		JobLogger.log("互动控 job, start");
+	public ReturnT<String> execute(String param) {
+		JobLogger.log("尝鲜族 job, start");
 
-		//互动控
+		//尝鲜族
 		Inno72GameUserTag userTag = inno72GameUserTagMapper.selectByCode(CODE_ATTEMPT);
 		if (userTag == null){
 			return new ReturnT<>(ReturnT.SUCCESS_CODE, "未找到需要处理的标签");
@@ -86,18 +82,15 @@ public class UserProfileAttemptTask implements IJobHandler
 			if (days <= 0) {
 				break;
 			}
-			if (days < 1) {
-				plusDays = endTimeLocal;
-			}
 			Map<String, String> params = new HashMap<>();
 			params.put("startTime", startTimeLocal.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 			params.put("endTime",  plusDays.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-			JobLogger.log("互动控 执行线程 - 参数 *************************** " + JSON.toJSONString(params));
+			JobLogger.log("尝鲜族 执行线程 - 参数 *************************** " + JSON.toJSONString(params));
 
 			List<Inno72GameUserLife> lives = inno72GameUserLifeMapper.selectLifeByLoginTime(params);
 
-			JobLogger.log("互动控 执行线程 - 参数 ***** " + JSON.toJSONString(params) + "*****结果【" + lives.size() +"条】*****");
+			JobLogger.log("尝鲜族 执行线程 - 参数 ***** " + JSON.toJSONString(params) + "*****结果【" + lives.size() +"条】*****");
 
 			if (lives.size() == 0){
 				JobLogger.log("查询参数 - "+ JSON.toJSONString(params) +"结果为空");
@@ -106,8 +99,6 @@ public class UserProfileAttemptTask implements IJobHandler
 			}
 
 			for ( Inno72GameUserLife life : lives ){
-				LocalDateTime loginTime = life.getLoginTime();
-				Duration between = Duration.between(startTimeLocal, loginTime);
 				String gameUserId = life.getGameUserId();
 
 				if (StringUtils.isEmpty(gameUserId)){
@@ -130,17 +121,18 @@ public class UserProfileAttemptTask implements IJobHandler
 			startTimeLocal = plusDays;
 		}
 
-		JobLogger.log("互动控 用户分组 - "+ JSON.toJSONString(attempt) + "共-" + attempt.size() +"条");
+		JobLogger.log("尝鲜族 用户分组 - "+ JSON.toJSONString(attempt) + "共-" + attempt.size() +"条");
 
 		if (attempt.size() > 0){
 			List<Inno72GameUserTagRef> refsAttempt = new ArrayList<>(attempt.size());
+			List<String> list = inno72GameUserTagRefMapper.selectUserIdsByTagIdAndUserId(userTag.getId(), attempt);
 			for (String userId : attempt){
-				refsAttempt.add(new Inno72GameUserTagRef(Uuid.genUuid(), userId, userTag.getId(), "互动控", endTimeLocal));
+				if (!list.contains(userId)){
+					refsAttempt.add(new Inno72GameUserTagRef(Uuid.genUuid(), userId, userTag.getId(), "尝鲜族", endTimeLocal));
+				}
 			}
-			int deleteSize = inno72GameUserTagRefMapper.deleteByUserIdAndTagId(userTag.getId(), attempt);
-			JobLogger.log("互动控 job, 删除已有互动控用户ID集合"+JSON.toJSONString(attempt)+"关联,共 【"+deleteSize+"】条");
 			int i = inno72GameUserTagRefMapper.insertS(refsAttempt);
-			JobLogger.log("互动控 job, 插入互动控用户ID集合"+JSON.toJSONString(attempt)+"关联,共 【"+i+"】条");
+			JobLogger.log("尝鲜族 job, 插入尝鲜族用户ID集合"+JSON.toJSONString(attempt)+"关联,共 【"+i+"】条");
 		}
 
 		userTag.setUpdateTime(endTimeLocal);
@@ -148,7 +140,7 @@ public class UserProfileAttemptTask implements IJobHandler
 
 		inno72GameUserTagMapper.update(userTag);
 
-		JobLogger.log("互动控 job, end");
+		JobLogger.log("尝鲜族 job, end");
 		return new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
 	}
 

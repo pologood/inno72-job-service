@@ -10,7 +10,7 @@
     <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
     <result column="merchant_id" jdbcType="VARCHAR" property="merchantId" />
     <result column="date" jdbcType="VARCHAR" property="date" />
-    <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
     <result column="age" jdbcType="INTEGER" property="age" />
     <result column="sex" jdbcType="VARCHAR" property="sex" />
     <result column="user_tag" jdbcType="VARCHAR" property="userTag" />
@@ -24,13 +24,13 @@
 
         insert into `inno72`.`inno72_merchant_total_count_by_user`
         ( `id`, `activity_id`, `activity_name`,
-        `merchant_id`, `date`, `seller_id`,
+        `merchant_id`, `date`, `user_id`,
         `age`, `sex`, `user_tag`,
         `point_tag`, `city`, `last_update_time`)
         values
         <foreach collection="list" item="item" separator=",">
             ( #{item.id},  #{item.activityId},  #{item.activityName},
-            #{item.merchantId},  #{item.date},  #{item.sellerId},
+            #{item.merchantId},  #{item.date},  #{item.userId},
             #{item.age},  #{item.sex},  #{item.userTag},
             #{item.pointTag},  #{item.city},  #{item.lastUpdateTime})
         </foreach>
