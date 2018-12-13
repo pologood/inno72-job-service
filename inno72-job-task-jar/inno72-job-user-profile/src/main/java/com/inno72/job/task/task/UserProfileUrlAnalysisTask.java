@@ -50,7 +50,7 @@ public class UserProfileUrlAnalysisTask implements IJobHandler
 
 		long l = System.currentTimeMillis();
 
-		downloadUtil.download(url, "/Users/72cy-0101-01-0009/Documents/temp", String.valueOf(l), new DownloadUtil.OnDownloadListener(){
+		downloadUtil.download(url, "/tmp/", String.valueOf(l), new DownloadUtil.OnDownloadListener(){
 
 			@Override
 			public void onDownloadSuccess(File file) {
@@ -68,7 +68,7 @@ public class UserProfileUrlAnalysisTask implements IJobHandler
 			}
 		});
 
-		File file = new File("/Users/72cy-0101-01-0009/Documents/temp/"+String.valueOf(l));
+		File file = new File("/tmp/"+String.valueOf(l));
 
 		String s = FaceIdentifyUtil.detectFace(file, "");
 		if (!StringUtils.isEmpty(s)) {
