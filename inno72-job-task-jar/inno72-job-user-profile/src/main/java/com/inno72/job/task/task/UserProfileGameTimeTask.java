@@ -68,7 +68,7 @@ public class UserProfileGameTimeTask implements IJobHandler
 
 	void saveTag(Inno72GameUserTag userTag, Set<String> userIds, String tagContent) {
 		int deleteCount = inno72GameUserTagRefMapper.deleteByUserIdAndTagId(userTag.getId(), userIds);
-		JobLogger.log("分享标签 deleteCount is " + deleteCount);
+		JobLogger.log("deleteCount is " + deleteCount);
 
 		List<Inno72GameUserTagRef> refsAttempt = new ArrayList<>(userIds.size());
 		LocalDateTime endTimeLocal = LocalDateTime.now();

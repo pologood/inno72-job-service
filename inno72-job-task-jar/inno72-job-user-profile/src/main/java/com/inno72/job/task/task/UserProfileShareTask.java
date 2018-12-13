@@ -6,7 +6,6 @@ import com.inno72.job.core.handle.annotation.JobHandler;
 import com.inno72.job.core.handle.annotation.JobMapperScanner;
 import com.inno72.job.core.log.JobLogger;
 import com.inno72.job.task.mapper.Inno72GameUserLifeMapper;
-import com.inno72.job.task.mapper.Inno72GameUserLoginMapper;
 import com.inno72.job.task.mapper.Inno72GameUserTagMapper;
 import com.inno72.job.task.mapper.Inno72GameUserTagRefMapper;
 import com.inno72.job.task.model.Inno72GameUserTag;

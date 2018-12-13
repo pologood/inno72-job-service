@@ -7,7 +7,8 @@ public enum TagEnum {
 
 	GENDER("gender", "性别"),
 	AGE("age", "年龄"),
-	PAYMENT("payment", "支付"),
+	SHOPPING("shopping", "购物控"),
+	SAMPLE("sample", "样品控"),
 	INTERACTION("interaction", "互动控"),
 	ATTEMPT("attempt", "尝鲜族"),
 	CITY("city", "城市"),
