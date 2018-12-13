@@ -43,9 +43,8 @@ public class UserProfileShareTask implements IJobHandler
 
 	@Override
 	public ReturnT<String> execute(String param) throws Exception {
-		JobLogger.log("分享标签 job, start");
+		JobLogger.log("分享族标签 job, start");
 
-		// 分享族
 		Inno72GameUserTag userTag = inno72GameUserTagMapper.selectByCode(CODE_SHARE);
 		if (userTag == null){
 			return new ReturnT<>(ReturnT.SUCCESS_CODE, "未找到需要处理的标签");
@@ -54,7 +53,7 @@ public class UserProfileShareTask implements IJobHandler
 		Set<String> shareUserIds = inno72GameUserLifeMapper.findShareUserIds(SHARE_COUNT);
 
 		int deleteCount = inno72GameUserTagRefMapper.deleteByUserIdAndTagId(userTag.getId(), shareUserIds);
-		JobLogger.log("分享标签 deleteCount is " + deleteCount);
+		JobLogger.log("deleteCount is " + deleteCount);
 
 		List<Inno72GameUserTagRef> refsAttempt = new ArrayList<>(shareUserIds.size());
 		LocalDateTime endTimeLocal = LocalDateTime.now();
@@ -63,7 +62,7 @@ public class UserProfileShareTask implements IJobHandler
 		}
 		inno72GameUserTagRefMapper.insertS(refsAttempt);
 
-		JobLogger.log("分享标签 job, end");
+		JobLogger.log("分享族标签 job, end");
 		return new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
 	}
 
