@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -54,15 +55,11 @@ public class UserProfileIntervalTimeTask implements IJobHandler
 			return new ReturnT<>(ReturnT.SUCCESS_CODE, "未找到需要处理的标签");
 		}
 
-		LocalDateTime startTime = userTag.getUpdateTime();
-		if ( startTime == null ){
-			String lifeStartTime = inno72GameUserLifeMapper.selectMinDateFromLife();
-			if (StringUtils.isEmpty(lifeStartTime)){
-				return new ReturnT<>(ReturnT.SUCCESS_CODE, "未找到需要处理的数据");
-			}
-			startTime = LocalDateTime.parse(lifeStartTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") );
+		String lifeStartTime = inno72GameUserLifeMapper.selectMinDateFromLife();
+		if (StringUtils.isEmpty(lifeStartTime)){
+			return new ReturnT<>(ReturnT.SUCCESS_CODE, "未找到需要处理的数据");
 		}
-		LocalDateTime startTimeLocal = startTime;
+		LocalDateTime startTimeLocal = LocalDateTime.parse(lifeStartTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") );
 		LocalDateTime endTimeLocal = LocalDateTime.now();
 
 		if (startTimeLocal.isAfter(endTimeLocal)){
@@ -70,7 +67,7 @@ public class UserProfileIntervalTimeTask implements IJobHandler
 		}
 
 		Set<String> interaction = new HashSet<>();
-
+		Map<String, Integer> interactionNum = new HashMap<>();
 		while (true) {
 
 			LocalDateTime plusDays = startTimeLocal.plusDays(1);
@@ -104,11 +101,13 @@ public class UserProfileIntervalTimeTask implements IJobHandler
 					continue;
 				}
 				// 互动控
-				if (between.toMinutes() >= 15){
+				Integer integer = Optional.ofNullable(interactionNum.get(gameUserId)).orElse(0);
+				int num = integer + 1;
+				if (num > 1){
 					interaction.add(gameUserId);
 				}
+				interactionNum.put(gameUserId, integer);
 			}
-
 			startTimeLocal = plusDays;
 		}
 
@@ -122,8 +121,33 @@ public class UserProfileIntervalTimeTask implements IJobHandler
 					refsInteraction.add(new Inno72GameUserTagRef(Uuid.genUuid(), userId, userTag.getId(), "互动控", endTimeLocal));
 				}
 			}
-			int i = inno72GameUserTagRefMapper.insertS(refsInteraction);
-			JobLogger.log("互动控 job, 插入互动控用户ID集合"+JSON.toJSONString(interaction)+"关联,共 【"+i+"】条");
+
+			int listSize = 800;
+			if (refsInteraction.size() > listSize){
+
+				List<List<Inno72GameUserTagRef>> groupRefs = new ArrayList<>();
+				List<Inno72GameUserTagRef> groupRef = new ArrayList<>();
+				int i = 0;
+				for (Inno72GameUserTagRef ref : refsInteraction) {
+					i++;
+					groupRef.add(ref);
+					if (groupRef.size() >= listSize){
+						groupRefs.add(groupRef);
+						groupRef = new ArrayList<>();
+					}
+					if (i == refsInteraction.size() && groupRefs.size() != 0){
+						groupRefs.add(groupRef);
+					}
+				}
+				for (List<Inno72GameUserTagRef> ss : groupRefs){
+					int g = inno72GameUserTagRefMapper.insertS(ss);
+					JobLogger.log("互动控 job, 分组插入互动控用户ID集合"+JSON.toJSONString(ss)+"关联,共 【"+g+"】条");
+				}
+
+			}else {
+				int i = inno72GameUserTagRefMapper.insertS(refsInteraction);
+				JobLogger.log("互动控 job, 插入互动控用户ID集合"+JSON.toJSONString(interaction)+"关联,共 【"+i+"】条");
+			}
 		}
 
 		userTag.setUpdateTime(endTimeLocal);
@@ -137,14 +161,14 @@ public class UserProfileIntervalTimeTask implements IJobHandler
 
 	@Override
 	public void init() {
-		
-		
+
+
 	}
 
 	@Override
 	public void destroy() {
-		
-		
+
+
 	}
-   
+
 }

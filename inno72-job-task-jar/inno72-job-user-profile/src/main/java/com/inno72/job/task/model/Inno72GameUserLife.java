@@ -1,7 +1,6 @@
 package com.inno72.job.task.model;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class Inno72GameUserLife {
 
@@ -76,22 +75,22 @@ public class Inno72GameUserLife {
 	/**
 	 * 开始游戏时间
 	 */
-	private Date gameStartTime;
+	private LocalDateTime gameStartTime;
 
 	/**
 	 * 结束游戏时间
 	 */
-	private Date gameEndTime;
+	private LocalDateTime gameEndTime;
 
 	/**
 	 * 出货时间
 	 */
-	private Date shipmentTime;
+	private LocalDateTime shipmentTime;
 
 	/**
 	 * 分享时间
 	 */
-	private Date shareTime;
+	private LocalDateTime shareTime;
 
     /**
      * @return id
@@ -365,4 +364,35 @@ public class Inno72GameUserLife {
         this.orderId = orderId;
     }
 
+	public LocalDateTime getGameStartTime() {
+		return gameStartTime;
+	}
+
+	public void setGameStartTime(LocalDateTime gameStartTime) {
+		this.gameStartTime = gameStartTime;
+	}
+
+	public LocalDateTime getGameEndTime() {
+		return gameEndTime;
+	}
+
+	public void setGameEndTime(LocalDateTime gameEndTime) {
+		this.gameEndTime = gameEndTime;
+	}
+
+	public LocalDateTime getShipmentTime() {
+		return shipmentTime;
+	}
+
+	public void setShipmentTime(LocalDateTime shipmentTime) {
+		this.shipmentTime = shipmentTime;
+	}
+
+	public LocalDateTime getShareTime() {
+		return shareTime;
+	}
+
+	public void setShareTime(LocalDateTime shareTime) {
+		this.shareTime = shareTime;
+	}
 }

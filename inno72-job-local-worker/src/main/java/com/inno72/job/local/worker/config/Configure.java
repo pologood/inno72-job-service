@@ -25,13 +25,12 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 
 import com.inno72.job.core.handle.IJobHandler;
 import com.inno72.job.core.handle.annotation.JobMapperScanner;
-import com.inno72.job.task.task.UserProfileBaseInfoTask;
 
 @Configuration
 @Import({RedisAutoConfiguration.class, MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 public class Configure {
 
-	static final public Class<? extends IJobHandler> TaskClazz = TestInsertLoginTask.class;
+	static final public Class<? extends IJobHandler> TaskClazz = UserProfileAttemptTask.class;
 
 	@Configuration
 	@Profile("dev")

@@ -73,9 +73,7 @@ public class UserProfileBaseInfoTask implements IJobHandler
 
 		LocalDateTime now = LocalDateTime.now();
 
-		String updateTime = Optional.ofNullable(userTag.getUpdateTime()).map(v -> {
-			return v.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-		}).orElse("");
+		String updateTime = Optional.ofNullable(userTag.getUpdateTime()).map(v -> v.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).orElse("");
 		// 性别
 
 		Map<String, String> loginParam = new HashMap<>();

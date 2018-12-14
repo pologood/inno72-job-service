@@ -30,4 +30,6 @@ public interface Inno72GameUserLifeMapper{
 	 * @return
 	 */
 	Set<String> findGameNoviceUserIds();
+
+	List<String> selectMachineByLoginTime(Map<String, String> params);
 }

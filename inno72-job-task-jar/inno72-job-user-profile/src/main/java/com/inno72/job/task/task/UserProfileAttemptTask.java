@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -54,74 +55,55 @@ public class UserProfileAttemptTask implements IJobHandler
 			return new ReturnT<>(ReturnT.SUCCESS_CODE, "未找到需要处理的标签");
 		}
 
-		LocalDateTime startTime = userTag.getUpdateTime();
-		if ( startTime == null ){
+		LocalDateTime startTimeLocal = userTag.getUpdateTime();
+		if ( startTimeLocal == null ){
 			String lifeStartTime = inno72GameUserLifeMapper.selectMinDateFromLife();
 			if (StringUtils.isEmpty(lifeStartTime)){
 				JobLogger.log("未找到需要处理的数据");
 				return new ReturnT<>(ReturnT.SUCCESS_CODE, "未找到需要处理的数据");
 
 			}
-			startTime = LocalDateTime.parse(lifeStartTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") );
+			startTimeLocal = LocalDateTime.parse(lifeStartTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") );
 		}
-		LocalDateTime startTimeLocal = startTime;
+
 		LocalDateTime endTimeLocal = LocalDateTime.now();
 
 		if (startTimeLocal.isAfter(endTimeLocal)){
 			return new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
 		}
 
-		Map<String, Integer> usersMap = new HashMap<>();
+		Map<String, String> machineCodesParam = new HashMap<>();
+		machineCodesParam.put("startTime", startTimeLocal.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		machineCodesParam.put("endTime",  endTimeLocal.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		List<String> machineCodes = inno72GameUserLifeMapper.selectMachineByLoginTime(machineCodesParam);
+		if (machineCodes.size() == 0){
+			return new ReturnT<>(ReturnT.SUCCESS_CODE, JSON.toJSONString(machineCodesParam) + "时间段内，没有需要统计的机器");
+		}
+
 		Set<String> attempt = new HashSet<>();
+		for (String machineCode : machineCodes){
+			List<Inno72GameUserLife> lives = inno72GameUserLifeMapper.selectLifeByLoginTime(machineCodesParam);
+			Map<String, Integer> usersMap = new HashMap<>();
 
-		while (true) {
-
-			LocalDateTime plusDays = startTimeLocal.plusDays(1);
-
-			long days = Duration.between(startTimeLocal, endTimeLocal).toDays();
-			if (days <= 0) {
-				break;
-			}
-			Map<String, String> params = new HashMap<>();
-			params.put("startTime", startTimeLocal.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-			params.put("endTime",  plusDays.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-
-			JobLogger.log("尝鲜族 执行线程 - 参数 *************************** " + JSON.toJSONString(params));
-
-			List<Inno72GameUserLife> lives = inno72GameUserLifeMapper.selectLifeByLoginTime(params);
-
-			JobLogger.log("尝鲜族 执行线程 - 参数 ***** " + JSON.toJSONString(params) + "*****结果【" + lives.size() +"条】*****");
-
-			if (lives.size() == 0){
-				JobLogger.log("查询参数 - "+ JSON.toJSONString(params) +"结果为空");
-				startTimeLocal = plusDays;
-				continue;
-			}
-
+			LocalDateTime shipment = null;
 			for ( Inno72GameUserLife life : lives ){
 				String gameUserId = life.getGameUserId();
+				LocalDateTime loginTime = life.getLoginTime();
 
 				if (StringUtils.isEmpty(gameUserId)){
 					continue;
 				}
-
-				Integer integer = usersMap.get(gameUserId);
-				if (integer == null){
-					integer = 1;
-				}else {
-					integer += 1;
+				shipment = Optional.ofNullable(shipment).orElse(life.getShipmentTime());
+				if (shipment == null){
+					continue;
 				}
-				if (integer > 1){
+
+				long minutes = Duration.between(shipment, loginTime).toMinutes();
+				if (minutes > 15){
 					attempt.add(gameUserId);
 				}
-				usersMap.put(gameUserId, integer);
-
 			}
-
-			startTimeLocal = plusDays;
 		}
-
-		JobLogger.log("尝鲜族 用户分组 - "+ JSON.toJSONString(attempt) + "共-" + attempt.size() +"条");
 
 		if (attempt.size() > 0){
 			List<Inno72GameUserTagRef> refsAttempt = new ArrayList<>(attempt.size());

@@ -24,18 +24,30 @@
     <result column="order_id" jdbcType="VARCHAR" property="orderId" />
     <result column="sex" jdbcType="TINYINT" property="sex" />
     <result column="age" jdbcType="TINYINT" property="age" />
-      <result column="game_start_time" jdbcType="TIMESTAMP" property="gameStartTime" />
-      <result column="game_end_time" jdbcType="TIMESTAMP" property="gameEndTime" />
-      <result column="shipment_time" jdbcType="TIMESTAMP" property="shipmentTime" />
-      <result column="share_time" jdbcType="TIMESTAMP" property="shareTime" />
+      <result column="game_start_time" jdbcType="TIMESTAMP" property="gameStartTime"  javaType="java.time.LocalDateTime"
+              typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+      <result column="game_end_time" jdbcType="TIMESTAMP" property="gameEndTime"  javaType="java.time.LocalDateTime"
+              typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+      <result column="shipment_time" jdbcType="TIMESTAMP" property="shipmentTime"  javaType="java.time.LocalDateTime"
+              typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+      <result column="share_time" jdbcType="TIMESTAMP" property="shareTime"  javaType="java.time.LocalDateTime"
+              typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
   </resultMap>
     <select id="selectMinDateFromLife" resultType="java.lang.String">
         select DATE_FORMAT(MIN(login_time),'%Y-%m-%d %T') from inno72.inno72_game_user_life
     </select>
     <select id="selectLifeByLoginTime" resultMap="BaseResultMap" parameterType="map">
-        select * from inno72.inno72_game_user_life
-        where login_time between #{startTime} and #{endTime}
-        order by login_time asc
+        select l.* from inno72.inno72_game_user_life l
+            left join inno72.inno72_channel c on l.channel_id = c.id
+        where l.login_time between #{startTime} and #{endTime} and c.channel_code = '002003'
+        order by l.login_time asc
+    </select>
+
+    <select id="selectMachineByLoginTime" resultType="java.lang.String" parameterType="map">
+        select DISTINCT machine_code from inno72.inno72_game_user_life l
+            left join inno72.inno72_channel c on l.channel_id = c.id
+        where l.login_time between #{startTime} and #{endTime} and c.channel_code = '002003'
+        order by l.login_time asc
     </select>
 
     <select id="findShareUserIds" resultType="java.lang.String" parameterType="java.lang.Integer">
