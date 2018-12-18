@@ -47,18 +47,20 @@ public class UserProfileSynToMongoTask implements IJobHandler
 		List<String> userIds = inno72GameUserTagRefMapper.findUserIdsNeedSyn(beginTime);
 
 		for (String userId : userIds) {
+
 			boolean isUpdate = false;
+
 			// 判断用户是否再monggo存在，如果存在更新mongo数据，不存在插入
-			Inno72UserProfile _inno72UserProfile = new Inno72UserProfile();
-			_inno72UserProfile.setUserId(userId);
-			long count = mongoUtil.count(_inno72UserProfile, Inno72UserProfile.class);
-
-			if (count > 1) {
-				isUpdate = true;
-			}
-
 			List<Inno72GameUserTagRefVo> gameUserTagRefs = inno72GameUserTagRefMapper.findInno72GameUserTagRefByUserId(userId);
 			for (Inno72GameUserTagRefVo gameUserTagRef : gameUserTagRefs) {
+
+				Inno72UserProfile _inno72UserProfile = new Inno72UserProfile();
+				_inno72UserProfile.setUserId(userId);
+				long count = mongoUtil.count(_inno72UserProfile, Inno72UserProfile.class);
+
+				if (count > 0) {
+					isUpdate = true;
+				}
 
 				Map<String, Object> map = new HashMap<>();
 
@@ -156,7 +158,9 @@ public class UserProfileSynToMongoTask implements IJobHandler
 				}
 
 				if (isUpdate) {
-					mongoUtil.update(_inno72UserProfile, map ,Inno72UserProfile.class);
+					if (map.size() > 0) {
+						mongoUtil.update(_inno72UserProfile, map ,Inno72UserProfile.class);
+					}
 				} else {
 					mongoUtil.save(inno72UserProfile);
 				}

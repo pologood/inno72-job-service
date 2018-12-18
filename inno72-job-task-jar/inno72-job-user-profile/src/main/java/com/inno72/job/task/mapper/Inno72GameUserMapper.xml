@@ -19,7 +19,7 @@
         left join inno72.inno72_channel c
         on o.channel_id = c.id
         where c.channel_code = '002003' and
-        o.pay_status = 1 and o.pay_price > 0.5
+        o.pay_status = 1 and o.pay_price > 1
         group by o.user_id
         HAVING  count(1) > #{count}
     </select>
@@ -30,7 +30,7 @@
         on o.channel_id = c.id
         where c.channel_code = '002003' and
         o.pay_status = 1 and
-        <![CDATA[ o.pay_price < 0.5 ]]>
+        <![CDATA[ o.pay_price < 1 ]]>
         group by o.user_id
         HAVING  count(1) > #{count}
     </select>

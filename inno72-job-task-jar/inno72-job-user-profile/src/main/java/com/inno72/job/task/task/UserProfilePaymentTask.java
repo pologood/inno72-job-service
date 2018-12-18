@@ -55,8 +55,13 @@ public class UserProfilePaymentTask implements IJobHandler {
 		Set<String> shoppingUsers = inno72GameUserMapper.getShoppingUsers(1);
 		Set<String> sampleUsers = inno72GameUserMapper.getSampleUsers(1);
 
-		this.saveTag(shoppingTag, shoppingUsers, TAG_SHOPPING);
-		this.saveTag(sampleTag, sampleUsers, TAG_SAMPLE);
+		if (shoppingUsers.size() > 0) {
+			this.saveTag(shoppingTag, shoppingUsers, TAG_SHOPPING);
+		}
+
+		if (sampleUsers.size() > 0) {
+			this.saveTag(sampleTag, sampleUsers, TAG_SAMPLE);
+		}
 
 		JobLogger.log("支付 job, end");
 

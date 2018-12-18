@@ -59,7 +59,7 @@ public class UserProfileBaseInfoTask implements IJobHandler
 	private static final String TAG_HIGH_CONSUME = "高消费控";
 
 	// 高消费控 手机选项
-	private static final List<String> PHONE_OPTIONS = new ArrayList<String>(Arrays.asList("oppo find x", "8848 M5", "iPhone 8", "iPhone x"));
+	private static final List<String> PHONE_OPTIONS = new ArrayList<String>(Arrays.asList("oppo find x", "8848 M5", "iPhone 8", "iPhone x", "iPhone xs"));
 
 	@Override
 	public ReturnT<String> execute(String param) throws Exception {
@@ -77,7 +77,7 @@ public class UserProfileBaseInfoTask implements IJobHandler
 		// 性别
 
 		Map<String, String> loginParam = new HashMap<>();
-		loginParam.put("time", updateTime);
+		// loginParam.put("time", updateTime);
 		List<Inno72GameUserLoginVo> userLogins = inno72GameUserLoginMapper.selectByTime(loginParam);
 		Map<String, String> userAgeMap = new HashMap<>();
 		Map<String, String> userSexMap = new HashMap<>();
@@ -174,7 +174,6 @@ public class UserProfileBaseInfoTask implements IJobHandler
 				tags.add(new Inno72GameUserTagRef(Uuid.genUuid(), key, userTag.getId(), u.getValue(), now));
 			}
 		}
-
 		if (tags.size() > 0) {
 			inno72GameUserTagRefMapper.insertS(tags);
 		}
