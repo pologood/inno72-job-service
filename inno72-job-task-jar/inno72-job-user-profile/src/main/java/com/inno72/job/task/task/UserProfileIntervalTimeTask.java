@@ -68,47 +68,33 @@ public class UserProfileIntervalTimeTask implements IJobHandler
 
 		Set<String> interaction = new HashSet<>();
 		Map<String, Integer> interactionNum = new HashMap<>();
-		while (true) {
 
-			LocalDateTime plusDays = startTimeLocal.plusDays(1);
+		Map<String, String> params = new HashMap<>();
+		params.put("startTime", startTimeLocal.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-			long days = Duration.between(startTimeLocal, endTimeLocal).toDays();
-			if (days <= 0) {
-				break;
-			}
-			Map<String, String> params = new HashMap<>();
-			params.put("startTime", startTimeLocal.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-			params.put("endTime",  plusDays.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		JobLogger.log("互动控 执行线程 - 参数 *************************** " + JSON.toJSONString(params));
 
-			JobLogger.log("互动控 执行线程 - 参数 *************************** " + JSON.toJSONString(params));
+		List<Inno72GameUserLife> lives = inno72GameUserLifeMapper.selectLifeByLoginTime(params);
 
-			List<Inno72GameUserLife> lives = inno72GameUserLifeMapper.selectLifeByLoginTime(params);
+		JobLogger.log("互动控 执行线程 - 参数 ***** " + JSON.toJSONString(params) + "*****结果【" + lives.size() +"条】*****");
 
-			JobLogger.log("互动控 执行线程 - 参数 ***** " + JSON.toJSONString(params) + "*****结果【" + lives.size() +"条】*****");
+		if (lives.size() == 0){
+			JobLogger.log("查询参数 - "+ JSON.toJSONString(params) +"结果为空");
+			return new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
+		}
 
-			if (lives.size() == 0){
-				JobLogger.log("查询参数 - "+ JSON.toJSONString(params) +"结果为空");
-				startTimeLocal = plusDays;
+		for ( Inno72GameUserLife life : lives ){
+			String gameUserId = life.getGameUserId();
+			if (StringUtils.isEmpty(gameUserId)){
 				continue;
 			}
-
-			for ( Inno72GameUserLife life : lives ){
-				LocalDateTime loginTime = life.getLoginTime();
-				Duration between = Duration.between(startTimeLocal, loginTime);
-				String gameUserId = life.getGameUserId();
-
-				if (StringUtils.isEmpty(gameUserId)){
-					continue;
-				}
-				// 互动控
-				Integer integer = Optional.ofNullable(interactionNum.get(gameUserId)).orElse(0);
-				int num = integer + 1;
-				if (num > 1){
-					interaction.add(gameUserId);
-				}
-				interactionNum.put(gameUserId, integer);
+			// 互动控
+			Integer integer = Optional.ofNullable(interactionNum.get(gameUserId)).orElse(0);
+			int num = integer + 1;
+			if (num > 1){
+				interaction.add(gameUserId);
 			}
-			startTimeLocal = plusDays;
+			interactionNum.put(gameUserId, integer);
 		}
 
 		JobLogger.log("互动控 用户分组 - "+ JSON.toJSONString(interaction) + "共-" + interaction.size() +"条");
@@ -122,32 +108,33 @@ public class UserProfileIntervalTimeTask implements IJobHandler
 				}
 			}
 
-			int listSize = 800;
-			if (refsInteraction.size() > listSize){
-
-				List<List<Inno72GameUserTagRef>> groupRefs = new ArrayList<>();
-				List<Inno72GameUserTagRef> groupRef = new ArrayList<>();
-				int i = 0;
-				for (Inno72GameUserTagRef ref : refsInteraction) {
-					i++;
-					groupRef.add(ref);
-					if (groupRef.size() >= listSize){
-						groupRefs.add(groupRef);
-						groupRef = new ArrayList<>();
-					}
-					if (i == refsInteraction.size() && groupRefs.size() != 0){
-						groupRefs.add(groupRef);
-					}
-				}
-				for (List<Inno72GameUserTagRef> ss : groupRefs){
-					int g = inno72GameUserTagRefMapper.insertS(ss);
-					JobLogger.log("互动控 job, 分组插入互动控用户ID集合"+JSON.toJSONString(ss)+"关联,共 【"+g+"】条");
-				}
-
-			}else {
-				int i = inno72GameUserTagRefMapper.insertS(refsInteraction);
-				JobLogger.log("互动控 job, 插入互动控用户ID集合"+JSON.toJSONString(interaction)+"关联,共 【"+i+"】条");
-			}
+//			int listSize = 800;
+			inno72GameUserTagRefMapper.insertS(refsInteraction);
+//			if (refsInteraction.size() > listSize){
+//
+//				List<List<Inno72GameUserTagRef>> groupRefs = new ArrayList<>();
+//				List<Inno72GameUserTagRef> groupRef = new ArrayList<>();
+//				int i = 0;
+//				for (Inno72GameUserTagRef ref : refsInteraction) {
+//					i++;
+//					groupRef.add(ref);
+//					if (groupRef.size() >= listSize){
+//						groupRefs.add(groupRef);
+//						groupRef = new ArrayList<>();
+//					}
+//					if (i == refsInteraction.size() && groupRefs.size() != 0){
+//						groupRefs.add(groupRef);
+//					}
+//				}
+//				for (List<Inno72GameUserTagRef> ss : groupRefs){
+//					int g = inno72GameUserTagRefMapper.insertS(ss);
+//					JobLogger.log("互动控 job, 分组插入互动控用户ID集合"+JSON.toJSONString(ss)+"关联,共 【"+g+"】条");
+//				}
+//
+//			}else {
+//				int i = inno72GameUserTagRefMapper.insertS(refsInteraction);
+//				JobLogger.log("互动控 job, 插入互动控用户ID集合"+JSON.toJSONString(interaction)+"关联,共 【"+i+"】条");
+//			}
 		}
 
 		userTag.setUpdateTime(endTimeLocal);

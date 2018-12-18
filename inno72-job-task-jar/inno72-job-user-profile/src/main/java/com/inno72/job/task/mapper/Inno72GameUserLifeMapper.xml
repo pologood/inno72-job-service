@@ -33,14 +33,18 @@
       <result column="share_time" jdbcType="TIMESTAMP" property="shareTime"  javaType="java.time.LocalDateTime"
               typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
   </resultMap>
-    <select id="selectMinDateFromLife" resultType="java.lang.String">
-        select DATE_FORMAT(MIN(login_time),'%Y-%m-%d %T') from inno72.inno72_game_user_life
-    </select>
     <select id="selectLifeByLoginTime" resultMap="BaseResultMap" parameterType="map">
         select l.* from inno72.inno72_game_user_life l
-            left join inno72.inno72_channel c on l.channel_id = c.id
-        where l.login_time between #{startTime} and #{endTime} and c.channel_code = '002003'
+        left join inno72.inno72_channel c on l.channel_id = c.id
+        where l.login_time > #{startTime} and c.channel_code = '002003'
+        <if test="machine_code != null">
+            and machine_code = #{machineCode}
+        </if>
         order by l.login_time asc
+    </select>
+    <select id="selectMinDateFromLife" resultType="java.lang.String">
+        select DATE_FORMAT(MIN(login_time),'%Y-%m-%d %T') from inno72.inno72_game_user_life
+        where  channel_id = (select id from inno72_channel where channel_code = '002003')
     </select>
 
     <select id="selectMachineByLoginTime" resultType="java.lang.String" parameterType="map">

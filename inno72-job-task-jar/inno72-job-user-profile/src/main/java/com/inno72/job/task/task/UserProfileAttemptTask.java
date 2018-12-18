@@ -82,6 +82,7 @@ public class UserProfileAttemptTask implements IJobHandler
 
 		Set<String> attempt = new HashSet<>();
 		for (String machineCode : machineCodes){
+			machineCodesParam.put("machineCode", machineCode);
 			List<Inno72GameUserLife> lives = inno72GameUserLifeMapper.selectLifeByLoginTime(machineCodesParam);
 			Map<String, Integer> usersMap = new HashMap<>();
 
