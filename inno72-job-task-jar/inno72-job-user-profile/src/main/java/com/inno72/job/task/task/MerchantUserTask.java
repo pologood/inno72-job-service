@@ -79,105 +79,91 @@ public class MerchantUserTask implements IJobHandler {
 			return new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
 		}
 		Map<String, String> params = new HashMap<>();
-		while (true) {
 
-			LocalDateTime plusDays = startTimeLocal.plusDays(1);
+		params.put("time", startTimeLocal.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		JobLogger.log("执行线程 - 参数 " + JSON.toJSONString(params));
 
-			long days = Duration.between(startTimeLocal, endTimeLocal).toDays();
-			if (days <= 0) {
-				break;
-			}
-			if (days < 1) {
-				plusDays = endTimeLocal;
-			}
-			params.put("startTime", startTimeLocal.toLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-			params.put("endTime",  plusDays.toLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-			JobLogger.log("执行线程 - 参数 " + JSON.toJSONString(params));
+		List<Inno72GameUserLoginVo> userLogins =
+				inno72GameUserLoginMapper.selectByTime(params);
 
-			List<Inno72GameUserLoginVo> userLogins =
-					inno72GameUserLoginMapper.selectByTime(params);
+		if (userLogins.size() == 0){
+			JobLogger.log("查询参数 - "+ JSON.toJSONString(params) +"结果为空");
+			return new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
+		}
+		List<Inno72MerchantTotalCountByUser> users = new ArrayList<>();
+		for (Inno72GameUserLoginVo login : userLogins){
 
-			if (userLogins.size() == 0){
-				JobLogger.log("查询参数 - "+ JSON.toJSONString(params) +"结果为空");
-				startTimeLocal = plusDays;
+			String activityId = login.getActivityId();
+			String userId = login.getUserId();
+			String loginTime = login.getLoginTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+			if (StringUtils.isEmpty(userId)){
 				continue;
 			}
-			List<Inno72MerchantTotalCountByUser> users = new ArrayList<>();
-			for (Inno72GameUserLoginVo login : userLogins){
 
-				String activityId = login.getActivityId();
-				String userId = login.getUserId();
-				String loginTime = login.getLoginTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			Map<String, String> refParam = new HashMap<>();
+			refParam.put("actId", activityId);
+			refParam.put("userId", userId);
+			List<Inno72GameUserTagRefVo> refs = inno72GameUserTagRefMapper.selectByActIdAndUserId(refParam);
 
-				if (StringUtils.isEmpty(userId)){
-					continue;
-				}
+			/**
+			 * @param id -
+			 * @param activityId -
+			 * @param activityName -
+			 * @param merchantId -
+			 * @param date -
+			 * @param sellerId -
+			 * @param age 0
+			 * @param sex 0
+			 * @param userTag 0
+			 * @param pointTag 0
+			 * @param city 0
+			 * @param lastUpdateTime -
+			 */
 
-				Map<String, String> refParam = new HashMap<>();
-				refParam.put("actId", activityId);
-				refParam.put("userId", userId);
-				List<Inno72GameUserTagRefVo> refs = inno72GameUserTagRefMapper.selectByActIdAndUserId(refParam);
+			Integer age = null;
+			String gender = "";
+			String city = "";
+			String point = "";
+			List<String> tags = new ArrayList<>();
 
-				/**
-				 * @param id -
-				 * @param activityId -
-				 * @param activityName -
-				 * @param merchantId -
-				 * @param date -
-				 * @param sellerId -
-				 * @param age 0
-				 * @param sex 0
-				 * @param userTag 0
-				 * @param pointTag 0
-				 * @param city 0
-				 * @param lastUpdateTime -
-				 */
+			for (Inno72GameUserTagRefVo vo : refs){
 
-				Integer age = null;
-				String gender = "";
-				String city = "";
-				String point = "";
-				List<String> tags = new ArrayList<>();
+				String code = vo.getCode();
 
-				for (Inno72GameUserTagRefVo vo : refs){
+				switch (code){
+					case CODE_AGE:
+						age = Integer.parseInt(vo.getContent());
+						break;
 
-					String code = vo.getCode();
+					case CODE_GENDER:
+						gender = vo.getContent();
+						break;
 
-					switch (code){
-						case CODE_AGE:
-							age = Integer.parseInt(vo.getContent());
-							break;
+					case CODE_CITY:
+						city = vo.getContent();
+						break;
 
-						case CODE_GENDER:
-							gender = vo.getContent();
-							break;
+					case CODE_POINT:
+						point = vo.getContent();
+						break;
 
-						case CODE_CITY:
-							city = vo.getContent();
-							break;
-
-						case CODE_POINT:
-							point = vo.getContent();
-							break;
-
-						default:
-							tags.add(vo.getContent());
-
-					}
+					default:
+						tags.add(vo.getContent());
 
 				}
 
-				users.add(new Inno72MerchantTotalCountByUser(Uuid.genUuid(), login.getActivityId(), login.getActivityName(),
-						"", loginTime, userId, age, gender, JSON.toJSONString(tags), point, city, endTimeLocal));
-
-			}
-			if (users.size() > 0){
-				inno72MerchantTotalCountByUserMapper.insertS(users);
 			}
 
+			users.add(new Inno72MerchantTotalCountByUser(Uuid.genUuid(), login.getActivityId(), login.getActivityName(),
+					"", loginTime, userId, age, gender, JSON.toJSONString(tags), point, city, endTimeLocal));
 
-			startTimeLocal = plusDays;
 		}
+		if (users.size() > 0){
+			inno72MerchantTotalCountByUserMapper.insertS(users);
+		}
+
+
 
 		return  new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
 

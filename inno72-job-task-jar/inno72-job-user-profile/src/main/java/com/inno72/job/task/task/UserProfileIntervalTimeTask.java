@@ -66,9 +66,6 @@ public class UserProfileIntervalTimeTask implements IJobHandler
 			return new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
 		}
 
-		Set<String> interaction = new HashSet<>();
-		Map<String, Integer> interactionNum = new HashMap<>();
-
 		Map<String, String> params = new HashMap<>();
 		params.put("startTime", startTimeLocal.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
@@ -76,12 +73,15 @@ public class UserProfileIntervalTimeTask implements IJobHandler
 
 		List<Inno72GameUserLife> lives = inno72GameUserLifeMapper.selectLifeByLoginTime(params);
 
-		JobLogger.log("互动控 执行线程 - 参数 ***** " + JSON.toJSONString(params) + "*****结果【" + lives.size() +"条】*****");
+		JobLogger.log("互动控 执行线程 - 参数 ***** " + JSON.toJSONString(params) + "*****结果【" + lives.size() +"条】*****" + JSON.toJSONString(lives));
 
 		if (lives.size() == 0){
 			JobLogger.log("查询参数 - "+ JSON.toJSONString(params) +"结果为空");
 			return new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
 		}
+
+		Set<String> interaction = new HashSet<>();
+		Map<String, Integer> interactionNum = new HashMap<>();
 
 		for ( Inno72GameUserLife life : lives ){
 			String gameUserId = life.getGameUserId();
@@ -94,10 +94,10 @@ public class UserProfileIntervalTimeTask implements IJobHandler
 			if (num > 1){
 				interaction.add(gameUserId);
 			}
-			interactionNum.put(gameUserId, integer);
+			interactionNum.put(gameUserId, num);
 		}
 
-		JobLogger.log("互动控 用户分组 - "+ JSON.toJSONString(interaction) + "共-" + interaction.size() +"条");
+		JobLogger.log("互动控 用户分组 - "+ JSON.toJSONString(interactionNum) + "共-" + interaction.size() +"条");
 
 		if (interaction.size() > 0){
 			List<Inno72GameUserTagRef> refsInteraction = new ArrayList<>(interaction.size());

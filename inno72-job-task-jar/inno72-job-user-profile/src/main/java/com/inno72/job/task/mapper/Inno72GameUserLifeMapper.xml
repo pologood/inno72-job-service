@@ -36,7 +36,10 @@
     <select id="selectLifeByLoginTime" resultMap="BaseResultMap" parameterType="map">
         select l.* from inno72.inno72_game_user_life l
         left join inno72.inno72_channel c on l.channel_id = c.id
-        where l.login_time > #{startTime} and c.channel_code = '002003'
+        where c.channel_code = '002003'
+        <if test="startTime != null">
+            and l.login_time > #{startTime}
+        </if>
         <if test="machine_code != null">
             and machine_code = #{machineCode}
         </if>
@@ -44,7 +47,7 @@
     </select>
     <select id="selectMinDateFromLife" resultType="java.lang.String">
         select DATE_FORMAT(MIN(login_time),'%Y-%m-%d %T') from inno72.inno72_game_user_life
-        where  channel_id = (select id from inno72_channel where channel_code = '002003')
+        where  channel_id = (select id from inno72.inno72_channel where channel_code = '002003' and is_delete = 0)
     </select>
 
     <select id="selectMachineByLoginTime" resultType="java.lang.String" parameterType="map">
