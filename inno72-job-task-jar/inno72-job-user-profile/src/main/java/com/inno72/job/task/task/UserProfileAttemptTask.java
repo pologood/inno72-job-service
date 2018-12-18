@@ -118,7 +118,7 @@ public class UserProfileAttemptTask implements IJobHandler
 		}
 
 		userTag.setUpdateTime(endTimeLocal);
-		userTag.setUpdateId("execute");
+		userTag.setUpdateId("UserProfileAttemptTask.java");
 
 		inno72GameUserTagMapper.update(userTag);
 
