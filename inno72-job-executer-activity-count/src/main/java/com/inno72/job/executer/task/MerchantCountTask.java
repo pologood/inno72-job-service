@@ -3,6 +3,7 @@ package com.inno72.job.executer.task;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
@@ -106,55 +108,130 @@ public class MerchantCountTask implements IJobHandler {
 		}
 		JobLogger.log("商户日总计统计任务开始 查询已获取数据"+JSON.toJSONString(days));
 
-		if (days.size() == 0){
-			return  new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
-		}
 
 		String subDate = LocalDateTimeUtil.transfer(LocalDateTime.now().plusDays(-1), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-		List<Inno72MerchantTotalCount> insertCounts = new ArrayList<>();
-		Map<String, Inno72MerchantTotalCount> countMap = new HashMap<>();
+		if (days.size() > 0){
+			List<Inno72MerchantTotalCount> insertCounts = new ArrayList<>();
+			Map<String, Inno72MerchantTotalCount> countMap = new HashMap<>();
 
-		for (Inno72MerchantTotalCountByDay day : days){
+			for (Inno72MerchantTotalCountByDay day : days){
+				String activityId = day.getActivityId();
+				String activityName = day.getActivityName();
+				String merchantId = day.getMerchantId();
+
+				String key = merchantId + activityId;
+				Inno72MerchantTotalCount count = countMap.get(key);
+
+				Map<String, String> selectByDayParam = new HashMap<>(2);
+				selectByDayParam.put("merchantId", merchantId);
+				selectByDayParam.put("activityId", activityId);
+
+				//查询是否是常规活动 inno72_activity 否则机器数量和活动状态按照互派查询
+				int o = inno72MerchantTotalCountMapper.selectActivityById(activityId);
+
+				Integer machineNum;
+				if (count == null){
+					//当 count 不存在时 初始化一个count 需计算 机器数量 和 活动状态
+					String activityType = "";
+					if ( o > 0){
+						//机器数量
+						activityType = "1";
+						machineNum = inno72MerchantTotalCountMapper.getMachineNum(selectByDayParam);
+					}else {
+						activityType = "2";
+						machineNum = inno72MerchantTotalCountMapper.getMachineNumByInteract(selectByDayParam);
+					}
+					Integer visitorNum = inno72MerchantTotalCountMapper.getVisitorNumFromHourLog(selectByDayParam);
+					// 活动状态
+					Integer i;
+					if ( o > 0){
+						i = inno72MerchantTotalCountMapper.getActivityStatus(activityId, subDate);
+					}else {
+						i = inno72MerchantTotalCountMapper.getActivityStatusFromInteract(activityId, merchantId);
+					}
+
+					count = new Inno72MerchantTotalCount(activityName, activityId, i+"", machineNum,
+							visitorNum, day.getStayNum(), day.getPv(), day.getPv(), day.getOrderQtyTotal(), day.getOrderQtySucc(),
+							day.getMerchantId(), day.getOrderQtySucc(), activityType);
+				}else {
+					count.setBuyer(count.getBuyer() + day.getOrderQtySucc());
+					//初始化已经设置
+					//				count.setMachineNum(machineNum > count.getMachineNum() ? machineNum  :  count.getMachineNum());
+					count.setOrder(count.getOrder() + day.getOrderQtyTotal());
+					count.setShipment(count.getShipment() + day.getOrderQtySucc());
+					count.setUv(count.getUv() + day.getUv());
+					count.setPv(count.getPv() + day.getPv());
+					count.setStayUser(count.getStayUser() + day.getStayNum());
+					// 初始化已经设置
+					//				count.setVisitorNum(count.getVisitorNum() + (visitorNum == null ? 0 :visitorNum));
+					if (StringUtil.isEmpty(count.getMerchantId()) && StringUtil.notEmpty(day.getMerchantId())){
+						count.setMerchantId(day.getMerchantId());
+					}
+				}
+				if (StringUtil.notEmpty(count.getId())){
+					ids.add(count.getId());
+				}else {
+					count.setId(StringUtil.uuid());
+				}
+				count.setLastUpdateTime(LocalDateTime.now());
+				countMap.put(key, count);
+			}
+
+			for (Map.Entry<String, Inno72MerchantTotalCount> entry : countMap.entrySet()){
+				insertCounts.add(entry.getValue());
+			}
+
+			JobLogger.log("插入数据 " + JSON.toJSONString(insertCounts));
+			if (insertCounts.size() > 0){
+				inno72MerchantTotalCountMapper.insertS(insertCounts);
+			}
+		}
+		// 补充新加的活动
+		List<Inno72MerchantTotalCountByDay> days1 = inno72MerchantTotalCountByDayMapper.selectNewActivity();
+		Map<String, Inno72MerchantTotalCount> newActCount = new HashMap<>();
+		for (Inno72MerchantTotalCountByDay day : days1){
+
 			String activityId = day.getActivityId();
-			String activityName = day.getActivityName();
 			String merchantId = day.getMerchantId();
-
+			String activityName = day.getActivityName();
 			String key = merchantId + activityId;
-			Inno72MerchantTotalCount count = countMap.get(key);
+			Inno72MerchantTotalCount count = newActCount.get(key);
 
 			Map<String, String> selectByDayParam = new HashMap<>(2);
 			selectByDayParam.put("merchantId", merchantId);
 			selectByDayParam.put("activityId", activityId);
 
-			//查询是否是常规活动 inno72_activity 否则机器数量和活动状态按照互派查询
-			int o = inno72MerchantTotalCountMapper.selectActivityById(activityId);
 
 			Integer machineNum;
-			if (count == null){
+			if (count == null) {
 				//当 count 不存在时 初始化一个count 需计算 机器数量 和 活动状态
 				String activityType = "";
-				if ( o > 0){
+				//查询是否是常规活动 inno72_activity 否则机器数量和活动状态按照互派查询
+				int o = inno72MerchantTotalCountMapper.selectActivityById(activityId);
+
+				if (o > 0) {
 					//机器数量
 					activityType = "1";
 					machineNum = inno72MerchantTotalCountMapper.getMachineNum(selectByDayParam);
-				}else {
+				} else {
 					activityType = "2";
 					machineNum = inno72MerchantTotalCountMapper.getMachineNumByInteract(selectByDayParam);
 				}
 				Integer visitorNum = inno72MerchantTotalCountMapper.getVisitorNumFromHourLog(selectByDayParam);
 				// 活动状态
 				Integer i;
-				if ( o > 0){
+				if (o > 0) {
 					i = inno72MerchantTotalCountMapper.getActivityStatus(activityId, subDate);
-				}else {
+				} else {
 					i = inno72MerchantTotalCountMapper.getActivityStatusFromInteract(activityId, merchantId);
 				}
 
-				count = new Inno72MerchantTotalCount(activityName, activityId, i+"", machineNum,
-						visitorNum, day.getStayNum(), day.getPv(), day.getPv(), day.getOrderQtyTotal(), day.getOrderQtySucc(),
+				count = new Inno72MerchantTotalCount(activityName, activityId, i + "", machineNum, visitorNum, day.getStayNum(), day.getPv(), day.getPv(), day.getOrderQtyTotal(), day.getOrderQtySucc(),
 						day.getMerchantId(), day.getOrderQtySucc(), activityType);
-			}else {
+				count.setId(StringUtil.uuid());
+			}else{
+
 				count.setBuyer(count.getBuyer() + day.getOrderQtySucc());
 				//初始化已经设置
 				//				count.setMachineNum(machineNum > count.getMachineNum() ? machineNum  :  count.getMachineNum());
@@ -169,22 +246,12 @@ public class MerchantCountTask implements IJobHandler {
 					count.setMerchantId(day.getMerchantId());
 				}
 			}
-			if (StringUtil.notEmpty(count.getId())){
-				ids.add(count.getId());
-			}else {
-				count.setId(StringUtil.uuid());
-			}
-			count.setLastUpdateTime(LocalDateTime.now());
-			countMap.put(key, count);
+			newActCount.put(key, count);
 		}
-
-		for (Map.Entry<String, Inno72MerchantTotalCount> entry : countMap.entrySet()){
-			insertCounts.add(entry.getValue());
-		}
-
-		JobLogger.log("插入数据 " + JSON.toJSONString(insertCounts));
-		if (insertCounts.size() > 0){
-			inno72MerchantTotalCountMapper.insertS(insertCounts);
+		List<Inno72MerchantTotalCount> newActS = new ArrayList<>(newActCount.values());
+		if (newActS.size() > 0 ){
+			JobLogger.log("插入新增活动数据 " + JSON.toJSONString(newActS));
+			inno72MerchantTotalCountMapper.insertS(newActS);
 		}
 
 		return  new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");

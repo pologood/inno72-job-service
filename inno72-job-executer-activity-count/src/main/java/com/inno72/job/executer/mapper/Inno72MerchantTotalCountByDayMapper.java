@@ -44,4 +44,6 @@ public interface Inno72MerchantTotalCountByDayMapper {
 	List<FlowmeterVo> selectConcernNum(Map<String, String> params);
 
 	List<FlowmeterVo> selectStay(Map<String, String> params);
+
+	List<Inno72MerchantTotalCountByDay> selectNewActivity();
 }

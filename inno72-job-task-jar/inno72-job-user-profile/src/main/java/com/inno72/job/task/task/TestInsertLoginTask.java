@@ -23,6 +23,7 @@ import com.inno72.job.task.mapper.Inno72GameUserLoginMapper;
 import com.inno72.job.task.mapper.Inno72MerchantTotalCountByUserMapper;
 import com.inno72.job.task.model.Inno72MerchantTotalCountByUser;
 import com.inno72.job.task.util.Uuid;
+import com.inno72.mongo.MongoUtil;
 
 @JobMapperScanner(value = "classpath*:/com/inno72/job/task/mapper/*.xml", basePackage="com.inno72.job.task.mapper")
 @JobHandler("inno72.task.TestInsertLoginTask")
@@ -33,12 +34,29 @@ public class TestInsertLoginTask implements IJobHandler {
 	@Resource
 	private Inno72MerchantTotalCountByUserMapper inno72MerchantTotalCountByUserMapper;
 
+	@Resource
+	private MongoUtil mongoUtil;
+
 	@Override
 	public ReturnT<String> execute(String param) throws Exception {
 
-		List<String> userIds = inno72GameUserLoginMapper.selectAllUseId();
+		List<String> userIds = new ArrayList<>();
+		while (userIds.size()< 10000){
+			userIds.add(Uuid.genUuid());
+		}
 
-		List<String> cityS = inno72GameUserLoginMapper.selectAllCity();
+		List<String> cityS = new ArrayList<>();
+
+		cityS.add("杭州市");
+		cityS.add("广州市");
+		cityS.add("北京市");
+		cityS.add("成都市");
+		cityS.add("深圳市");
+		cityS.add("南京市");
+		cityS.add("上海市");
+		cityS.add("重庆市");
+		cityS.add("武汉市");
+
 		/**
 		 * @param id
 		 * @param activityId
@@ -63,41 +81,40 @@ public class TestInsertLoginTask implements IJobHandler {
 		dates.add("社区");
 		dates.add("餐厅");
 
+
 		List<Inno72MerchantTotalCountByUser> user = new ArrayList<>();
 
 		for (String userId : userIds){
 			Inno72MerchantTotalCountByUser byUser = new Inno72MerchantTotalCountByUser();
 			byUser.setId(Uuid.genUuid());
-			byUser.setActivityId("bc0dbe5ce64d45d78ab5605555bec58d");
+			byUser.setActivityId("8ad75f62bca249fdac5e7b14680dde7d");
 			byUser.setActivityName("自动化互派派样活动");
 			byUser.setDate(genDate());
 			byUser.setUserId(userId);
 			byUser.setAge(new Random().nextInt(61 - 5 + 1) + 5);
-			byUser.setSex((new Random().nextInt(2 - 1 + 1) + 1)==1 ? "男":"女");
+			byUser.setSex((new Random().nextInt(3) + 1)==1 ? "男":"女");
 			byUser.setUserTag(genTag());
 			byUser.setCity(cityS.get((int)(Math.random() * cityS.size())));
 			byUser.setPointTag(dates.get((int)(Math.random() * dates.size())));
 			byUser.setLastUpdateTime(LocalDateTime.now());
+//			mongoUtil.save(byUser,"Inno72MerchantTotalCountByUser");
 			user.add(byUser);
+			if (user.size() >= 10000){
+				inno72MerchantTotalCountByUserMapper.insertS(user);
+				mongoUtil.save(user, "TestUser");
+				user = new ArrayList<>();
+			}
 		}
-		inno72MerchantTotalCountByUserMapper.insertS(user);
+
 
 		return new ReturnT<>(ReturnT.SUCCESS_CODE, "N B");
 	}
 
 	private String genDate(){
-		List<String> dates = new ArrayList<>();
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate now = LocalDate.now();
-		dates.add(now.format(dateTimeFormatter));
-		int j = (int) (random() * 10);
-		for (int i = 0; i < 10; i++) {
-			now = now.plusDays(-1);
-			if (j == i){
-				return now.format(dateTimeFormatter);
-			}
-		}
-		return now.format(dateTimeFormatter);
+		LocalDate now = LocalDate.parse("2018-11-15");
+		int j = (int)(Math.random()*14)+1;
+		return now.plusDays(-j).format(dateTimeFormatter);
 	}
 
 	private String genTag(){

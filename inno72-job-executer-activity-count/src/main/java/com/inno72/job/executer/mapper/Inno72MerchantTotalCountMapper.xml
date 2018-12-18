@@ -116,6 +116,14 @@
         left join inno72_merchant t on t.merchant_account_id = u.id
         where t.merchant_code = #{sellerId} limit 1
     </select>
+    <select id="selectMaxUpdateTime" resultType="java.lang.String">
+        select date_format(max(last_update_time)), "%Y-%m-%d %T") from `inno72`.`inno72_merchant_total_count`
+    </select>
+    <select id="selectByMerIdAndActId" resultMap="BaseResultMap">
+        select * from `inno72`.`inno72_merchant_total_count`
+        where merchant_id = #{merchantId} and activity_id = #{activityId};
+
+    </select>
 
 
     <insert id="insertS" parameterType="java.util.List">
@@ -130,7 +138,7 @@
             ( #{item.id}, #{item.activityName}, #{item.activityId}, #{item.activityType},
             #{item.activityStatus}, #{item.machineNum}, #{item.visitorNum}, #{item.stayUser},
             #{item.pv}, #{item.uv}, #{item.order}, #{item.shipment},
-            #{item.merchantId}, #{item.lastUpdateTime}, #{item.buyer})
+            #{item.merchantId}, now(), #{item.buyer})
         </foreach>
     </insert>
 </mapper>

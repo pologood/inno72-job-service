@@ -412,4 +412,16 @@
               and time BETWEEN #{startTime} and #{endTime}
         group by activity_id, city
     </select>
+
+    <select id="selectNewActivity" resultMap="BaseResultMap">
+
+        select * from inno72_merchant_total_count_by_day where id not in(
+
+            select days.id from inno72_merchant_total_count_by_day days
+                join (select merchant_id, activity_id from inno72.inno72_merchant_total_count) count
+                    on count.merchant_id = days.merchant_id and count.activity_id = days.activity_id
+
+        )
+
+    </select>
 </mapper>

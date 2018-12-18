@@ -40,4 +40,8 @@ public interface Inno72MerchantTotalCountMapper{
 	String findMerchantBySellerId(String sellerId);
 
 	int update(Inno72MerchantTotalCount count);
+
+	String selectMaxUpdateTime();
+
+	Inno72MerchantTotalCount selectByMerIdAndActId(Map<String, String> totalParam);
 }
