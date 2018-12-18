@@ -38,7 +38,7 @@
         left join inno72.inno72_channel c on l.channel_id = c.id
         where c.channel_code = '002003'
         <if test="startTime != null">
-            and l.login_time > #{startTime}
+            and l.login_time >= #{startTime}
         </if>
         <if test="machine_code != null">
             and machine_code = #{machineCode}
