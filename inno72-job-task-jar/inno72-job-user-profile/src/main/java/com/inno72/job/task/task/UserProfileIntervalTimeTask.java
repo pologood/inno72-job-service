@@ -109,7 +109,9 @@ public class UserProfileIntervalTimeTask implements IJobHandler
 			}
 
 //			int listSize = 800;
-			inno72GameUserTagRefMapper.insertS(refsInteraction);
+			if (refsInteraction.size() > 0){
+				inno72GameUserTagRefMapper.insertS(refsInteraction);
+			}
 //			if (refsInteraction.size() > listSize){
 //
 //				List<List<Inno72GameUserTagRef>> groupRefs = new ArrayList<>();
