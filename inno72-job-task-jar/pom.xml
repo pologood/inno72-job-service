@@ -12,5 +12,6 @@
     <module>inno72-job-vistor-count</module>
     <module>inno72-job-focus-count</module>
     <module>inno72-job-user-profile</module>
+    <module>inno72-job-data-clear-up</module>
   </modules>
 </project>

@@ -1,0 +1,12 @@
+package com.inno72.job.task.mapper;
+
+import java.util.List;
+
+import com.inno72.job.task.model.Inno72MerchantTotalCountByDay;
+
+public interface Inno72MerchantTotalCountByDayMapper {
+
+	List<Inno72MerchantTotalCountByDay> selectByDayList();
+
+	void update(Inno72MerchantTotalCountByDay day);
+}

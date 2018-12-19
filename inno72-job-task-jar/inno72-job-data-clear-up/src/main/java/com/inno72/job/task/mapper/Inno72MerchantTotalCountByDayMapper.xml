@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.task.mapper.Inno72MerchantTotalCountByDayMapper">
+    <resultMap id="BaseResultMap" type="com.inno72.job.task.model.Inno72MerchantTotalCountByDay">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="date" jdbcType="VARCHAR" property="date"/>
+        <result column="city" jdbcType="VARCHAR" property="city"/>
+        <result column="activity_id" jdbcType="VARCHAR" property="activityId"/>
+        <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
+        <result column="goods_id" jdbcType="VARCHAR" property="goodsId"/>
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="merchant_id" jdbcType="VARCHAR" property="merchantId"/>
+        <result column="stay_num" jdbcType="INTEGER" property="stayNum"/>
+        <result column="order_qty_total" jdbcType="INTEGER" property="orderQtyTotal"/>
+        <result column="order_qty_succ" jdbcType="INTEGER" property="orderQtySucc"/>
+        <result column="goods_num" jdbcType="INTEGER" property="goodsNum"/>
+        <result column="coupon_num" jdbcType="INTEGER" property="couponNum"/>
+        <result column="concern_num" jdbcType="INTEGER" property="concernNum"/>
+        <result column="pv" jdbcType="INTEGER" property="pv"/>
+        <result column="uv" jdbcType="INTEGER" property="uv"/>
+        <result column="seller_id" jdbcType="VARCHAR" property="sellerId"/>
+        <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime"
+                javaType="java.time.LocalDateTime"
+                typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+    </resultMap>
+    <update id="update" parameterType="com.inno72.job.task.model.Inno72MerchantTotalCountByDay">
+        update `inno72`.`inno72_merchant_total_count_by_day`
+        set
+            `activity_id`=#{activityId},
+            `activity_name`=#{activityName}
+        where `id`=#{id}
+    </update>
+    <select id="selectByDayList" resultMap="BaseResultMap">
+        SELECT * FROM `inno72`.inno72_merchant_total_count_by_day WHERE length(activity_id)!=char_length(activity_id);
+    </select>
+
+</mapper>

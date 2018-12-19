@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.task.mapper.Inno72GameUserLifeMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.job.task.model.Inno72GameUserLife">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="game_user_id" jdbcType="VARCHAR" property="gameUserId" />
+    <result column="user_channel_id" jdbcType="VARCHAR" property="userChannelId" />
+    <result column="third_ref_id" jdbcType="VARCHAR" property="thirdRefId" />
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime"  javaType="java.time.LocalDateTime"
+            typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
+    <result column="activity_plan_id" jdbcType="VARCHAR" property="activityPlanId" />
+    <result column="game_id" jdbcType="VARCHAR" property="gameId" />
+    <result column="game_name" jdbcType="VARCHAR" property="gameName" />
+    <result column="mer_point_id" jdbcType="VARCHAR" property="merPointId" />
+    <result column="mer_point_address" jdbcType="VARCHAR" property="merPointAddress" />
+    <result column="game_result" jdbcType="VARCHAR" property="gameResult" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="sex" jdbcType="TINYINT" property="sex" />
+    <result column="age" jdbcType="TINYINT" property="age" />
+      <result column="game_start_time" jdbcType="TIMESTAMP" property="gameStartTime"  javaType="java.time.LocalDateTime"
+              typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+      <result column="game_end_time" jdbcType="TIMESTAMP" property="gameEndTime"  javaType="java.time.LocalDateTime"
+              typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+      <result column="shipment_time" jdbcType="TIMESTAMP" property="shipmentTime"  javaType="java.time.LocalDateTime"
+              typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+      <result column="share_time" jdbcType="TIMESTAMP" property="shareTime"  javaType="java.time.LocalDateTime"
+              typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+  </resultMap>
+    <select id="selectLifeByLoginTime" resultMap="BaseResultMap" parameterType="map">
+        select l.* from inno72.inno72_game_user_life l
+        left join inno72.inno72_channel c on l.channel_id = c.id
+        where c.channel_code = '002003'
+        <if test="startTime != null">
+            and l.login_time > #{startTime}
+        </if>
+        <if test="machine_code != null">
+            and machine_code = #{machineCode}
+        </if>
+        order by l.login_time asc
+    </select>
+    <select id="selectMinDateFromLife" resultType="java.lang.String">
+        select DATE_FORMAT(MIN(login_time),'%Y-%m-%d %T') from inno72.inno72_game_user_life
+        where  channel_id = (select id from inno72.inno72_channel where channel_code = '002003' and is_delete = 0)
+    </select>
+
+    <select id="selectMachineByLoginTime" resultType="java.lang.String" parameterType="map">
+        select DISTINCT machine_code from inno72.inno72_game_user_life l
+            left join inno72.inno72_channel c on l.channel_id = c.id
+        where l.login_time between #{startTime} and #{endTime} and c.channel_code = '002003'
+        order by l.login_time asc
+    </select>
+
+    <select id="findShareUserIds" resultType="java.lang.String" parameterType="java.lang.Integer">
+        select l.game_user_id from inno72.inno72_game_user_life l
+        left join inno72.inno72_channel c
+        on l.channel_id = c.id
+        where c.channel_code = '002003'
+				and l.share_time != '0000-00-00 00:00:00'
+        group by l.game_user_id
+        having count(1) > #{count}
+    </select>
+
+    <select id="findGameTalentUserIds" resultType="java.lang.String">
+        select distinct l.game_user_id
+        from inno72.inno72_game_user_life l
+		left join inno72.inno72_channel c
+        on l.channel_id = c.id
+        where c.channel_code = '002003'
+        and l.game_start_time != '0000-00-00 00:00:00' and
+        l.game_end_time != '0000-00-00 00:00:00' and
+        TIMESTAMPDIFF(SECOND, l.game_start_time,l.game_end_time) BETWEEN 10 AND 15
+    </select>
+
+    <select id="findGameNoviceUserIds" resultType="java.lang.String">
+        select distinct l.game_user_id
+        from inno72.inno72_game_user_life l
+		left join inno72.inno72_channel c
+        on l.channel_id = c.id
+        where c.channel_code = '002003'
+        and l.game_start_time != '0000-00-00 00:00:00' and
+        l.game_end_time != '0000-00-00 00:00:00' and
+        TIMESTAMPDIFF(SECOND, l.game_start_time,l.game_end_time) > 15
+    </select>
+</mapper>
