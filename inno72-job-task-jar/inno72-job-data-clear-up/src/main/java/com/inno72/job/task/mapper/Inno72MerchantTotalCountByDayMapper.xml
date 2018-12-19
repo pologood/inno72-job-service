@@ -33,8 +33,20 @@
             `activity_name`=#{activityName}
         where `id`=#{id}
     </update>
+    <delete id="delete">
+        delete from `inno72`.`inno72_merchant_total_count_by_day`
+    </delete>
+    <delete id="deleteCount">
+        delete from `inno72`.`inno72_merchant_total_count`
+    </delete>
     <select id="selectByDayList" resultMap="BaseResultMap">
-        SELECT * FROM `inno72`.inno72_merchant_total_count_by_day WHERE length(activity_id)!=char_length(activity_id);
+        SELECT * FROM `inno72`.inno72_merchant_total_count_by_day WHERE length(activity_id)!=char_length(activity_id)
+    </select>
+    <select id="selectActNameIsEmptyList" resultMap="BaseResultMap">
+        SELECT * FROM `inno72`.inno72_merchant_total_count_by_day WHERE length(activity_name)=char_length(activity_name)
+    </select>
+    <select id="selectActIdIsEmptyList" resultMap="BaseResultMap">
+        SELECT * FROM `inno72`.inno72_merchant_total_count_by_day WHERE activity_id = ''
     </select>
 
 </mapper>

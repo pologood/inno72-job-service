@@ -58,10 +58,6 @@ public class MerchantCountByDayTask implements IJobHandler {
 		LocalDateTime startTimeLocal = LocalDateTimeUtil.transfer(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 		LocalDateTime endTimeLocal = LocalDateTime.now();
 
-		if (startTimeLocal.isAfter(endTimeLocal)){
-			return new ReturnT<>(ReturnT.SUCCESS_CODE, "ok");
-		}
-
 		ExecutorService fixedThreadPool = Executors.newFixedThreadPool(5);
 
 		while (true) {
@@ -69,7 +65,7 @@ public class MerchantCountByDayTask implements IJobHandler {
 			LocalDateTime plusDays = startTimeLocal.plusDays(1);
 
 			long days = Duration.between(startTimeLocal, endTimeLocal).toDays();
-			if (days <= 0) {
+			if (days < 0) {
 				break;
 			}
 			Map<String, String> params = new HashMap<>();
