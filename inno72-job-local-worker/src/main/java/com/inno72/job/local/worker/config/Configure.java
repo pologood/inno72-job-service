@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import com.inno72.job.task.task.Inno72DataClearUpTask;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
@@ -25,12 +24,13 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 
 import com.inno72.job.core.handle.IJobHandler;
 import com.inno72.job.core.handle.annotation.JobMapperScanner;
+import com.inno72.job.task.task.TestInsertLoginTask;
 
 @Configuration
 @Import({RedisAutoConfiguration.class, MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 public class Configure {
 
-	static final public Class<? extends IJobHandler> TaskClazz = Inno72DataClearUpTask.class;
+	static final public Class<? extends IJobHandler> TaskClazz = TestInsertLoginTask.class;
 
 	@Configuration
 	@Profile("dev")

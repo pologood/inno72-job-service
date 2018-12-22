@@ -77,6 +77,53 @@ public class Inno72MerchantTotalCountByDay {
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime lastUpdateTime;
 
+	public Inno72MerchantTotalCountByDay() {
+	}
+
+	/**
+	 * @param id
+	 * @param date
+	 * @param city
+	 * @param goodsId
+	 * @param goodsName
+	 * @param activityId
+	 * @param activityName
+	 * @param stayNum
+	 * @param merchantId
+	 * @param orderQtyTotal
+	 * @param orderQtySucc
+	 * @param goodsNum
+	 * @param couponNum
+	 * @param concernNum
+	 * @param pv
+	 * @param uv
+	 * @param sellerId
+	 * @param lastUpdateTime
+	 */
+	public Inno72MerchantTotalCountByDay(String id, String date, String city, String goodsId, String goodsName,
+			String activityId, String activityName, Integer stayNum, String merchantId, Integer orderQtyTotal,
+			Integer orderQtySucc, Integer goodsNum, Integer couponNum, Integer concernNum, Integer pv, Integer uv,
+			String sellerId, LocalDateTime lastUpdateTime) {
+		this.id = id;
+		this.date = date;
+		this.city = city;
+		this.goodsId = goodsId;
+		this.goodsName = goodsName;
+		this.activityId = activityId;
+		this.activityName = activityName;
+		this.stayNum = stayNum;
+		this.merchantId = merchantId;
+		this.orderQtyTotal = orderQtyTotal;
+		this.orderQtySucc = orderQtySucc;
+		this.goodsNum = goodsNum;
+		this.couponNum = couponNum;
+		this.concernNum = concernNum;
+		this.pv = pv;
+		this.uv = uv;
+		this.sellerId = sellerId;
+		this.lastUpdateTime = lastUpdateTime;
+	}
+
 	/**
 	 * @return id
 	 */

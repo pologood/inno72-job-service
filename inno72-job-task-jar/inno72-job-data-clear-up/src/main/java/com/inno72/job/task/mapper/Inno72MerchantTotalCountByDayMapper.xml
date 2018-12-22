@@ -26,6 +26,28 @@
                 javaType="java.time.LocalDateTime"
                 typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
     </resultMap>
+    <insert id="insertS" parameterType="list">
+        insert into `inno72`.`inno72_merchant_total_count_by_day`
+        ( `id`, `date`, `city`,
+          `goods_id`, `activity_id`, `activity_name`,
+          `visitor_num`, `stay_num`, `goods_name`,
+          `merchant_id`, `order_qty_total`, `order_qty_succ`,
+          `goods_num`, `coupon_num`, `concern_num`,
+          `pv`, `uv`, `seller_id`,
+          `last_update_time`)
+        values
+           <foreach collection="list" item="item" separator=",">
+               (
+               #{item.id}, #{item.date}, #{item.city},
+               #{item.goodsId},  #{item.activityId},  #{item.activityName},
+               0,  #{item.stayNum},  #{item.goodsName},
+               #{item.merchantId},  #{item.orderQtyTotal},  #{item.orderQtySucc},
+               #{item.goodsNum},  #{item.couponNum},  #{item.concernNum},
+               #{item.pv},  #{item.uv},  #{item.sellerId},
+               #{item.lastUpdateTime}
+               )
+           </foreach>
+    </insert>
     <update id="update" parameterType="com.inno72.job.task.model.Inno72MerchantTotalCountByDay">
         update `inno72`.`inno72_merchant_total_count_by_day`
         set
