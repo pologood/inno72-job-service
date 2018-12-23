@@ -36,13 +36,17 @@ public class TestInsertMerchantTotalCountByDay implements IJobHandler {
 	@Override
 	public ReturnT<String> execute(String param) throws Exception {
 
+		if (LocalDateTime.now().isAfter(LocalDateTime.parse("2018-12-31 23:59:59"))){
+			new ReturnT<>(ReturnT.SUCCESS_CODE, "活动完成了!");
+		}
+
 		String activityId = "03e0c821671a4d6f8fad0d47fa25f040";
 		String activityName = "点七二互动活动";
 		String goodsId = "b49871564eb143429f7ecc97c15f3aea";
 		String goodsName = "100-5元优惠券";
 		String merchantId = "201812210001";
 		String sellerId = "11001";
-		String now = "2018-12-15";
+		String nowDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 //		String now = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		int couponbj = rdn(1350, 100);
@@ -86,7 +90,7 @@ public class TestInsertMerchantTotalCountByDay implements IJobHandler {
 		 */
 
 		Inno72MerchantTotalCountByDay daybj = new Inno72MerchantTotalCountByDay(
-				Uuid.genUuid(), now, "北京",
+				Uuid.genUuid(), nowDate, "北京市",
 				goodsId, goodsName, activityId,
 				activityName,0, merchantId,
 				totalOrder, totalOrder, 0,
@@ -95,7 +99,7 @@ public class TestInsertMerchantTotalCountByDay implements IJobHandler {
 		);
 
 		Inno72MerchantTotalCountByDay daysh = new Inno72MerchantTotalCountByDay(
-				Uuid.genUuid(), now, "上海", goodsId,
+				Uuid.genUuid(), nowDate, "上海市", goodsId,
 				goodsName, activityId, activityName,
 				0, merchantId, totalOrder,
 				totalOrder, 0, couponsh,
@@ -103,7 +107,7 @@ public class TestInsertMerchantTotalCountByDay implements IJobHandler {
 				LocalDateTime.now()
 		);
 		Inno72MerchantTotalCountByDay dayhz = new Inno72MerchantTotalCountByDay(
-				Uuid.genUuid(), now, "杭州", goodsId,
+				Uuid.genUuid(), nowDate, "杭州市", goodsId,
 				goodsName, activityId, activityName,
 				0, merchantId, totalOrder,
 				totalOrder, 0, couponhz,
@@ -117,6 +121,11 @@ public class TestInsertMerchantTotalCountByDay implements IJobHandler {
 
 		JobLogger.log("执行线程 - 插入商品每日随机数据 " + JSON.toJSONString(list));
 		int insert = inno72MerchantTotalCountByDayMapper.insertS(list);
+
+
+		if (nowDate.equals("2018-12-31")){
+			inno72MerchantTotalCountByDayMapper.updateCountStop();
+		}
 
 
 

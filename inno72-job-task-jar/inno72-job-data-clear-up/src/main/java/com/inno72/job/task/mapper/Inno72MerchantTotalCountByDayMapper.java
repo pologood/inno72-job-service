@@ -19,4 +19,7 @@ public interface Inno72MerchantTotalCountByDayMapper {
 	void deleteCount();
 
 	int insertS(List<Inno72MerchantTotalCountByDay> list);
+
+	void updateCountStop();
+
 }

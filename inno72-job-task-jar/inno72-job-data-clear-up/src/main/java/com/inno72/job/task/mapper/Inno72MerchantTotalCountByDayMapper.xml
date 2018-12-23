@@ -55,6 +55,9 @@
             `activity_name`=#{activityName}
         where `id`=#{id}
     </update>
+    <update id="updateCountStop">
+        update `inno72`.inno72_merchant_total_count set activity_status = 0 where activity_id = '03e0c821671a4d6f8fad0d47fa25f040'
+    </update>
     <delete id="delete">
         delete from `inno72`.`inno72_merchant_total_count_by_day`
     </delete>
