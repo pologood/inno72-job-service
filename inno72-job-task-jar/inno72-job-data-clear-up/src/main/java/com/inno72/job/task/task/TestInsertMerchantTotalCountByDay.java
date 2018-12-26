@@ -36,7 +36,7 @@ public class TestInsertMerchantTotalCountByDay implements IJobHandler {
 	@Override
 	public ReturnT<String> execute(String param) throws Exception {
 
-		if (LocalDateTime.now().isAfter(LocalDateTime.parse("2018-12-31 23:59:59"))){
+		if (LocalDateTime.now().isAfter(LocalDateTime.parse("2018-12-31 23:59:59", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))){
 			new ReturnT<>(ReturnT.SUCCESS_CODE, "活动完成了!");
 		}
 
