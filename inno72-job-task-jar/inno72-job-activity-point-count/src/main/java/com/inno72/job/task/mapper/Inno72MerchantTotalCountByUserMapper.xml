@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.task.mapper.Inno72MerchantTotalCountByUserMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.job.task.model.Inno72MerchantTotalCountByUser">
+    <!--
+      WARNING - @mbg.generated inno72_merchant_total_count_by_user
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
+    <result column="merchant_id" jdbcType="VARCHAR" property="merchantId" />
+    <result column="date" jdbcType="VARCHAR" property="date" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="age" jdbcType="INTEGER" property="age" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="user_tag" jdbcType="VARCHAR" property="userTag" />
+    <result column="point_tag" jdbcType="VARCHAR" property="pointTag" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" javaType="java.time.LocalDateTime"
+            typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+  </resultMap>
+
+    <insert id="insertS" parameterType="list">
+
+        insert into `inno72`.`inno72_merchant_total_count_by_user`
+        ( `id`, `activity_id`, `activity_name`,
+        `merchant_id`, `date`, `user_id`,
+        `age`, `sex`, `user_tag`,
+        `point_tag`, `city`, `last_update_time`)
+        values
+        <foreach collection="list" item="item" separator=",">
+            ( #{item.id},  #{item.activityId},  #{item.activityName},
+            #{item.merchantId},  #{item.date},  #{item.userId},
+            #{item.age},  #{item.sex},  #{item.userTag},
+            #{item.pointTag},  #{item.city},  #{item.lastUpdateTime})
+        </foreach>
+    </insert>
+
+    <select id="selectLastTime" resultMap="BaseResultMap">
+        select * from inno72.inno72_merchant_total_count_by_user
+        order by last_update_time asc
+        limit 1
+    </select>
+</mapper>

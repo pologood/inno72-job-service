@@ -13,9 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.annotation.Resource;
-import javax.swing.text.DateFormatter;
 
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
@@ -44,8 +42,6 @@ public class MerchantCountByDayTask implements IJobHandler {
 	private Inno72MerchantTotalCountByDayMapper inno72MerchantTotalCountByDayMapper;
 	@Resource
 	private IRedisUtil redisUtil;
-	@Resource
-	private MongoOperations mongoOperations;
 	private ExecutorService exec = Executors.newFixedThreadPool(10);
 
 	@Override
