@@ -9,7 +9,7 @@
     </parent>
     <artifactId>inno72-job-activity-point-count</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>inno72-job-data-clear-up</name>
+    <name>inno72-job-activity-point-count</name>
     <url>http://maven.apache.org</url>
     <packaging>jar</packaging>
     <properties>
