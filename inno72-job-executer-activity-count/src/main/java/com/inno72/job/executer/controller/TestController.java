@@ -8,6 +8,7 @@ import com.inno72.job.executer.mapper.ActivityMapper;
 import com.inno72.job.executer.service.DeviceService;
 import com.inno72.job.executer.service.ExportStoreService;
 import com.inno72.job.executer.service.FeedBackService;
+import com.inno72.job.executer.service.LongConnectionService;
 import com.inno72.job.executer.task.MerchantCountByDayTask;
 import com.inno72.job.executer.task.MerchantCountTask;
 
@@ -85,6 +86,17 @@ public class TestController {
         }else{
             deviceService.executeActivity();
         }
+        return Results.success();
+    }
+    @Autowired
+    LongConnectionService longConnectionService;
+    /**
+     *
+     * @return
+     */
+    @RequestMapping(value = "/connection", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result<Object> connection() {
+        longConnectionService.execute();
         return Results.success();
     }
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.executer.mapper.Inno72MachineConnectionMsgMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.job.executer.model.Inno72MachineConnectionMsg">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="times" jdbcType="INTEGER" property="times" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="version" jdbcType="BIGINT" property="version" />
+    <result column="msg" jdbcType="LONGVARCHAR" property="msg" />
+  </resultMap>
+  <select id="findUnManageMsg" resultMap="BaseResultMap">
+    select * from inno72_machine_connection_msg m where m.`status`= 0
+  </select>
+  <update id="updateStatusById">
+    update inno72_machine_connection_msg set `status`=${status} where id='${id}'
+  </update>
+</mapper>

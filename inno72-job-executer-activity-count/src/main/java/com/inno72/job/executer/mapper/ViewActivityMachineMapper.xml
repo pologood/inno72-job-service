@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.executer.mapper.ViewActivityMachineMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.job.executer.model.ViewActivityMachine">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
+    <result column="activity_type" jdbcType="BIGINT" property="activityType" />
+  </resultMap>
+  <select id="findAll" resultMap="BaseResultMap">
+    select * from view_activity_machine
+  </select>
+
+  <select id="findAllMachine" resultType="string">
+    select m.machine_code from inno72_machine m where m.machine_status=4 and m.machine_type != 2
+  </select>
+
+</mapper>
