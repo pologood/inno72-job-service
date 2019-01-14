@@ -5,10 +5,7 @@ import javax.annotation.Resource;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.job.executer.mapper.ActivityMapper;
-import com.inno72.job.executer.service.DeviceService;
-import com.inno72.job.executer.service.ExportStoreService;
-import com.inno72.job.executer.service.FeedBackService;
-import com.inno72.job.executer.service.LongConnectionService;
+import com.inno72.job.executer.service.*;
 import com.inno72.job.executer.task.MerchantCountByDayTask;
 import com.inno72.job.executer.task.MerchantCountTask;
 
@@ -97,6 +94,18 @@ public class TestController {
     @RequestMapping(value = "/connection", method = {RequestMethod.POST, RequestMethod.GET})
     public Result<Object> connection() {
         longConnectionService.execute();
+        return Results.success();
+    }
+
+    @Autowired
+    ConnectionMsgService connectionMsgService;
+    /**
+     *
+     * @return
+     */
+    @RequestMapping(value = "/sendMsg", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result<Object> sendMsg(Integer type) {
+        connectionMsgService.execute(type);
         return Results.success();
     }
 }

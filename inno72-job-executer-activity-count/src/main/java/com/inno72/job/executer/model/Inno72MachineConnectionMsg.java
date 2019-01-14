@@ -65,6 +65,34 @@ public class Inno72MachineConnectionMsg {
      */
     private Integer type;
 
+    public enum TYPE_ENUM {
+
+        FINDACTIVITY(0, "推送活动"),SCANQRCODE(1, "推送是否有人扫描二维码"),LOGIN(2, "推送登陆信息"),FOLLOW(3, "推送关注信息"),PAY(4, "推送订单支付信息");
+
+        private Integer key;
+        private String desc;
+
+        TYPE_ENUM(Integer key, String desc) {
+            this.key = key;
+            this.desc = desc;
+        }
+
+        public Integer getKey() {
+            return key;
+        }
+
+        public void setKey(Integer key) {
+            this.key = key;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+    }
     /**
      * 创建时间
      */

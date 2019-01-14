@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.executer.mapper.Inno72OrderAlipayMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.job.executer.model.Inno72OrderAlipay">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <select id="findByStatus" resultMap="BaseResultMap">
+
+    select * from inno72_order_alipay a where a.status=${status}
+  </select>
+</mapper>

@@ -19,7 +19,16 @@
   <select id="findUnManageMsg" resultMap="BaseResultMap">
     select * from inno72_machine_connection_msg m where m.`status`= 0
   </select>
+
+  <select id="findUnManageMsgByType" resultMap="BaseResultMap">
+    select * from inno72_machine_connection_msg m where m.`status`= 0 and m.type=${type}
+  </select>
+
   <update id="updateStatusById">
     update inno72_machine_connection_msg set `status`=${status} where id='${id}'
+  </update>
+
+  <update id="updateTimesById">
+    update inno72_machine_connection_msg set times=${times} where id='${id}'
   </update>
 </mapper>

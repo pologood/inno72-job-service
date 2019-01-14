@@ -3,6 +3,7 @@ package com.inno72.job.executer.service.impl;
 import com.inno72.common.json.JsonUtil;
 import com.inno72.job.core.util.HttpClientUtil;
 import com.inno72.job.core.util.HttpFormConnector;
+import com.inno72.job.executer.common.util.UrlUtil;
 import com.inno72.job.executer.mapper.Inno72MachineActivityImageMapper;
 import com.inno72.job.executer.mapper.Inno72MachineConnectionMsgMapper;
 import com.inno72.job.executer.mapper.ViewActivityMachineMapper;
@@ -27,10 +28,6 @@ public class LongConnectionServiceImpl implements LongConnectionService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LongConnectionService.class);
 
-//    private final static String gameUrlTest="http://api.game.36solo.com/";
-    private final static String gameUrlTest="http://localhost:10080/";
-    private final static String gameUrlStage="https://api.game.32solo.com/";
-    private final static String gameUrlProd="https://api.game.inno72.com/";
     @Value("${env}")
     private String env;
 
@@ -140,16 +137,7 @@ public class LongConnectionServiceImpl implements LongConnectionService {
 
     private String getGameUrl() throws IOException {
 
-        String state = context.getEnvironment().getActiveProfiles()[0];
         String method = "/api/connection/changeActivity";
-        switch(env) {
-
-            case "test": return gameUrlTest+method;
-            case "stage": return gameUrlStage+method;
-            case "prod": return gameUrlProd+method;
-            default:
-                throw new IOException("未找到gameurl:" + state);
-
-        }
+        return UrlUtil.getGameServerUrl(env)+method;
     }
 }
