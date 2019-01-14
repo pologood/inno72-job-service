@@ -4,8 +4,8 @@ import java.io.IOException;
 
 public class UrlUtil {
 
-    //    private final static String gameUrlTest="http://api.game.36solo.com/";
-    private final static String gameUrlTest="http://localhost:10080/";
+        private final static String gameUrlTest="http://api.game.36solo.com/";
+//    private final static String gameUrlTest="http://localhost:10080/";
     private final static String gameUrlStage="https://api.game.32solo.com/";
     private final static String gameUrlProd="https://api.game.inno72.com/";
 

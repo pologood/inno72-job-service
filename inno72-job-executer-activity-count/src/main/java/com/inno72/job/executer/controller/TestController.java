@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 public class TestController {
 
@@ -106,6 +108,17 @@ public class TestController {
     @RequestMapping(value = "/sendMsg", method = {RequestMethod.POST, RequestMethod.GET})
     public Result<Object> sendMsg(Integer type) {
         connectionMsgService.execute(type);
+        return Results.success();
+    }
+    @Autowired
+    private AliPayOrderService aliPayOrderService;
+    /**
+     *
+     * @return
+     */
+    @RequestMapping(value = "/pay", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result<Object> pay() throws IOException {
+        aliPayOrderService.execute();
         return Results.success();
     }
 }

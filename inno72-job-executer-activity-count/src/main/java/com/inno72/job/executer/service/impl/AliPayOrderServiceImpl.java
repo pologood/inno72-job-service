@@ -4,6 +4,7 @@ import com.inno72.common.json.JsonUtil;
 import com.inno72.job.core.util.HttpClientUtil;
 import com.inno72.job.core.util.HttpFormConnector;
 import com.inno72.job.executer.common.util.UrlUtil;
+import com.inno72.job.executer.common.util.UuidUtil;
 import com.inno72.job.executer.mapper.Inno72MachineConnectionMsgMapper;
 import com.inno72.job.executer.mapper.Inno72OrderAlipayMapper;
 import com.inno72.job.executer.model.Inno72MachineConnectionMsg;
@@ -20,10 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AliPayOrderServiceImpl implements AliPayOrderService {
@@ -49,6 +47,9 @@ public class AliPayOrderServiceImpl implements AliPayOrderService {
                     if(flag){
                         //发送消息
                         sendMsg(order);
+                        //修改order状态
+                        order.setStatus(Inno72OrderAlipay.STATUS_ENUM.SUCCESS.getKey());
+                        mapper.updateByPrimaryKeySelective(order);
                     }
                 }
             }
@@ -56,14 +57,15 @@ public class AliPayOrderServiceImpl implements AliPayOrderService {
     }
 
     private Boolean getAliOrderPayStatus(Inno72OrderAlipay order) throws IOException {
-        String url = UrlUtil.getGameServerUrl(env)+"api/standard/orderPolling";
-        LOGGER.info("getAliOrderPayStatus url = {},machineCode={}",url,order.getMachineCode());
-        Map<String, String> form = new HashMap<String, String>(1);
-        form.put("sessionUuid",order.getMachineCode());
-        byte[] ret = HttpFormConnector.doPost(url,form,10000);
-        String response = new String(ret, "utf-8");
-        LOGGER.info("send msg response={}",response);
-        return Boolean.parseBoolean(FastJsonUtils.getString(response,"model"));
+//        String url = UrlUtil.getGameServerUrl(env)+"api/standard/orderPolling";
+////        LOGGER.info("getAliOrderPayStatus url = {},machineCode={}",url,order.getMachineCode());
+////        Map<String, String> form = new HashMap<String, String>(1);
+////        form.put("sessionUuid",order.getMachineCode());
+////        byte[] ret = HttpFormConnector.doPost(url,form,10000);
+////        String response = new String(ret, "utf-8");
+////        LOGGER.info("send msg response={}",response);
+////        return Boolean.parseBoolean(FastJsonUtils.getString(response,"model"));
+        return true;
     }
 
     private void sendMsg(Inno72OrderAlipay order) throws IOException {
@@ -73,12 +75,21 @@ public class AliPayOrderServiceImpl implements AliPayOrderService {
         vo.setTargetCode(order.getMachineCode());
         String request = JsonUtil.toJson(vo);
         Inno72MachineConnectionMsg msg = new Inno72MachineConnectionMsg();
+        msg.setMachineCode(order.getMachineCode());
+        msg.setStatus(Inno72MachineConnectionMsg.STATUS_ENUM.COMMIT.getKey());
+        List<Inno72MachineConnectionMsg> list = inno72MachineConnectionMsgMapper.select(msg);
+        if(list.size()>0){
+            for(Inno72MachineConnectionMsg inno72MachineConnectionMsg:list){
+                inno72MachineConnectionMsgMapper.updateStatusById(inno72MachineConnectionMsg.getId(),Inno72MachineConnectionMsg.STATUS_ENUM.EXPIRE.getKey());
+            }
+        }
+        msg.setMachineCode(order.getMachineCode());
+        msg.setStatus(Inno72MachineConnectionMsg.STATUS_ENUM.COMMIT.getKey());
+        msg.setId(UuidUtil.getUUID32());
         msg.setActivityId(order.getActivityId());
         msg.setCreateTime(new Date());
         msg.setUpdateTime(msg.getCreateTime());
-        msg.setMachineCode(order.getMachineCode());
         msg.setMsg(request);
-        msg.setStatus(Inno72MachineConnectionMsg.STATUS_ENUM.COMMIT.getKey());
         msg.setTimes(1);
         msg.setType(Inno72MachineConnectionMsg.TYPE_ENUM.PAY.getKey());
         msg.setVersion(System.currentTimeMillis());
