@@ -74,6 +74,7 @@ public class ActivityPointCountTask implements IJobHandler {
 			for (Inno72MachineInfomation info : machineInfomations) {
 
 				String activityId = info.getActivityId();
+				String activityName = info.getActivityName();
 				String type = info.getType();
 
 
@@ -97,6 +98,7 @@ public class ActivityPointCountTask implements IJobHandler {
 
 						activityPointCount = new ActivityPointCount();
 						activityPointCount.setActivityId(activityId);
+						activityPointCount.setActivityName(activityName);
 
 					}
 
@@ -110,11 +112,11 @@ public class ActivityPointCountTask implements IJobHandler {
 				}
 
 				Integer integer = pointCount.get(type);
-				if (integer == null){
+				if ( integer == null ){
 					integer = 0;
 				}
-				integer += 1;
-				pointCount.put(type, integer);
+
+				pointCount.put(type, integer + 1);
 
 				activityPointCount.setPointCount(pointCount);
 
@@ -132,7 +134,7 @@ public class ActivityPointCountTask implements IJobHandler {
 		remove_query.addCriteria(Criteria.where("activityId").in(optionsActivityIds));
 		mongoOperations.remove(remove_query, ActivityPointCount.class, "ActivityPointCount");
 
-		mongoOperations.insert(pointCountMap.values(), ActivityPointCount.class);
+		mongoOperations.insert(pointCountMap.values(), "ActivityPointCount");
 
 		return new ReturnT<String>(ReturnT.SUCCESS_CODE, "");
 	}
