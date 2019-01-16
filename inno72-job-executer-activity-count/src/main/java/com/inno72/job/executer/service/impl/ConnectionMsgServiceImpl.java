@@ -40,7 +40,6 @@ public class ConnectionMsgServiceImpl implements ConnectionMsgService {
             for(Inno72MachineConnectionMsg msg:list){
                 try{
                     if(msg.getTimes()<5){
-                        //发送
                         //发送长连接
                         sendMsg(msg);
                         //更新次数
