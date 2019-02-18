@@ -35,7 +35,7 @@
 
       <dependency>
           <groupId>com.inno72</groupId>
-          <artifactId>inno72-job-data-clear-up</artifactId>
+          <artifactId>inno72-job-merchant-activity</artifactId>
           <version>0.0.1-SNAPSHOT</version>
       </dependency>
 
