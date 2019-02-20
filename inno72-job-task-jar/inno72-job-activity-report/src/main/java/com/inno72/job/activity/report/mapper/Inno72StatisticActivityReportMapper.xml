@@ -31,7 +31,7 @@
 
     <select id="queryActivityReports" resultMap="BaseResultMap">
 
-        select
+       select
         interact.id as activity_id,
         interact.name as activity_name,
         u0.handle_time as handle_time,
@@ -39,6 +39,7 @@
         goods.id as goods_id,
         goods.name as goods_name,
         goods.seller_id as merchant_id,
+				merchant.merchant_name as merchant_name,
         IFNULL(u7.vistorCount, 0) as vistor,
 		IFNULL(u1.pv, 0) as pv,
 		IFNULL(u2.uv,0) as uv,
@@ -54,7 +55,8 @@
 		IFNULL(l.name, '')
 		)AS local_name,
 		l.id as local_id,
-		1 as type
+		1 as type,
+		0 as follow
 
 		from (
 
@@ -176,6 +178,7 @@
 		left join inno72_goods goods on u0.goods_code = goods.code and goods.is_delete != 1 and goods.use_type = 1
 		left join inno72_shops shops on goods.shop_id = shops.id
 		left join inno72_interact interact on interact.id = u0.activity_id
+		left join inno72_merchant merchant on merchant.id = goods.seller_id
 
 		order by handle_time, machine_code, goods.name;
 
@@ -239,5 +242,9 @@
          </foreach>
 
     </insert>
+
+    <delete id="delete">
+        delete from inno72_statistic_activity_report;
+    </delete>
 
 </mapper>

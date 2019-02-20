@@ -21,9 +21,11 @@ public class ActivityReportTask implements IJobHandler {
 	@Override
 	public ReturnT<String> execute(String param) throws Exception {
 
+		inno72StatisticActivityReportMapper.delete();
+
 		List<Inno72StatisticActivityReport> inno72StatisticActivityReports = inno72StatisticActivityReportMapper
 				.queryActivityReports();
-		System.out.println(inno72StatisticActivityReports.size());
+
 		try {
 			inno72StatisticActivityReportMapper.insertBatch(inno72StatisticActivityReports);
 		} catch (Exception e) {

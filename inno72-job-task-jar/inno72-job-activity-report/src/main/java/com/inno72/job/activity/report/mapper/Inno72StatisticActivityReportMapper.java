@@ -10,4 +10,6 @@ public interface Inno72StatisticActivityReportMapper {
 	List<Inno72StatisticActivityReport> queryActivityReports();
 
 	void insertBatch(List<Inno72StatisticActivityReport> activityReports);
+
+	void delete();
 }
