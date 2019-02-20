@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.task.mapper.Inno72GameUserTagMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.job.task.model.Inno72GameUserTag">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" javaType="java.time.LocalDateTime"
+            typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"  javaType="java.time.LocalDateTime"
+            typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+  </resultMap>
+
+    <update id="update" parameterType="com.inno72.job.task.model.Inno72GameUserTag">
+        update `inno72`.`inno72_game_user_tag`
+        set `update_id`=#{updateId}, `update_time`=#{updateTime}
+        where `id`= #{id}
+    </update>
+
+    <select id="selectByCode" resultMap="BaseResultMap" parameterType="string">
+        select id, `name`, `code`, update_time
+        from inno72.inno72_game_user_tag
+        where `code` = #{code} limit 1
+    </select>
+
+</mapper>

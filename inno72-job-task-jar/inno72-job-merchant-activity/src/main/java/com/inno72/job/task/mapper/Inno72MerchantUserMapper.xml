@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.task.mapper.Inno72MerchantUserMapper">
+    <resultMap id="BaseResultMap" type="com.inno72.job.task.model.Inno72MerchantUser">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="merchant_id" jdbcType="VARCHAR" property="merchantId"/>
+        <result column="login_name" jdbcType="VARCHAR" property="loginName"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="merchant_name" jdbcType="VARCHAR" property="merchantName"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="login_status" jdbcType="VARCHAR" property="loginStatus"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="industry" jdbcType="VARCHAR" property="industry"/>
+        <result column="industry_code" jdbcType="VARCHAR" property="industryCode"/>
+        <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime"/>
+        <result column="last_updator" jdbcType="VARCHAR" property="lastUpdator"/>
+    </resultMap>
+    <update id="updatePwdByPhone" parameterType="com.inno72.job.task.model.Inno72MerchantUser">
+      update inno72.inno72_merchant_user set password = #{password} where phone = #{phone}
+    </update>
+    <select id="selectByNameAndPwd" resultMap="BaseResultMap">
+        select * from inno72.inno72_merchant_user
+        where login_name = #{userName}
+        and password = #{pwd} and login_status = 1
+    </select>
+    <select id="selectByMobile" resultMap="BaseResultMap">
+          select * from inno72.inno72_merchant_user
+          where phone = #{phone}
+    </select>
+    <select id="selectByLoginNameAndPhone" resultMap="BaseResultMap">
+          select * from inno72.inno72_merchant_user
+          where phone = #{phone}
+          and login_name = #{loginName}
+    </select>
+    <select id="selectByMerchantName" resultMap="BaseResultMap">
+      select * from inno72.inno72_merchant_user
+          where login_name = #{loginName}
+    </select>
+    <select id="selectByMerchantId" resultMap="BaseResultMap" parameterType="string">
+        select * from inno72.inno72_merchant_user
+        where merchant_id = #{merchantId}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select * from inno72.inno72_merchant_user
+    </select>
+</mapper>
