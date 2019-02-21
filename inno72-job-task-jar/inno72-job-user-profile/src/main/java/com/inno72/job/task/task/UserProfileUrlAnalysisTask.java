@@ -54,17 +54,14 @@ public class UserProfileUrlAnalysisTask implements IJobHandler
 
 			@Override
 			public void onDownloadSuccess(File file) {
-				System.out.println("下载成功");
 			}
 
 			@Override
 			public void onDownloading(int progress) {
-				System.out.println("下载中" + progress);
 			}
 
 			@Override
 			public void onDownloadFailed(Exception e) {
-				System.out.println("下载失败");
 			}
 		});
 
