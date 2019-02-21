@@ -24,13 +24,14 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 
 import com.inno72.job.core.handle.IJobHandler;
 import com.inno72.job.core.handle.annotation.JobMapperScanner;
-import com.inno72.job.task.task.TestInsertMerchantTotalCountByDay;
+import com.inno72.job.task.task.Inno72MerchantActivity;
+import com.inno72.job.task.task.ReadExcel;
 
 @Configuration
 @Import({RedisAutoConfiguration.class, MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 public class Configure {
 
-	static final public Class<? extends IJobHandler> TaskClazz = TestInsertMerchantTotalCountByDay.class;
+	static final public Class<? extends IJobHandler> TaskClazz = ReadExcel.class;
 
 	@Configuration
 	@Profile("dev")

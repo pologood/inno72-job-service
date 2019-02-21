@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.task.mapper.Inno72ActivityMapper">
+
+    <resultMap id="BaseResultMap" type="com.inno72.job.task.model.Inno72Activity">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="shop_id" jdbcType="VARCHAR" property="shopId"/>
+        <result column="seller_id" jdbcType="VARCHAR" property="sellerId"/>
+        <result column="manager_id" jdbcType="VARCHAR" property="managerId"/>
+        <result column="game_id" jdbcType="VARCHAR" property="gameId"/>
+        <result column="is_delete" jdbcType="INTEGER" property="isDelete"/>
+        <result column="is_default" jdbcType="INTEGER" property="isDefault"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" javaType="java.time.LocalDateTime"
+                typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+        <result column="update_id" jdbcType="VARCHAR" property="updateId"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" javaType="java.time.LocalDateTime"
+                typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+    </resultMap>
+
+    <select id="merchantActivityIds" resultType="string" parameterType="string">
+        select i.id from inno72.inno72_interact i
+            left join inno72.inno72_interact_merchant im on i.id = im.interact_id
+            left join inno72.inno72_merchant m on im.merchant_id = m.id
+            left join inno72.inno72_merchant_user mu on m.merchant_account_id = mu.id
+        where mu.merchant_id = #{merchantId}
+    </select>
+
+
+</mapper>

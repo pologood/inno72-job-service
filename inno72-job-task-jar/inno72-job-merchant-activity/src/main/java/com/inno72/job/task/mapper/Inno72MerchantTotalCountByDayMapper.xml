@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.task.mapper.Inno72MerchantTotalCountByDayMapper">
+    <resultMap id="BaseResultMap" type="com.inno72.job.task.model.Inno72MerchantTotalCountByDay">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="date" jdbcType="VARCHAR" property="date"/>
+        <result column="city" jdbcType="VARCHAR" property="city"/>
+        <result column="activity_id" jdbcType="VARCHAR" property="activityId"/>
+        <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
+        <result column="goods_id" jdbcType="VARCHAR" property="goodsId"/>
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="merchant_id" jdbcType="VARCHAR" property="merchantId"/>
+        <result column="stay_num" jdbcType="INTEGER" property="stayNum"/>
+        <result column="order_qty_total" jdbcType="INTEGER" property="orderQtyTotal"/>
+        <result column="order_qty_succ" jdbcType="INTEGER" property="orderQtySucc"/>
+        <result column="goods_num" jdbcType="INTEGER" property="goodsNum"/>
+        <result column="coupon_num" jdbcType="INTEGER" property="couponNum"/>
+        <result column="concern_num" jdbcType="INTEGER" property="concernNum"/>
+        <result column="pv" jdbcType="INTEGER" property="pv"/>
+        <result column="uv" jdbcType="INTEGER" property="uv"/>
+        <result column="seller_id" jdbcType="VARCHAR" property="sellerId"/>
+        <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime"
+                javaType="java.time.LocalDateTime"
+                typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+    </resultMap>
+
+    <select id="selectC" parameterType="map" resultMap="BaseResultMap">
+        select * from `inno72`.`inno72_merchant_total_count_by_day`
+        where `date` = #{date} and `city` = #{city} and `goods_name` = "周黑鸭卤蛋"
+    </select>
+
+    <insert id="insertS" parameterType="list">
+        insert into `inno72`.`inno72_merchant_total_count_by_day`
+        ( `id`, `date`, `city`,
+          `goods_id`, `activity_id`, `activity_name`,
+          `visitor_num`, `stay_num`, `goods_name`,
+          `merchant_id`, `order_qty_total`, `order_qty_succ`,
+          `goods_num`, `coupon_num`, `concern_num`,
+          `pv`, `uv`, `seller_id`,
+          `last_update_time`)
+        values
+           <foreach collection="list" item="item" separator=",">
+               (
+               #{item.id}, #{item.date}, #{item.city},
+               #{item.goodsId},  #{item.activityId},  #{item.activityName},
+               0,  #{item.stayNum},  #{item.goodsName},
+               #{item.merchantId},  #{item.orderQtyTotal},  #{item.orderQtySucc},
+               #{item.goodsNum},  #{item.couponNum},  #{item.concernNum},
+               #{item.pv},  #{item.uv},  #{item.sellerId},
+               #{item.lastUpdateTime}
+               )
+           </foreach>
+    </insert>
+
+    <update id="update" parameterType="com.inno72.job.task.model.Inno72MerchantTotalCountByDay">
+        update `inno72`.`inno72_merchant_total_count_by_day`
+        set
+            `activity_id`=#{activityId},
+            `activity_name`=#{activityName}
+        where `id`=#{id}
+    </update>
+
+    <update id="updateC" parameterType="com.inno72.job.task.model.Inno72MerchantTotalCountByDay">
+        update `inno72`.`inno72_merchant_total_count_by_day` set
+            `visitor_num`=#{visitorNum},
+            `stay_num`=#{stayNum},
+            `order_qty_total`=#{orderQtyTotal},
+            `order_qty_succ`=#{orderQtySucc},
+            `goods_num`= #{goodsNum},
+            `coupon_num`=#{couponNum},
+            `concern_num`=#{concernNum},
+            `pv`= #{pv},
+            `uv`= #{uv},
+            `last_update_time`= #{lastUpdateTime}
+        where `id`=#{id};
+    </update>
+    <update id="updateCountStop">
+        update `inno72`.inno72_merchant_total_count set activity_status = 0 where activity_id = '03e0c821671a4d6f8fad0d47fa25f040'
+    </update>
+    <delete id="delete">
+        delete from `inno72`.`inno72_merchant_total_count_by_day`
+    </delete>
+    <delete id="deleteCount">
+        delete from `inno72`.`inno72_merchant_total_count`
+    </delete>
+    <select id="selectByDayList" resultMap="BaseResultMap">
+        SELECT * FROM `inno72`.inno72_merchant_total_count_by_day WHERE length(activity_id)!=char_length(activity_id)
+    </select>
+    <select id="selectActNameIsEmptyList" resultMap="BaseResultMap">
+        SELECT * FROM `inno72`.inno72_merchant_total_count_by_day WHERE length(activity_name)=char_length(activity_name)
+    </select>
+    <select id="selectActIdIsEmptyList" resultMap="BaseResultMap">
+        SELECT * FROM `inno72`.inno72_merchant_total_count_by_day WHERE activity_id = ''
+    </select>
+
+</mapper>

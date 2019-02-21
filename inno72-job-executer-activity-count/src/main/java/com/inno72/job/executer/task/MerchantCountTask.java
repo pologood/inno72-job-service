@@ -26,6 +26,7 @@ import com.inno72.job.executer.mapper.Inno72MerchantTotalCountByDayMapper;
 import com.inno72.job.executer.mapper.Inno72MerchantTotalCountMapper;
 import com.inno72.job.executer.model.Inno72MerchantTotalCount;
 import com.inno72.job.executer.model.Inno72MerchantTotalCountByDay;
+import com.inno72.job.executer.vo.TimeVo;
 
 
 @Component
@@ -98,6 +99,20 @@ public class MerchantCountTask implements IJobHandler {
 					count.setMerchantId(day.getMerchantId());
 				}
 			}
+			String actS = "1";
+			TimeVo timeVo = inno72MerchantTotalCountMapper.selectMaxMinTime(selectByDayParam);
+			if (timeVo != null){
+				LocalDateTime now = LocalDateTime.now();
+
+				if(timeVo.getStartTime().isAfter(now)){
+					actS = "2";
+				}else if (timeVo.getEndTime().isBefore(now)){
+					actS = "0";
+				}
+			}
+
+			count.setActivityStatus(actS);
+
 			int i = inno72MerchantTotalCountMapper.update(count);
 		}
 		List<Inno72MerchantTotalCountByDay> days;

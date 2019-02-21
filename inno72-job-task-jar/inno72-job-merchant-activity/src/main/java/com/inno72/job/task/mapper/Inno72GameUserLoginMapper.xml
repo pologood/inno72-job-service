@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.task.mapper.Inno72GameUserLoginMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.job.task.model.Inno72GameUserLogin">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="age" jdbcType="VARCHAR" property="age" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
+    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" javaType="java.time.LocalDateTime"
+            typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+    <result column="processed" jdbcType="BIT" property="processed" />
+    <result column="operating_system" jdbcType="BIT" property="operatingSystem" />
+    <result column="phone_model" jdbcType="VARCHAR" property="phoneModel" />
+    <result column="sacn_software" jdbcType="VARCHAR" property="sacnSoftware" />
+    <result column="locale_id" jdbcType="VARCHAR" property="localeId" />
+  </resultMap>
+  <resultMap id="BaseResultVoMap" type="com.inno72.job.task.vo.Inno72GameUserLoginVo" extends="BaseResultMap">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="login_date" jdbcType="VARCHAR" property="loginDate" />
+    <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
+  </resultMap>
+
+    <select id="findAllNoProcessed" resultType="com.inno72.job.task.model.Inno72GameUserLogin">
+        select * from inno72.inno72_game_user_login where processed = 0 and url != ''
+    </select>
+
+    <select id="update" parameterType="com.inno72.job.task.model.Inno72GameUserLogin">
+        update inno72.inno72_game_user_login
+        set
+            sex = #{sex},
+            age = #{age},
+            processed = #{processed}
+        where
+            id = #{id}
+    </select>
+    <select id="findMinTime" resultMap="BaseResultMap">
+        select * from inno72.inno72_game_user_login where login_time is not null order by login_time asc limit 1
+    </select>
+    <select id="selectByTime" resultMap="BaseResultVoMap" parameterType="map">
+        select login.*, acti.name as activity_name
+        from (select * , date_format(login_time, "%Y-%m-%d") as login_date from inno72.inno72_game_user_login) login
+        left join (select id, name from inno72.`inno72_interact`) acti on acti.id = login.activity_id
+        left join inno72.inno72_channel c on c.id = login.channel_id
+        where c.channel_code = '002003'
+        <if test="time != '' and time != null">
+            and login_time >= #{time}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and login_time between #{startTime} and #{endTime}
+        </if>
+        group by login_date, user_id
+        order by login_time asc
+    </select>
+
+    <select id="selectByPhoneModel" resultMap="BaseResultMap" parameterType="map">
+        select * from inno72.inno72_game_user_login
+        where 1 = 1
+        <if test="time != ''">
+            and login_time >= #{time}
+        </if>
+
+        <if test="phoneModel != ''">
+            and phone_model REGEXP #{phoneModel}
+        </if>
+
+        order by login_time asc
+
+    </select>
+    <select id="selectAllUseId" resultType="java.lang.String">
+        select id from inno72.inno72_game_user
+    </select>
+    <select id="selectAllCity" resultType="java.lang.String">
+        select distinct city from inno72.inno72_admin_area where city is not null limit 10
+    </select>
+
+
+</mapper>
