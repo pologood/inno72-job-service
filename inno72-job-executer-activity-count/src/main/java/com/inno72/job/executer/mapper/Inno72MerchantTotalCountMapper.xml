@@ -22,6 +22,25 @@
         <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" javaType="java.time.LocalDateTime"
                 typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
     </resultMap>
+    <resultMap id="TimeVo" type="com.inno72.job.executer.vo.TimeVo">
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime" javaType="java.time.LocalDateTime"
+                typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime" javaType="java.time.LocalDateTime"
+                typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+    </resultMap>
+
+    <select id="selectMaxMinTime" resultMap="TimeVo" parameterType="map">
+        select
+            min(imt.start_time) as start_time,
+            max(imt.end_time) as end_time
+        from inno72_interact_machine im
+            join `inno72_interact_machine_goods` img on im.id = img.interact_machine_id
+            join inno72_goods ig on img.goods_id=ig.id
+            left join `inno72_interact_machine_time` imt on im.id = imt.interact_machine_id
+        where im.interact_id =#{activityId} and ig.seller_id in
+                                        (select id from inno72_merchant where merchant_account_id = (select id from inno72_merchant_user where merchant_id =  #{merchantId}))
+        group by im.interact_id
+    </select>
     <update id="update" parameterType="com.inno72.job.executer.model.Inno72MerchantTotalCount">
         update `inno72`.`inno72_merchant_total_count`
         set

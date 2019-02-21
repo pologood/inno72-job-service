@@ -54,6 +54,10 @@ public class Inno72MerchantTotalCountByDay {
 	 * 派发商品数量
 	 */
 	private Integer goodsNum;
+	/**
+	 * 派发商品数量
+	 */
+	private Integer visitorNum;
 
 	/**
 	 * 优惠券发放数量
@@ -382,5 +386,13 @@ public class Inno72MerchantTotalCountByDay {
 
 	public void setStayNum(Integer stayNum) {
 		this.stayNum = stayNum;
+	}
+
+	public Integer getVisitorNum() {
+		return visitorNum;
+	}
+
+	public void setVisitorNum(Integer visitorNum) {
+		this.visitorNum = visitorNum;
 	}
 }

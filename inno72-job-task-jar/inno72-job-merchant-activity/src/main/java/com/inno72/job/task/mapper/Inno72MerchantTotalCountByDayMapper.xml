@@ -26,6 +26,12 @@
                 javaType="java.time.LocalDateTime"
                 typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
     </resultMap>
+
+    <select id="selectC" parameterType="map" resultMap="BaseResultMap">
+        select * from `inno72`.`inno72_merchant_total_count_by_day`
+        where `date` = #{date} and `city` = #{city} and `goods_name` = "周黑鸭卤蛋"
+    </select>
+
     <insert id="insertS" parameterType="list">
         insert into `inno72`.`inno72_merchant_total_count_by_day`
         ( `id`, `date`, `city`,
@@ -48,12 +54,28 @@
                )
            </foreach>
     </insert>
+
     <update id="update" parameterType="com.inno72.job.task.model.Inno72MerchantTotalCountByDay">
         update `inno72`.`inno72_merchant_total_count_by_day`
         set
             `activity_id`=#{activityId},
             `activity_name`=#{activityName}
         where `id`=#{id}
+    </update>
+
+    <update id="updateC" parameterType="com.inno72.job.task.model.Inno72MerchantTotalCountByDay">
+        update `inno72`.`inno72_merchant_total_count_by_day` set
+            `visitor_num`=#{visitorNum},
+            `stay_num`=#{stayNum},
+            `order_qty_total`=#{orderQtyTotal},
+            `order_qty_succ`=#{orderQtySucc},
+            `goods_num`= #{goodsNum},
+            `coupon_num`=#{couponNum},
+            `concern_num`=#{concernNum},
+            `pv`= #{pv},
+            `uv`= #{uv},
+            `last_update_time`= #{lastUpdateTime}
+        where `id`=#{id};
     </update>
     <update id="updateCountStop">
         update `inno72`.inno72_merchant_total_count set activity_status = 0 where activity_id = '03e0c821671a4d6f8fad0d47fa25f040'
