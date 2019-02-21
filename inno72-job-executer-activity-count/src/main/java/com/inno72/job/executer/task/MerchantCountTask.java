@@ -101,6 +101,7 @@ public class MerchantCountTask implements IJobHandler {
 			}
 			String actS = "1";
 			TimeVo timeVo = inno72MerchantTotalCountMapper.selectMaxMinTime(selectByDayParam);
+			JobLogger.log("活动 "+ count.getActivityName()+" 状态 ["+ count.getActivityStatus()+", 活动时间 "+ JSON.toJSONString(timeVo));
 			if (timeVo != null){
 				LocalDateTime now = LocalDateTime.now();
 
@@ -109,10 +110,11 @@ public class MerchantCountTask implements IJobHandler {
 				}else if (timeVo.getEndTime().isBefore(now)){
 					actS = "0";
 				}
+				if (!count.getActivityStatus().equals(actS)){
+					count.setActivityStatus(actS);
+				}
 			}
-
-			count.setActivityStatus(actS);
-
+			JobLogger.log("更新活动统计为 "+ JSON.toJSONString(count));
 			int i = inno72MerchantTotalCountMapper.update(count);
 		}
 		List<Inno72MerchantTotalCountByDay> days;
