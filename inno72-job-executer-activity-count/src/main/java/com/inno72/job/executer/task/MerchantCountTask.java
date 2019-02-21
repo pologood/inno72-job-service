@@ -79,9 +79,9 @@ public class MerchantCountTask implements IJobHandler {
 			Integer visitorNum = inno72MerchantTotalCountMapper.getVisitorNumFromHourLog(selectByDayParam);
 			count.setLastUpdateTime(LocalDateTime.now());
 			count.setVisitorNum(count.getVisitorNum() + (visitorNum == null ? 0 :visitorNum));
+			count.setMachineNum(machineNum > count.getMachineNum() ? machineNum  :  count.getMachineNum());
 			for (Inno72MerchantTotalCountByDay day : days){
 				count.setBuyer(count.getBuyer() + day.getOrderQtySucc());
-				count.setMachineNum(machineNum > count.getMachineNum() ? machineNum  :  count.getMachineNum());
 				count.setOrder(count.getOrder() + day.getOrderQtyTotal());
 				count.setShipment(count.getShipment() + day.getOrderQtySucc());
 				count.setPv(count.getPv() + day.getPv());
