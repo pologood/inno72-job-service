@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.inno72.job.task.model.Inno72MerchantTotalCount;
+import com.inno72.job.task.vo.TimeVo;
 
 
 @Mapper
@@ -38,4 +39,6 @@ public interface Inno72MerchantTotalCountMapper{
 	List<String> selectActIdByMerchantId(String merchantId);
 
 	List<Inno72MerchantTotalCount> selectNewCount(List<String> list);
+
+	TimeVo selectMaxMinTime(Map<String, String > param);
 }
