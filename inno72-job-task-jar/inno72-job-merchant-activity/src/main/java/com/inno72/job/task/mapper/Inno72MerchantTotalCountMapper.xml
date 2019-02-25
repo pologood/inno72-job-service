@@ -98,16 +98,16 @@
     <select id="selectMaxMinTime" resultMap="TimeVo" parameterType="map">
         select MIN(start_time) AS start_time, MAX(end_time) AS end_time from
             (SELECT MIN(imt.start_time) AS start_time, MAX(imt.end_time) AS end_time, im.interact_id as id
-             FROM inno72_interact_machine im
-                 JOIN `inno72_interact_machine_goods` img ON im.id = img.interact_machine_id
-                 JOIN inno72_goods ig ON img.goods_id = ig.id
-                 LEFT JOIN `inno72_interact_machine_time` imt ON im.id = imt.interact_machine_id
+             FROM inno72.inno72_interact_machine im
+                 JOIN inno72.`inno72_interact_machine_goods` img ON im.id = img.interact_machine_id
+                 JOIN inno72.inno72_goods ig ON img.goods_id = ig.id
+                 LEFT JOIN inno72.`inno72_interact_machine_time` imt ON im.id = imt.interact_machine_id
              WHERE im.interact_id = #{activityId}
                    AND ig.seller_id IN (SELECT id
-                                        FROM inno72_merchant
+                                        FROM inno72.inno72_merchant
                                         WHERE merchant_account_id = (
                                             SELECT id
-                                            FROM inno72_merchant_user
+                                            FROM inno72.inno72_merchant_user
                                             WHERE merchant_id =  #{merchantId}
                                         ))
              GROUP BY im.interact_id
@@ -118,21 +118,21 @@
                                                               MIN( imt.start_time ) AS start_time,
                                                               MAX( imt.end_time ) AS end_time ,i.`name`,i.id
                                                           FROM
-                                                              inno72_interact_machine im
-                                                              LEFT JOIN `inno72_interact_machine_time` imt ON im.id = imt.interact_machine_id
-                                                              LEFT JOIN inno72_interact i ON i.id=im.interact_id
+                                                              inno72.inno72_interact_machine im
+                                                              LEFT JOIN inno72.`inno72_interact_machine_time` imt ON im.id = imt.interact_machine_id
+                                                              LEFT JOIN inno72.inno72_interact i ON i.id=im.interact_id
                                                           GROUP BY im.interact_id ) i
-                 LEFT JOIN `inno72_interact_goods` ig
-                 LEFT JOIN inno72_coupon c ON ig.goods_id = c.id
-                 LEFT JOIN inno72_shops s ON s.id = c.shops_id
+                 LEFT JOIN inno72.`inno72_interact_goods` ig
+                 LEFT JOIN inno72.inno72_coupon c ON ig.goods_id = c.id
+                 LEFT JOIN inno72.inno72_shops s ON s.id = c.shops_id
                      ON ig.interact_id = i.id
              WHERE ig.type =1 AND
                    i.id = #{activityId}
                    and s.seller_id in (SELECT id
-                                       FROM inno72_merchant
+                                       FROM inno72.inno72_merchant
                                        WHERE merchant_account_id = (
                                            SELECT id
-                                           FROM inno72_merchant_user
+                                           FROM inno72.inno72_merchant_user
                                            WHERE merchant_id =  #{merchantId}
                                        ))
              GROUP BY i.id
