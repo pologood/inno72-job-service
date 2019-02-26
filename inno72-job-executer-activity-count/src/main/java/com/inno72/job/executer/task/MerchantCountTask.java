@@ -65,10 +65,6 @@ public class MerchantCountTask implements IJobHandler {
 			selectByDayParam.put("lastUpdateTime", LocalDateTimeUtil.transfer(lastUpdateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 			List<Inno72MerchantTotalCountByDay> days = inno72MerchantTotalCountByDayMapper.selectByLastTimeAndDayParam(selectByDayParam);
 
-			if ( days.size() == 0 ){
-				continue;
-			}
-
 			String activityType = count.getActivityType();
 
 			Integer machineNum;
@@ -81,14 +77,13 @@ public class MerchantCountTask implements IJobHandler {
 
 
 			Integer visitorNum = inno72MerchantTotalCountMapper.getVisitorNumFromHourLog(selectByDayParam);
-
+			count.setLastUpdateTime(LocalDateTime.now());
+			count.setVisitorNum(count.getVisitorNum() + (visitorNum == null ? 0 :visitorNum));
+			count.setMachineNum(machineNum > count.getMachineNum() ? machineNum  :  count.getMachineNum());
 			for (Inno72MerchantTotalCountByDay day : days){
 				count.setBuyer(count.getBuyer() + day.getOrderQtySucc());
-				count.setMachineNum(machineNum > count.getMachineNum() ? machineNum  :  count.getMachineNum());
 				count.setOrder(count.getOrder() + day.getOrderQtyTotal());
 				count.setShipment(count.getShipment() + day.getOrderQtySucc());
-				count.setVisitorNum(count.getVisitorNum() + (visitorNum == null ? 0 :visitorNum));
-				count.setLastUpdateTime(LocalDateTime.now());
 				count.setPv(count.getPv() + day.getPv());
 				count.setStayUser(count.getStayUser() + day.getStayNum());
 				count.setUv(count.getUv() + day.getUv());
@@ -101,6 +96,7 @@ public class MerchantCountTask implements IJobHandler {
 			}
 			String actS = "1";
 			TimeVo timeVo = inno72MerchantTotalCountMapper.selectMaxMinTime(selectByDayParam);
+			JobLogger.log("活动 "+ count.getActivityName()+" 状态 ["+ count.getActivityStatus()+", 活动时间 "+ JSON.toJSONString(timeVo));
 			if (timeVo != null){
 				LocalDateTime now = LocalDateTime.now();
 
@@ -109,10 +105,11 @@ public class MerchantCountTask implements IJobHandler {
 				}else if (timeVo.getEndTime().isBefore(now)){
 					actS = "0";
 				}
+				if (!count.getActivityStatus().equals(actS)){
+					count.setActivityStatus(actS);
+				}
 			}
-
-			count.setActivityStatus(actS);
-
+			JobLogger.log("更新活动统计为 "+ JSON.toJSONString(count));
 			int i = inno72MerchantTotalCountMapper.update(count);
 		}
 		List<Inno72MerchantTotalCountByDay> days;

@@ -1,5 +1,6 @@
 package com.inno72.job.executer;
 
+import com.inno72.job.executer.config.Inno72GameServiceProperties;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
@@ -18,8 +19,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableFeignClients
 @EnableEurekaClient
 @EnableCircuitBreaker // 开启熔断
-@EnableConfigurationProperties
 @EnableWebMvc
+@EnableConfigurationProperties({Inno72GameServiceProperties.class})
 public class Inno72Application extends SpringBootServletInitializer
 {
 	public static void main(String[] args) {

@@ -30,16 +30,49 @@
     </resultMap>
 
     <select id="selectMaxMinTime" resultMap="TimeVo" parameterType="map">
-        select
-            min(imt.start_time) as start_time,
-            max(imt.end_time) as end_time
-        from inno72_interact_machine im
-            join `inno72_interact_machine_goods` img on im.id = img.interact_machine_id
-            join inno72_goods ig on img.goods_id=ig.id
-            left join `inno72_interact_machine_time` imt on im.id = imt.interact_machine_id
-        where im.interact_id =#{activityId} and ig.seller_id in
-                                        (select id from inno72_merchant where merchant_account_id = (select id from inno72_merchant_user where merchant_id =  #{merchantId}))
-        group by im.interact_id
+        select MIN(start_time) AS start_time, MAX(end_time) AS end_time from
+            (SELECT MIN(imt.start_time) AS start_time, MAX(imt.end_time) AS end_time, im.interact_id as id
+             FROM inno72_interact_machine im
+                 JOIN `inno72_interact_machine_goods` img ON im.id = img.interact_machine_id
+                 JOIN inno72_goods ig ON img.goods_id = ig.id
+                 LEFT JOIN `inno72_interact_machine_time` imt ON im.id = imt.interact_machine_id
+             WHERE im.interact_id = #{activityId}
+                   AND ig.seller_id IN (SELECT id
+                                        FROM inno72_merchant
+                                        WHERE merchant_account_id = (
+                                            SELECT id
+                                            FROM inno72_merchant_user
+                                            WHERE merchant_id =  #{merchantId}
+                                        ))
+             GROUP BY im.interact_id
+
+             union all
+
+             SELECT i.start_time, i.end_time, i.id FROM  (SELECT
+                                                              MIN( imt.start_time ) AS start_time,
+                                                              MAX( imt.end_time ) AS end_time ,i.`name`,i.id
+                                                          FROM
+                                                              inno72_interact_machine im
+                                                              LEFT JOIN `inno72_interact_machine_time` imt ON im.id = imt.interact_machine_id
+                                                              LEFT JOIN inno72_interact i ON i.id=im.interact_id
+                                                          GROUP BY im.interact_id ) i
+                 LEFT JOIN `inno72_interact_goods` ig
+                 LEFT JOIN inno72_coupon c ON ig.goods_id = c.id
+                 LEFT JOIN inno72_shops s ON s.id = c.shops_id
+                     ON ig.interact_id = i.id
+             WHERE ig.type =1 AND
+                   i.id = #{activityId}
+                   and s.seller_id in (SELECT id
+                                       FROM inno72_merchant
+                                       WHERE merchant_account_id = (
+                                           SELECT id
+                                           FROM inno72_merchant_user
+                                           WHERE merchant_id =  #{merchantId}
+                                       ))
+             GROUP BY i.id
+            ) t
+        group by id
+
     </select>
     <update id="update" parameterType="com.inno72.job.executer.model.Inno72MerchantTotalCount">
         update `inno72`.`inno72_merchant_total_count`

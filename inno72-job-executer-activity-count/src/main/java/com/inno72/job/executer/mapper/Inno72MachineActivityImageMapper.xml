@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.executer.mapper.Inno72MachineActivityImageMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.job.executer.model.Inno72MachineActivityImage">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="version" jdbcType="BIGINT" property="version" />
+  </resultMap>
+  <select id="findAll" resultMap="BaseResultMap">
+      select * from inno72_machine_activity_image
+  </select>
+</mapper>

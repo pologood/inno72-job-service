@@ -23,6 +23,7 @@ import com.inno72.job.task.mapper.Inno72MerchantTotalCountMapper;
 import com.inno72.job.task.mapper.Inno72MerchantUserMapper;
 import com.inno72.job.task.model.Inno72MerchantTotalCount;
 import com.inno72.job.task.model.Inno72MerchantUser;
+import com.inno72.job.task.vo.TimeVo;
 
 
 @JobMapperScanner(value = "classpath*:/com/inno72/job/task/mapper/*.xml", basePackage="com.inno72.job.task.mapper")
@@ -90,10 +91,18 @@ public class Inno72MerchantActivity implements IJobHandler {
 							machineNum = inno72MerchantTotalCountMapper.getMachineNumByInteract(selectByDayParam);
 							Integer visitorNum = inno72MerchantTotalCountMapper.getVisitorNumFromHourLog(selectByDayParam);
 							// 活动状态
-							Integer i = inno72MerchantTotalCountMapper
-									.getActivityStatusFromInteract(count.getActivityId(), merchantId);
 
-							count.setActivityStatus(i + "");
+							TimeVo timeVo = inno72MerchantTotalCountMapper.selectMaxMinTime(selectByDayParam);
+
+							String actS = "1";
+							if (timeVo != null){
+								if(timeVo.getStartTime().isAfter(now)){
+									actS = "2";
+								}else if (timeVo.getEndTime().isBefore(now)){
+									actS = "0";
+								}
+							}
+							count.setActivityStatus(actS);
 							count.setActivityType("2");
 							count.setMachineNum(machineNum);
 							count.setVisitorNum(visitorNum);

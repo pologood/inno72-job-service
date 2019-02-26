@@ -5,9 +5,7 @@ import javax.annotation.Resource;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.job.executer.mapper.ActivityMapper;
-import com.inno72.job.executer.service.DeviceService;
-import com.inno72.job.executer.service.ExportStoreService;
-import com.inno72.job.executer.service.FeedBackService;
+import com.inno72.job.executer.service.*;
 import com.inno72.job.executer.task.MerchantCountByDayTask;
 import com.inno72.job.executer.task.MerchantCountTask;
 
@@ -17,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 
 @RestController
 public class TestController {
@@ -85,6 +85,40 @@ public class TestController {
         }else{
             deviceService.executeActivity();
         }
+        return Results.success();
+    }
+    @Autowired
+    LongConnectionService longConnectionService;
+    /**
+     *
+     * @return
+     */
+    @RequestMapping(value = "/connection", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result<Object> connection() {
+        longConnectionService.execute();
+        return Results.success();
+    }
+
+    @Autowired
+    ConnectionMsgService connectionMsgService;
+    /**
+     *
+     * @return
+     */
+    @RequestMapping(value = "/sendMsg", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result<Object> sendMsg(Integer type) {
+        connectionMsgService.execute(type);
+        return Results.success();
+    }
+    @Autowired
+    private AliPayOrderService aliPayOrderService;
+    /**
+     *
+     * @return
+     */
+    @RequestMapping(value = "/pay", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result<Object> pay() throws IOException {
+        aliPayOrderService.execute();
         return Results.success();
     }
 }
