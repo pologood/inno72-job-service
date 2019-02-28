@@ -63,15 +63,15 @@
     select activity_id, handle_time, machine_code, goods_code , merchant_code ,goods_name from (
 
     select s.activity_id, date_format(s.handle_time, '%Y-%m-%d') as handle_time,  s.machine_code , m.merchant_code as merchant_code, g.code as goods_code ,g.name as goods_name
-    from inno72_statistic_activity_machine_snapshot s
+    from inno72.inno72_statistic_activity_machine_snapshot s
 
-    left join inno72_interact_goods pg
+    left join inno72.inno72_interact_goods pg
     on s.activity_id = pg.interact_id
-    left join inno72_goods g
+    left join inno72.inno72_goods g
     on g.id = pg.goods_id
-    left join inno72_shops shop
+    left join inno72.inno72_shops shop
     on shop.id = g.shop_id
-    left join inno72_merchant m
+    left join inno72.inno72_merchant m
     on m.id = shop.seller_id
     where  s.activity_type=1
 
@@ -85,13 +85,13 @@
 
     select time, machine_code , merchant_code, goods_code, count(1) as pv from (
     select a1.game_user_id, m.merchant_code as merchant_code, a1.goods_code, date_format(a1.login_time, '%Y-%m-%d')as time,
-    a1.machine_code from inno72_game_user_life a1
+    a1.machine_code from inno72.inno72_game_user_life a1
 
-    left join inno72_goods g
+    left join inno72.inno72_goods g
     on g.code = a1.goods_code
-    left join inno72_shops s
+    left join inno72.inno72_shops s
     on s.id = g.shop_id
-    left join inno72_merchant m
+    left join inno72.inno72_merchant m
     on m.id = s.seller_id
 
     where
@@ -104,13 +104,13 @@
 
     select time, machine_code , merchant_code, goods_code, count(1) as uv from (
     select DISTINCT a1.game_user_id, m.merchant_code as merchant_code, a1.goods_code, date_format(a1.login_time, '%Y-%m-%d')as time,
-    a1.machine_code from inno72_game_user_life a1
+    a1.machine_code from inno72.inno72_game_user_life a1
 
-    left join inno72_goods g
+    left join inno72.inno72_goods g
     on g.code = a1.goods_code
-    left join inno72_shops s
+    left join inno72.inno72_shops s
     on s.id = g.shop_id
-    left join inno72_merchant m
+    left join inno72.inno72_merchant m
     on m.id = s.seller_id
 
     where
@@ -127,11 +127,11 @@
 
     select a.time, a.machine_code, a.merchant_code, a.goods_code, count(0) as goodscount from (
     select DATE_FORMAT(o.order_time, '%Y-%m-%d') as time, m.machine_code, mer.merchant_code, g.code as goods_code
-    from inno72_order o
-    left join inno72_order_goods og on o.id = og.order_id
-    left join inno72_machine m on o.machine_id = m.id
-    left join inno72_goods g on og.goods_id = g.id
-    left join inno72_merchant mer on g.seller_id = mer.id
+    from inno72.inno72_order o
+    left join inno72.inno72_order_goods og on o.id = og.order_id
+    left join inno72.inno72_machine m on o.machine_id = m.id
+    left join inno72.inno72_goods g on og.goods_id = g.id
+    left join inno72.inno72_merchant mer on g.seller_id = mer.id
     where o.goods_status = 1
     and o.goods_type = 1
 
@@ -146,11 +146,11 @@
     left join (
     select a.time, a.machine_code, a.merchant_code, a.goods_code, count(0) as orderCount from (
     select DATE_FORMAT(o.order_time, '%Y-%m-%d') as time, m.machine_code, mer.merchant_code, g.code as goods_code
-    from inno72_order o
-    left join inno72_order_goods og on o.id = og.order_id
-    left join inno72_machine m on o.machine_id = m.id
-    left join inno72_goods g on og.goods_id = g.id
-    left join inno72_merchant mer on g.seller_id = mer.id
+    from inno72.inno72_order o
+    left join inno72.inno72_order_goods og on o.id = og.order_id
+    left join inno72.inno72_machine m on o.machine_id = m.id
+    left join inno72.inno72_goods g on og.goods_id = g.id
+    left join inno72.inno72_merchant mer on g.seller_id = mer.id
     where o.goods_type = 1
 
     and o.order_time <![CDATA[ between  #{startTime} and #{endTime} ]]>
@@ -164,7 +164,7 @@
 
     left join (
     select h.machine_code, h.time, sum(h.num) as vistorCount from (select substr(time, 1, 10) as time, machine_code, num
-    from inno72_machine_info_log_hour
+    from inno72.inno72_machine_info_log_hour
     where type = 1) h
     group by  h.machine_code, h.time
     )u7
@@ -173,13 +173,13 @@
 
 
 
-    left join inno72_machine machine on  machine.machine_code = u0.machine_code
-    left join inno72_locale l on machine.locale_id = l.id
-    left join inno72_admin_area area on l.area_code = area.code
-    left join inno72_goods goods on u0.goods_code = goods.code and goods.is_delete != 1 and goods.use_type = 1
-    left join inno72_shops shops on goods.shop_id = shops.id
-    left join inno72_interact interact on interact.id = u0.activity_id
-    left join inno72_merchant merchant on merchant.id = goods.seller_id
+    left join inno72.inno72_machine machine on  machine.machine_code = u0.machine_code
+    left join inno72.inno72_locale l on machine.locale_id = l.id
+    left join inno72.inno72_admin_area area on l.area_code = area.code
+    left join inno72.inno72_goods goods on u0.goods_code = goods.code and goods.is_delete != 1 and goods.use_type = 1
+    left join inno72.inno72_shops shops on goods.shop_id = shops.id
+    left join inno72.inno72_interact interact on interact.id = u0.activity_id
+    left join inno72.inno72_merchant merchant on merchant.id = goods.seller_id
 
     order by handle_time, machine_code, goods.name;
 
@@ -187,7 +187,7 @@
     </select>
 
     <insert id="insertBatch">
-        insert into inno72_statistic_activity_report
+        insert into inno72.inno72_statistic_activity_report
         (
         machine_code,
         handle_time,
@@ -245,7 +245,7 @@
     </insert>
 
     <delete id="delete">
-        delete from inno72_statistic_activity_report where handle_time <![CDATA[ between  #{startTime} and #{endTime} ]]>;
+        delete from inno72.inno72_statistic_activity_report where handle_time <![CDATA[ between  #{startTime} and #{endTime} ]]>;
     </delete>
 
 </mapper>
