@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.activity.report.mapper.Inno72StatisticActivityReportMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.job.activity.report.model.Inno72StatisticActivityReport">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    <result column="handle_time" jdbcType="VARCHAR" property="handleTime" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
+    <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="merchant_id" jdbcType="VARCHAR" property="merchantId" />
+    <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
+    <result column="local_id" jdbcType="VARCHAR" property="localId" />
+    <result column="local_name" jdbcType="VARCHAR" property="localName" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="district" jdbcType="VARCHAR" property="district" />
+    <result column="vistor" jdbcType="INTEGER" property="vistor" />
+    <result column="pv" jdbcType="INTEGER" property="pv" />
+    <result column="uv" jdbcType="INTEGER" property="uv" />
+    <result column="orders" jdbcType="INTEGER" property="orders" />
+    <result column="shipment" jdbcType="INTEGER" property="shipment" />
+    <result column="follow" jdbcType="INTEGER" property="follow" />
+    <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
+      <result column="type" jdbcType="INTEGER" property="type" />
+  </resultMap>
+
+    <select id="queryActivityReports" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+
+      select
+    interact.id as activity_id,
+    interact.name as activity_name,
+    u0.handle_time as handle_time,
+    u0.machine_code as machine_code,
+    goods.id as goods_id,
+    goods.name as goods_name,
+    goods.seller_id as merchant_id,
+    merchant.merchant_name as merchant_name,
+    IFNULL(u7.vistorCount, 0) as vistor,
+    IFNULL(u1.pv, 0) as pv,
+    IFNULL(u2.uv,0) as uv,
+    IFNULL(orderCount, 0) as orders,
+    IFNULL(goodscount, 0) as shipment,
+    shops.shop_name as shop_name,
+    IFNULL(area.province, '') as province,
+    IFNULL(area.city, '') as city,
+    IFNULL(area.district, '') as district,
+    CONCAT(
+    IFNULL(area.circle, '') ,
+    ' ',
+    IFNULL(l.name, '')
+    )AS local_name,
+    l.id as local_id,
+    1 as type,
+    0 as follow
+
+    from (
+
+    select activity_id, handle_time, machine_code, goods_code , merchant_code ,goods_name from (
+
+    select s.activity_id, date_format(s.handle_time, '%Y-%m-%d') as handle_time,  s.machine_code , m.merchant_code as merchant_code, g.code as goods_code ,g.name as goods_name
+    from inno72.inno72_statistic_activity_machine_snapshot s
+
+    left join inno72.inno72_interact_goods pg
+    on s.activity_id = pg.interact_id
+    left join inno72.inno72_goods g
+    on g.id = pg.goods_id
+    left join inno72.inno72_shops shop
+    on shop.id = g.shop_id
+    left join inno72.inno72_merchant m
+    on m.id = shop.seller_id
+    where  s.activity_type=1
+
+    and s.handle_time <![CDATA[ between  #{startTime} and #{endTime} ]]>
+
+
+    ) as temp group by  handle_time, machine_code, merchant_code, goods_code
+
+    )u0 left join
+    (
+
+    select time, machine_code , merchant_code, goods_code, count(1) as pv from (
+    select a1.game_user_id, m.merchant_code as merchant_code, a1.goods_code, date_format(a1.login_time, '%Y-%m-%d')as time,
+    a1.machine_code from inno72.inno72_game_user_life a1
+
+    left join inno72.inno72_goods g
+    on g.code = a1.goods_code
+    left join inno72.inno72_shops s
+    on s.id = g.shop_id
+    left join inno72.inno72_merchant m
+    on m.id = s.seller_id
+
+    where
+    a1.login_time <![CDATA[ between  #{startTime} and #{endTime} ]]>
+    ) as a  group  by  time,machine_code,merchant_code, goods_code
+
+    ) u1 on u0.handle_time = u1.time and u0.machine_code = u1.machine_code and u0.merchant_code = u1.merchant_code and u0.goods_code = u1.goods_code
+
+    left join (
+
+    select time, machine_code , merchant_code, goods_code, count(1) as uv from (
+    select DISTINCT a1.game_user_id, m.merchant_code as merchant_code, a1.goods_code, date_format(a1.login_time, '%Y-%m-%d')as time,
+    a1.machine_code from inno72.inno72_game_user_life a1
+
+    left join inno72.inno72_goods g
+    on g.code = a1.goods_code
+    left join inno72.inno72_shops s
+    on s.id = g.shop_id
+    left join inno72.inno72_merchant m
+    on m.id = s.seller_id
+
+    where
+    a1.login_time <![CDATA[ between  #{startTime} and #{endTime} ]]>
+    ) as a  group  by  time,machine_code,merchant_code, goods_code
+
+    ) u2
+    on u1.time = u2.time
+    and u1.machine_code = u2.machine_code
+    and u1.merchant_code = u2.merchant_code
+    and u1.goods_code = u2.goods_code
+
+    left join (
+
+    select a.time, a.machine_code, a.merchant_code, a.goods_code, count(0) as goodscount from (
+    select DATE_FORMAT(o.order_time, '%Y-%m-%d') as time, m.machine_code, mer.merchant_code, g.code as goods_code
+    from inno72.inno72_order o
+    left join inno72.inno72_order_goods og on o.id = og.order_id
+    left join inno72.inno72_machine m on o.machine_id = m.id
+    left join inno72.inno72_goods g on og.goods_id = g.id
+    left join inno72.inno72_merchant mer on g.seller_id = mer.id
+    where o.goods_status = 1
+    and o.goods_type = 1
+
+    and o.order_time <![CDATA[ between  #{startTime} and #{endTime} ]]>
+    ) a group by a.time, a.machine_code, a.merchant_code, a.goods_code ) u3
+
+    on u1.time = u3.time
+    and u1.machine_code = u3.machine_code
+    and u1.merchant_code = u3.merchant_code
+    and u1.goods_code = u3.goods_code
+
+    left join (
+    select a.time, a.machine_code, a.merchant_code, a.goods_code, count(0) as orderCount from (
+    select DATE_FORMAT(o.order_time, '%Y-%m-%d') as time, m.machine_code, mer.merchant_code, g.code as goods_code
+    from inno72.inno72_order o
+    left join inno72.inno72_order_goods og on o.id = og.order_id
+    left join inno72.inno72_machine m on o.machine_id = m.id
+    left join inno72.inno72_goods g on og.goods_id = g.id
+    left join inno72.inno72_merchant mer on g.seller_id = mer.id
+    where o.goods_type = 1
+
+    and o.order_time <![CDATA[ between  #{startTime} and #{endTime} ]]>
+    ) a group by a.time, a.machine_code, a.merchant_code, a.goods_code) u4
+    on  u1.time = u4.time
+    and u1.machine_code = u4.machine_code
+    and u1.merchant_code = u4.merchant_code
+    and u1.goods_code = u4.goods_code
+
+
+
+    left join (
+    select h.machine_code, h.time, sum(h.num) as vistorCount from (select substr(time, 1, 10) as time, machine_code, num
+    from inno72.inno72_machine_info_log_hour
+    where type = 1) h
+    group by  h.machine_code, h.time
+    )u7
+    on u0.handle_time = u7.time
+    and u0.machine_code = u7.machine_code
+
+
+
+    left join inno72.inno72_machine machine on  machine.machine_code = u0.machine_code
+    left join inno72.inno72_locale l on machine.locale_id = l.id
+    left join inno72.inno72_admin_area area on l.area_code = area.code
+    left join inno72.inno72_goods goods on u0.goods_code = goods.code and goods.is_delete != 1 and goods.use_type = 1
+    left join inno72.inno72_shops shops on goods.shop_id = shops.id
+    left join inno72.inno72_interact interact on interact.id = u0.activity_id
+    left join inno72.inno72_merchant merchant on merchant.id = goods.seller_id
+
+    order by handle_time, machine_code, goods.name;
+
+
+    </select>
+
+    <insert id="insertBatch">
+        insert into inno72.inno72_statistic_activity_report
+        (
+        machine_code,
+        handle_time,
+        activity_id,
+        activity_name,
+        goods_id,
+        goods_name,
+        merchant_id,
+        merchant_name,
+        local_id,
+        local_name,
+        province,
+        city,
+        district,
+        vistor,
+        pv,
+        uv,
+        orders,
+        shipment,
+        follow,
+        shop_name,
+        type
+        )
+        values
+         <foreach collection="list" item="item" index="index" separator=",">
+             (
+             #{item.machineCode,jdbcType=VARCHAR},
+              #{item.handleTime,jdbcType=VARCHAR},
+              #{item.activityId,jdbcType=VARCHAR},
+              #{item.activityName,jdbcType=VARCHAR},
+              #{item.goodsId,jdbcType=VARCHAR},
+              #{item.goodsName,jdbcType=VARCHAR},
+
+              #{item.merchantId,jdbcType=VARCHAR},
+              #{item.merchantName,jdbcType=VARCHAR},
+
+              #{item.localId,jdbcType=VARCHAR},
+              #{item.localName,jdbcType=VARCHAR},
+
+              #{item.province,jdbcType=VARCHAR},
+              #{item.city,jdbcType=VARCHAR},
+              #{item.district,jdbcType=VARCHAR},
+
+              #{item.vistor,jdbcType=INTEGER},
+              #{item.pv,jdbcType=INTEGER},
+              #{item.uv,jdbcType=INTEGER},
+              #{item.orders,jdbcType=INTEGER},
+              #{item.shipment,jdbcType=INTEGER},
+              #{item.follow,jdbcType=INTEGER},
+              #{item.shopName,jdbcType=INTEGER},
+              #{item.type,jdbcType=INTEGER}
+             )
+         </foreach>
+
+    </insert>
+
+    <delete id="delete">
+        delete from inno72.inno72_statistic_activity_report where handle_time <![CDATA[ between  #{startTime} and #{endTime} ]]>;
+    </delete>
+
+</mapper>
