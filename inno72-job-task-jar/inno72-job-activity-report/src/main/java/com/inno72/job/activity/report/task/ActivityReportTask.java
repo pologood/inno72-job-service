@@ -37,7 +37,7 @@ public class ActivityReportTask implements IJobHandler {
 		} else {
 			Date d = new Date();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			startDate = dateFormat.format(new Date(d.getTime() - (long)24 * 60 * 60 * 10000)); // 获取昨天时间
+			startDate = dateFormat.format(new Date(d.getTime() - (long)24 * 60 * 60 * 1000)); // 获取昨天时间
 			endDate = startDate;
 		}
 
