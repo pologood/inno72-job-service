@@ -176,7 +176,7 @@
     left join inno72.inno72_machine machine on  machine.machine_code = u0.machine_code
     left join inno72.inno72_locale l on machine.locale_id = l.id
     left join inno72.inno72_admin_area area on l.area_code = area.code
-    left join inno72.inno72_goods goods on u0.goods_code = goods.code and goods.is_delete != 1 and goods.use_type = 1
+    left join inno72.inno72_goods goods on u0.goods_code = goods.code and goods.is_delete != 1
     left join inno72.inno72_shops shops on goods.shop_id = shops.id
     left join inno72.inno72_interact interact on interact.id = u0.activity_id
     left join inno72.inno72_merchant merchant on merchant.id = goods.seller_id
