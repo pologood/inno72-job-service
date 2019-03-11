@@ -1,5 +1,6 @@
 package com.inno72.job.executer.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.common.json.JsonUtil;
 import com.inno72.job.core.util.HttpClientUtil;
 import com.inno72.job.core.util.HttpFormConnector;
@@ -70,15 +71,15 @@ public class AliPayOrderServiceImpl implements AliPayOrderService {
 
     private void sendMsg(Inno72OrderAlipay order) throws IOException {
         Inno72ConnectionPayVo payvo = new Inno72ConnectionPayVo();
-        PushRequestVo vo = new PushRequestVo();
 		long l = System.currentTimeMillis();
 		payvo.setActivityId(order.getActivityId());
 		payvo.setMachineCode(order.getMachineCode());
 		payvo.setVersion(l);
 		payvo.setType(Inno72MachineConnectionMsg.TYPE_ENUM.PAY.getKey());
+        PushRequestVo vo = new PushRequestVo();
         vo.setData(JsonUtil.toJson(payvo));
         vo.setTargetCode(order.getMachineCode());
-        String request = JsonUtil.toJson(payvo);
+        String request = JsonUtil.toJson(vo);
         Inno72MachineConnectionMsg msg = new Inno72MachineConnectionMsg();
         msg.setMachineCode(order.getMachineCode());
         msg.setStatus(Inno72MachineConnectionMsg.STATUS_ENUM.COMMIT.getKey());
@@ -97,7 +98,8 @@ public class AliPayOrderServiceImpl implements AliPayOrderService {
         msg.setMsg(request);
         msg.setTimes(1);
         msg.setType(Inno72MachineConnectionMsg.TYPE_ENUM.PAY.getKey());
-        msg.setVersion(System.currentTimeMillis());
+        msg.setVersion(l);
+        LOGGER.info("插入消息 {}", JSON.toJSONString(msg));
         inno72MachineConnectionMsgMapper.insert(msg);
         connectionMsgService.sendMsg(msg);
     }
