@@ -71,11 +71,13 @@ public class AliPayOrderServiceImpl implements AliPayOrderService {
     private void sendMsg(Inno72OrderAlipay order) throws IOException {
         Inno72ConnectionPayVo payvo = new Inno72ConnectionPayVo();
         PushRequestVo vo = new PushRequestVo();
+		long l = System.currentTimeMillis();
+		payvo.setActivityId(order.getActivityId());
+		payvo.setMachineCode(order.getMachineCode());
+		payvo.setVersion(l);
+		payvo.setType(Inno72MachineConnectionMsg.TYPE_ENUM.PAY.getKey());
         vo.setData(JsonUtil.toJson(payvo));
         vo.setTargetCode(order.getMachineCode());
-		long l = System.currentTimeMillis();
-		payvo.setType(Inno72MachineConnectionMsg.TYPE_ENUM.PAY.getKey());
-		payvo.setVersion(l);
         String request = JsonUtil.toJson(payvo);
         Inno72MachineConnectionMsg msg = new Inno72MachineConnectionMsg();
         msg.setMachineCode(order.getMachineCode());
@@ -95,7 +97,7 @@ public class AliPayOrderServiceImpl implements AliPayOrderService {
         msg.setMsg(request);
         msg.setTimes(1);
         msg.setType(Inno72MachineConnectionMsg.TYPE_ENUM.PAY.getKey());
-        msg.setVersion(l);
+        msg.setVersion(System.currentTimeMillis());
         inno72MachineConnectionMsgMapper.insert(msg);
         connectionMsgService.sendMsg(msg);
     }
