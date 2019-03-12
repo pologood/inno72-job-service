@@ -58,15 +58,14 @@ public class AliPayOrderServiceImpl implements AliPayOrderService {
     }
 
     private Boolean getAliOrderPayStatus(Inno72OrderAlipay order) throws IOException {
-//        String url = UrlUtil.getGameServerUrl(env)+"api/standard/orderPolling";
-////        LOGGER.info("getAliOrderPayStatus url = {},machineCode={}",url,order.getMachineCode());
-////        Map<String, String> form = new HashMap<String, String>(1);
-////        form.put("sessionUuid",order.getMachineCode());
-////        byte[] ret = HttpFormConnector.doPost(url,form,10000);
-////        String response = new String(ret, "utf-8");
-////        LOGGER.info("send msg response={}",response);
-////        return Boolean.parseBoolean(FastJsonUtils.getString(response,"model"));
-        return true;
+        String url = UrlUtil.getGameServerUrl(env)+"api/standard/orderPolling";
+        LOGGER.info("getAliOrderPayStatus url = {},machineCode={}",url,order.getMachineCode());
+        Map<String, String> form = new HashMap<String, String>(1);
+        form.put("sessionUuid",order.getMachineCode());
+        byte[] ret = HttpFormConnector.doPost(url,form,10000);
+        String response = new String(ret, "utf-8");
+        LOGGER.info("send msg response={}",response);
+        return Boolean.parseBoolean(FastJsonUtils.getString(response,"model"));
     }
 
     private void sendMsg(Inno72OrderAlipay order) throws IOException {
