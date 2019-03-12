@@ -1,8 +1,21 @@
 package com.inno72.job.executer.service.impl;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.inno72.common.json.JsonUtil;
-import com.inno72.job.core.util.HttpClientUtil;
 import com.inno72.job.core.util.HttpFormConnector;
 import com.inno72.job.executer.common.util.UrlUtil;
 import com.inno72.job.executer.common.util.UuidUtil;
@@ -12,17 +25,8 @@ import com.inno72.job.executer.model.Inno72MachineConnectionMsg;
 import com.inno72.job.executer.model.Inno72OrderAlipay;
 import com.inno72.job.executer.service.AliPayOrderService;
 import com.inno72.job.executer.service.ConnectionMsgService;
-import com.inno72.job.executer.util.FastJsonUtils;
 import com.inno72.job.executer.vo.Inno72ConnectionPayVo;
 import com.inno72.job.executer.vo.PushRequestVo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.*;
 
 @Service
 public class AliPayOrderServiceImpl implements AliPayOrderService {
@@ -65,7 +69,12 @@ public class AliPayOrderServiceImpl implements AliPayOrderService {
         byte[] ret = HttpFormConnector.doPost(url,form,10000);
         String response = new String(ret, "utf-8");
         LOGGER.info("send msg response={}",response);
-        return Boolean.parseBoolean(FastJsonUtils.getString(response,"model"));
+
+		JSONObject parseObject = JSON.parseObject(response);
+		String data = Optional.ofNullable(parseObject.get("data")).map(Object::toString).orElse("");
+		String model = Optional.ofNullable(JSON.parseObject(data).get("model")).map(Object::toString).orElse("");
+
+		return Boolean.parseBoolean(model);
     }
 
     private void sendMsg(Inno72OrderAlipay order) throws IOException {
