@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.job.activity.change.mapper.Inno72MachineActivityImageMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.job.activity.change.model.Inno72MachineActivityImage">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+  </resultMap>
+    <select id="query" resultMap="BaseResultMap">
+
+        select
+         u0.machine_code,
+         u0.plan_code as code,
+         u0.version
+
+         from (
+
+        SELECT
+                m.machine_code AS machine_code,
+                i.plan_code ,
+                g.version
+
+            FROM
+                inno72.inno72_interact_machine im
+                LEFT JOIN inno72.inno72_interact_machine_time imt ON  im.id = imt.interact_machine_id
+                LEFT JOIN inno72.inno72_machine m ON  m.id = im.machine_id
+                LEFT JOIN inno72.inno72_interact i ON  i.id = im.interact_id
+                left join inno72.inno72_game g on g.id = i.game_id
+            WHERE
+                     m.machine_status = 4
+                    AND  i.is_delete = 0
+                    AND  i.status = 1
+                    AND
+                        now( ) BETWEEN imt.start_time
+                        AND imt.end_time
+
+        ) u0
+        left join
+        inno72_machine_activity_image ai on
+        ai.machine_code = u0.machine_code
+
+        where (ai.game_version != u0.version or ai.plan_code != u0.plan_code)
+
+    </select>
+</mapper>

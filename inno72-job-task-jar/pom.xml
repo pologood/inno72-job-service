@@ -17,5 +17,6 @@
       <module>inno72-job-activity-report</module>
       <module>inno72-job-activity-snapshot-task</module>
       <module>inno72-job-activity-snapshot-compress</module>
+      <module>inno72-job-activity-change</module>
   </modules>
 </project>

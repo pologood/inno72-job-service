@@ -73,7 +73,7 @@
     on shop.id = g.shop_id
     left join inno72.inno72_merchant m
     on m.id = shop.seller_id
-    where  s.activity_type=1
+    where  s.activity_type=1 and pg.type=0
 
     and s.handle_time <![CDATA[ between  #{startTime} and #{endTime} ]]>
 
@@ -170,8 +170,6 @@
     )u7
     on u0.handle_time = u7.time
     and u0.machine_code = u7.machine_code
-
-
 
     left join inno72.inno72_machine machine on  machine.machine_code = u0.machine_code
     left join inno72.inno72_locale l on machine.locale_id = l.id
